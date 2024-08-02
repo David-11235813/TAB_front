@@ -150,11 +150,13 @@
 
 
     <!-- Scripts -->
+    <script type="module">
+        import FrontEndAPI, { UserType } from './API.js';
 
-    <!-- <script src="API.js"></script> -->
+        // Initialize API
+        const API = new FrontEndAPI(''); // Replace with your server path if necessary
 
-    <script>
-        // Function to validate the password requirements on Registration Form
+        // Registration scripts
         function checkPasswordRequirements() {
             var passInput = document.getElementById('regpass').value;
             var passLength = passInput.length;
@@ -162,15 +164,15 @@
             var ch0 = document.getElementById('check0');
             var ch1 = document.getElementById('check1');
             var ch2 = document.getElementById('check2');
-    
+
             ch0.style.color = passLength > 5 ? "green" : "red";
             ch1.style.color = passInput.match(/[0-9]/) ? "green" : "red";
             ch2.style.color = passInput.match(/[^A-Za-z0-9-'']/) ? "green" : "red";
-    
+
             regButton.disabled = !(passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/));
             regButton.style.color = regButton.disabled ? "red" : "green";
         }
-    
+
         // Function to send registration data
         document.getElementById('regbtn').addEventListener('click', function() {
             var name = document.getElementById('name').value;
@@ -180,7 +182,7 @@
             var accountType = Array.from(document.getElementById('accountType').selectedOptions).map(option => option.value);
             var regname = document.getElementById('regname').value;
             var regpass = document.getElementById('regpass').value;
-    
+
             var body = new URLSearchParams();
             body.append('name', name);
             body.append('surname', surname);
@@ -189,7 +191,7 @@
             body.append('accountType', accountType);
             body.append('regname', regname);
             body.append('regpass', regpass);
-    
+
             fetch('/Home/Register', {
                 method: 'POST',
                 headers: {
@@ -208,11 +210,8 @@
             })
             .catch(error => console.error('Error:', error));
         });
-    </script>
 
-    
-    <!-- pasted script sendPasswordEmail from Modal for Reset - check -->
-    <script>
+        // Reset Password script
         function sendResetPasswordEmail() {
             var resetEmailInput = document.getElementById('resetEmail').value;
 
@@ -231,66 +230,67 @@
             })
             .catch(error => console.error('Error:', error));
         }
-    </script>
 
-    <!-- pasted script API for login - check -->
-    <script src="API.js">
-        var unameInput = document.getElementById('uname');
-        var password = document.getElementById('psw');
-        var remember = document.getElementById('remember');
-        var passwordLink = document.getElementById('forgotPasswordLink');
-        var label = document.getElementById('addLogin');
-        var finallog = document.getElementById('finalloginbtn');
-        var registerBtn = document.getElementById('registerBtn');
-        var userType = document.getElementById('userType');
+        // Login script
+        document.addEventListener('DOMContentLoaded', function() {
+            var unameInput = document.getElementById('uname');
+            var password = document.getElementById('psw');
+            var remember = document.getElementById('remember');
+            var passwordLink = document.getElementById('forgotPasswordLink');
+            var label = document.getElementById('addLogin');
+            var finallog = document.getElementById('finalloginbtn');
+            var registerBtn = document.getElementById('registerBtn');
+            var userType = document.getElementById('userType');
 
-        passwordLink.disabled = true;
-        unameInput.addEventListener('input', function () {
-            if (unameInput.value.trim() === '') {
-                label.style.display = "block";
-                passwordLink.style.display = "none";
-            } else {
-                label.style.display = "none";
-                passwordLink.style.display = "block";
+            passwordLink.disabled = true;
+            unameInput.addEventListener('input', togglePasswordLink);
+            password.addEventListener('input', togglePasswordLink);
+
+            function togglePasswordLink() {
+                if (unameInput.value.trim() === '') {
+                    label.style.display = "block";
+                    passwordLink.style.display = "none";
+                } else {
+                    label.style.display = "none";
+                    passwordLink.style.display = "block";
+                }
+            }
+
+            passwordLink.addEventListener('click', function () {
+                document.getElementById('id_reset').style.display='block';
+            });
+
+            finallog.addEventListener('click', sendLoginData);
+
+            function sendLoginData() {
+                var formData = new FormData();
+                formData.append('uname', unameInput.value);
+                formData.append('psw', password.value);
+                formData.append('remember', remember.checked);
+                formData.append('userType', userType.value);
+
+                API.apiCall('/Home/Login', {
+                    uname: unameInput.value,
+                    psw: password.value,
+                    remember: remember.checked,
+                    userType: userType.value
+                })
+                .then(data => {
+                alert(JSON.stringify(data))
+                    if (data.mess) {
+                        alert(data.mess);
+                        if (data.mess === 'Welcome boss') {
+                            window.location.href = '/Home/AdminPanel';
+                            registerBtn.style.display = 'none';
+                        } else if (data.mess === 'Login correctly') {
+                            window.location.href = '/Home/Index';
+                            registerBtn.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             }
         });
-
-        passwordLink.addEventListener('click', function () {
-            document.getElementById('id_reset').style.display='block';
-        });
-
-        finallog.addEventListener('click', sendLoginData);
-
-        function sendLoginData() {
-            var formData = new FormData();
-            formData.append('uname', unameInput.value);
-            formData.append('psw', password.value);
-            formData.append('remember', remember.checked);
-            formData.append('userType', userType.value);
-
-            var unameValue = encodeURIComponent(unameInput.value);
-            var pswValue = encodeURIComponent(password.value);
-            var rememberValue = encodeURIComponent(remember.checked);
-            var userTypeValue = encodeURIComponent(userType.value);
-            var body = 'uname=' + unameValue + '&psw=' + pswValue + '&remember=' + rememberValue + '&userType=' + userTypeValue;
-
-            API.login(unameInput.value, password.value, 0)
-            .then(response => response.json())
-            .then(data => {
-                alert(JSON.stringify(data))
-                if (data.mess) {
-                    alert(data.mess);
-                    if (data.mess === 'Welcome boss') {
-                        window.location.href = '/Home/AdminPanel';
-                        registerBtn.style.display = 'none';
-                    } else if (data.mess === 'Login correctly') {
-                        window.location.href = '/Home/Index';
-                        registerBtn.style.display = 'none';
-                    }
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
     </script>
 
 
