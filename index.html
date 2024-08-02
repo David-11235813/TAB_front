@@ -39,86 +39,32 @@
             <div class="container col-8">
                 <div class="row centered_container">
                     <div class="col-6 form_fields">
-                        <label for="uname"><b>Username</b></label><br><br>
-                        <input type="text" placeholder="Enter Username" name="uname" id="uname" required><br><br><br />
-                        <label>
-                            <input type="checkbox" name="remember" id="remember"> Remember me
-                        </label>
-                        <br><br>
+                        <label><b>Username</b><br>
+                            <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+                        </label><br><br>
+
+                        <label><input type="checkbox" name="remember" id="remember"> Remember me </label><br><br>
+
                         <button type="button" class="LoginInto" id="finalloginbtn">Login</button>
                     </div>
                     <div class="col-6 form_fields">
-                        <label for="psw"><b>Password</b></label><br><br>
-                        <input type="password" placeholder="Enter Password" name="psw" id="psw" required><br><br>
-                        <label for="userType"><b>User Type</b></label><br><br>
+                        <label><b>Password</b><br>
+                            <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+                        </label><br><br>
+
+                        <label><b>User Type</b><br>
                         <select name="userType" id="userType">
                             <option value="Teacher">Teacher</option>
-                            <option value="Student">Student</option>
-                        </select><br><br>
+                            <option selected value="Student">Student</option>
+                        </select>
+                        </label><br><br>
+
                         <div id="addLogin">Forgot password?</div>
                         <span id="forgotPasswordLink">Reset password</span><br><br>
-                        <button type="button" onclick="document.getElementById('id_1').style.display='none'" class="Login_cancel">Cancel</button>
+                        <button type="button" onclick="document.getElementById('id_1').style.display='none'" class="Login_cancel"> Cancel </button>
                     </div>
                 </div>
             </div>
-            <script src="API.js">
-                var unameInput = document.getElementById('uname');
-                var password = document.getElementById('psw');
-                var remember = document.getElementById('remember');
-                var passwordLink = document.getElementById('forgotPasswordLink');
-                var label = document.getElementById('addLogin');
-                var finallog = document.getElementById('finalloginbtn');
-                var registerBtn = document.getElementById('registerBtn');
-                var userType = document.getElementById('userType');
-
-                passwordLink.disabled = true;
-                unameInput.addEventListener('input', function () {
-                    if (unameInput.value.trim() === '') {
-                        label.style.display = "block";
-                        passwordLink.style.display = "none";
-                    } else {
-                        label.style.display = "none";
-                        passwordLink.style.display = "block";
-                    }
-                });
-
-                passwordLink.addEventListener('click', function () {
-                    document.getElementById('id_reset').style.display='block';
-                });
-
-                finallog.addEventListener('click', sendLoginData);
-
-                function sendLoginData() {
-                    var formData = new FormData();
-                    formData.append('uname', unameInput.value);
-                    formData.append('psw', password.value);
-                    formData.append('remember', remember.checked);
-                    formData.append('userType', userType.value);
-
-                    var unameValue = encodeURIComponent(unameInput.value);
-                    var pswValue = encodeURIComponent(password.value);
-                    var rememberValue = encodeURIComponent(remember.checked);
-                    var userTypeValue = encodeURIComponent(userType.value);
-                    var body = 'uname=' + unameValue + '&psw=' + pswValue + '&remember=' + rememberValue + '&userType=' + userTypeValue;
-
-                    API.login(unameInput.value, password.value, 0)
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(JSON.stringify(data))
-                        if (data.mess) {
-                            alert(data.mess);
-                            if (data.mess === 'Welcome boss') {
-                                window.location.href = '/Home/AdminPanel';
-                                registerBtn.style.display = 'none';
-                            } else if (data.mess === 'Login correctly') {
-                                window.location.href = '/Home/Index';
-                                registerBtn.style.display = 'none';
-                            }
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            </script>
             <div class="col-2"></div>
         </form>
     </div>
@@ -132,32 +78,11 @@
             <div class="container col-8">
                 <div class="row centered_container">
                     <div class="col-6 form_fields">
-                        <label for="resetEmail"><b>Email</b></label><br><br>
-                        <input type="email" placeholder="Enter Your Email" name="resetEmail" id="resetEmail" required><br><br>
+                        <label><b>Email</b><br><input type="email" placeholder="Enter Your Email" name="resetEmail" id="resetEmail" required></label><br><br><br>
                         <button type="button" onclick="sendResetPasswordEmail()">Reset Password</button>
                     </div>
                 </div>
             </div>
-            <script>
-                function sendResetPasswordEmail() {
-                    var resetEmailInput = document.getElementById('resetEmail').value;
-
-                    fetch('/Home/ResetPassword', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: 'email=' + encodeURIComponent(resetEmailInput)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.mess) {
-                            alert(data.mess);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            </script>
             <div class="col-2"></div>
         </form>
     </div>
@@ -173,25 +98,39 @@
                     <div class="col-12 form_fields">
                         <div class="row">
                             <div class="col-6">
-                                <label for="name"><b>Name</b></label><br>
-                                <input type="text" placeholder="Enter Your name" name="name" id="name" autocomplete="on" required><br><br>
-                                <label for="surname"><b>Last Name</b></label><br>
-                                <input type="text" placeholder="Enter Your last name" name="surname" id="surname" required><br><br>
-                                <label for="email"><b>Email</b></label><br>
-                                <input type="email" placeholder="Email" name="email" id="email" autocomplete="on" required><br><br>
-                                <label for="age"><b>Age</b></label><br>
-                                <input type="number" placeholder="Enter age" name="age" id="age" min="1" max="1000000" required><br><br>
-                                <label for="accountType"><b>Account type</b></label><br>
-                                <select name="accountType" id="accountType" multiple>
+                                <label><b>Name</b><br>
+                                    <input type="text" placeholder="Enter Your name" name="name" id="name" autocomplete="on" required>
+                                </label><br><br>
+
+                                <label><b>Last Name</b><br>
+                                    <input type="text" placeholder="Enter Your last name" name="surname" id="surname" required>
+                                </label><br><br>
+
+                                <label><b>Email</b><br>
+                                    <input type="email" placeholder="Email" name="email" id="email" autocomplete="on" required>
+                                </label><br><br>
+
+                                <label><b>Age</b><br>
+                                    <input type="number" placeholder="Enter age" name="age" id="age" min="4" max="200" required>
+                                </label><br><br>
+
+                                <label for="accountType"><b>Account type</b><br>
+                                <select name="accountType" id="accountType">
                                     <option value="Teacher">Teacher</option>
-                                    <option value="Student">Student</option>
-                                </select><br />
+                                    <option selected value="Student">Student</option>
+                                </select>
+                                </label><br>
+
                             </div>
                             <div class="col-6">
-                                <label for="regname"><b>Login</b></label><br>
-                                <input type="text" placeholder="Enter Your login" name="regname" id="regname" required><br><br>
-                                <label for="regpass"><b>Password</b></label><br>
-                                <input type="password" placeholder="Enter Your password" name="regpass" id="regpass" required oninput="check()"><br><br><br>
+                                <label><b>Login</b><br>
+                                    <input type="text" placeholder="Enter Your login" name="regname" id="regname" required>
+                                </label><br><br>
+
+                                <label><b>Password</b><br>
+                                    <input type="password" placeholder="Enter Your password" name="regpass" id="regpass" required oninput="checkPasswordRequirements()">
+                                </label><br><br>
+
                                 <button type="button" class="cancelbtn formBtn" id="regbtn">Register</button>
                             </div>
                         </div>
@@ -212,41 +151,24 @@
 
     <!-- Scripts -->
 
+    <!-- <script src="API.js"></script> -->
+
     <script>
-        // Function to validate the password
-        function check() {
+        // Function to validate the password requirements on Registration Form
+        function checkPasswordRequirements() {
             var passInput = document.getElementById('regpass').value;
             var passLength = passInput.length;
-            var button = document.getElementById('regbtn');
+            var regButton = document.getElementById('regbtn');
             var ch0 = document.getElementById('check0');
             var ch1 = document.getElementById('check1');
             var ch2 = document.getElementById('check2');
     
-            if (passLength > 5) {
-                ch0.style.color = "green";
-            } else {
-                ch0.style.color = "red";
-            }
+            ch0.style.color = passLength > 5 ? "green" : "red";
+            ch1.style.color = passInput.match(/[0-9]/) ? "green" : "red";
+            ch2.style.color = passInput.match(/[^A-Za-z0-9-'']/) ? "green" : "red";
     
-            if (passInput.match(/[0-9]/)) {
-                ch1.style.color = "green";
-            } else {
-                ch1.style.color = "red";
-            }
-    
-            if (passInput.match(/[^A-Za-z0-9-'']/)) {
-                ch2.style.color = "green";
-            } else {
-                ch2.style.color = "red";
-            }
-    
-            if (passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/)) {
-                button.disabled = false;
-                button.style.color = "green";
-            } else {
-                button.disabled = true;
-                button.style.color = "red";
-            }
+            regButton.disabled = !(passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/));
+            regButton.style.color = regButton.disabled ? "red" : "green";
         }
     
         // Function to send registration data
@@ -287,6 +209,93 @@
             .catch(error => console.error('Error:', error));
         });
     </script>
+
+    
+    <!-- pasted script sendPasswordEmail from Modal for Reset - check -->
+    <script>
+        function sendResetPasswordEmail() {
+            var resetEmailInput = document.getElementById('resetEmail').value;
+
+            fetch('/Home/ResetPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'email=' + encodeURIComponent(resetEmailInput)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.mess) {
+                    alert(data.mess);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+    <!-- pasted script API for login - check -->
+    <script src="API.js">
+        var unameInput = document.getElementById('uname');
+        var password = document.getElementById('psw');
+        var remember = document.getElementById('remember');
+        var passwordLink = document.getElementById('forgotPasswordLink');
+        var label = document.getElementById('addLogin');
+        var finallog = document.getElementById('finalloginbtn');
+        var registerBtn = document.getElementById('registerBtn');
+        var userType = document.getElementById('userType');
+
+        passwordLink.disabled = true;
+        unameInput.addEventListener('input', function () {
+            if (unameInput.value.trim() === '') {
+                label.style.display = "block";
+                passwordLink.style.display = "none";
+            } else {
+                label.style.display = "none";
+                passwordLink.style.display = "block";
+            }
+        });
+
+        passwordLink.addEventListener('click', function () {
+            document.getElementById('id_reset').style.display='block';
+        });
+
+        finallog.addEventListener('click', sendLoginData);
+
+        function sendLoginData() {
+            var formData = new FormData();
+            formData.append('uname', unameInput.value);
+            formData.append('psw', password.value);
+            formData.append('remember', remember.checked);
+            formData.append('userType', userType.value);
+
+            var unameValue = encodeURIComponent(unameInput.value);
+            var pswValue = encodeURIComponent(password.value);
+            var rememberValue = encodeURIComponent(remember.checked);
+            var userTypeValue = encodeURIComponent(userType.value);
+            var body = 'uname=' + unameValue + '&psw=' + pswValue + '&remember=' + rememberValue + '&userType=' + userTypeValue;
+
+            API.login(unameInput.value, password.value, 0)
+            .then(response => response.json())
+            .then(data => {
+                alert(JSON.stringify(data))
+                if (data.mess) {
+                    alert(data.mess);
+                    if (data.mess === 'Welcome boss') {
+                        window.location.href = '/Home/AdminPanel';
+                        registerBtn.style.display = 'none';
+                    } else if (data.mess === 'Login correctly') {
+                        window.location.href = '/Home/Index';
+                        registerBtn.style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+
+
+
 </body>
 
 </html>
