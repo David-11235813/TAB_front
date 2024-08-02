@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student reservations</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #backBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .content {
+            text-align: center;
+            margin: 60px 20px 20px 20px; /* Adjust margin to create space for the back button */
+        }
+
+        .book-sections {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .borrowed-books {
+            width: 30%;
+            height: 90%;
+            border: 1px solid #ccc;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .available-books {
+            width: 60%;
+            height: 90%;
+            border: 1px solid #ccc;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+
+<script type="module" src="API.js"></script>
+
+<body>
+    <div class="col-12">
+        <button onclick="window.location.href='/previous-page-url'" id="backBtn">Back</button>
+    </div>
+   
+
+    <div class="content">
+        <h1>Reserve Books</h1>
+        <div class="book-sections">
+            <div class="borrowed-books">
+                <h2>Borrowed Books</h2>
+                <form id="borrowedBooksForm">
+                    <ul id="borrowedBooksList">
+                        <!-- Borrowed books will be populated here -->
+                    </ul>
+                    <button type="submit" id="returnBooksBtn">Commit</button>
+                </form>
+            </div>
+
+            <div class="available-books">
+                <h2>Available Books</h2>
+                <form id="availableBooksForm">
+                    <ul id="availableBooksList">
+                        <!-- Available books will be populated here -->
+                    </ul>
+                    <button type="submit" id="reserveBooksBtn">Commit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import FrontEndAPI from './API.js';
+
+        const api = new FrontEndAPI('/api'); // Adjust the path as necessary
+        const studentId = 'example-student-id'; // Replace with actual student ID
+
+        // Load borrowed books
+        async function loadBorrowedBooks() {
+            try {
+                const borrowedBooks = await api.getBorrowedBooks(studentId); // Adjust the API method as necessary
+                const borrowedBooksList = document.getElementById('borrowedBooksList');
+                borrowedBooksList.innerHTML = '';
+                borrowedBooks.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<input type="checkbox" name="borrowedBooks" value="${book.id}"> ${book.title} by ${book.author}`;
+                    borrowedBooksList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error loading borrowed books:', error);
+            }
+        }
+
+        // Load available books
+        async function loadAvailableBooks() {
+            try {
+                const availableBooks = await api.getAvailableBooks(); // Adjust the API method as necessary
+                const availableBooksList = document.getElementById('availableBooksList');
+                availableBooksList.innerHTML = '';
+                availableBooks.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<input type="checkbox" name="availableBooks" value="${book.id}"> ${book.title} by ${book.author}`;
+                    availableBooksList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error loading available books:', error);
+            }
+        }
+
+        // Handle return books form submission
+        document.getElementById('borrowedBooksForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const checkedBoxes = document.querySelectorAll('input[name="borrowedBooks"]:checked');
+            const bookIds = Array.from(checkedBoxes).map(box => box.value);
+
+            try {
+                const response = await api.returnBookItems(studentId, bookIds); // Adjust the API method as necessary
+                alert(response.message);
+                loadBorrowedBooks(); // Refresh the list of borrowed books
+            } catch (error) {
+                console.error('Error returning books:', error);
+                alert('Failed to return books. Please try again.');
+            }
+        });
+
+        // Handle reserve books form submission
+        document.getElementById('availableBooksForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const checkedBoxes = document.querySelectorAll('input[name="availableBooks"]:checked');
+            const bookIds = Array.from(checkedBoxes).map(box => box.value);
+
+            try {
+                const response = await api.reserveBooks(studentId, bookIds); // Adjust the API method as necessary
+                alert(response.message);
+                loadAvailableBooks(); // Refresh the list of available books
+                loadBorrowedBooks(); // Refresh the list of borrowed books
+            } catch (error) {
+                console.error('Error reserving books:', error);
+                alert('Failed to reserve books. Please try again.');
+            }
+        });
+
+        // Initialize the page
+        loadBorrowedBooks();
+        loadAvailableBooks();
+    </script>
+</body>
+</html>

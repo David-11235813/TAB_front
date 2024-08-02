@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Manage Books</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .content {
+            text-align: center;
+            margin: 60px 20px 20px 20px;
+        }
+
+        .books-list {
+            margin: 20px auto;
+            width: 80%;
+            border: 1px solid #ccc;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #backBtn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<script type="module" src="API.js"></script>
+
+<body>
+    <div class="content">
+        <h1>Manage Books</h1>
+        <div class="books-list">
+            <ul id="booksList">
+                <!-- Books will be populated here -->
+            </ul>
+        </div>
+        <div class="buttons">
+            <button id="addBookBtn">Add Book</button>
+            <button id="modifyBookBtn">Modify Book</button>
+            <button id="removeBookBtn">Remove Book</button>
+        </div>
+    </div>
+    <button onclick="window.location.href='/previous-page-url'" id="backBtn">Back</button>
+
+    <!-- Add/Edit Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add Book</h2>
+            <form id="bookForm">
+                <div class="form-group">
+                    <label for="bookId">Book ID</label>
+                    <input type="text" id="bookId" name="bookId" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <input type="text" id="status" name="status" required>
+                </div>
+                <button type="submit" id="saveBookBtn">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import FrontEndAPI from './API.js';
+
+        const api = new FrontEndAPI('/api'); // Adjust the path as necessary
+        const booksList = document.getElementById('booksList');
+        const addBookBtn = document.getElementById('addBookBtn');
+        const modifyBookBtn = document.getElementById('modifyBookBtn');
+        const removeBookBtn = document.getElementById('removeBookBtn');
+        const bookModal = document.getElementById('bookModal');
+        const closeModal = document.querySelector('.close');
+        const modalTitle = document.getElementById('modalTitle');
+        const bookForm = document.getElementById('bookForm');
+        const saveBookBtn = document.getElementById('saveBookBtn');
+
+        let selectedBookId = null;
+        let selectedBookData = null;
+
+        // Load books
+        async function loadBooks() {
+            try {
+                const books = await api.getAllBooks(); // Adjust the API method as necessary
+                booksList.innerHTML = '';
+                books.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span>${book.title} by ${book.author}</span>
+                        <input type="checkbox" name="books" value="${book.id}">
+                    `;
+                    booksList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error loading books:', error);
+            }
+        }
+
+        // Open modal for adding a book
+        addBookBtn.addEventListener('click', () => {
+            selectedBookId = null;
+            modalTitle.textContent = 'Add Book';
+            bookForm.reset();
+            bookModal.style.display = 'block';
+        });
+
+        // Open modal for modifying a book
+        modifyBookBtn.addEventListener('click', () => {
+            const checkedBoxes = document.querySelectorAll('input[name="books"]:checked');
+            if (checkedBoxes.length !== 1) {
+                alert('Please select exactly one book to modify.');
+                return;
+            }
+            selectedBookId = checkedBoxes[0].value;
+            selectedBookData = booksList.querySelector(`input[value="${selectedBookId}"]`).parentElement.textContent.trim();
+            modalTitle.textContent = 'Modify Book';
+            const [title, author] = selectedBookData.split(' by ');
+            document.getElementById('bookId').value = selectedBookId;
+            document.getElementById('author').value = author;
+            document.getElementById('title').value = title;
+            // Populate other fields accordingly
+            bookModal.style.display = 'block';
+        });
+
+        // Remove selected books
+        removeBookBtn.addEventListener('click', async () => {
+            const checkedBoxes = document.querySelectorAll('input[name="books"]:checked');
+            const bookIds = Array.from(checkedBoxes).map(box => box.value);
+            if (bookIds.length === 0) {
+                alert('Please select at least one book to remove.');
+                return;
+            }
+            try {
+                for (const id of bookIds) {
+                    await api.deleteOne('books', id); // Adjust the API method as necessary
+                }
+                alert('Selected books have been removed.');
+                loadBooks();
+            } catch (error) {
+                console.error('Error removing books:', error);
+                alert('Failed to remove books. Please try again.');
+            }
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            bookModal.style.display = 'none';
+        });
+
+        // Handle add/modify book form submission
+        bookForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const bookData = {
+                id: document.getElementById('bookId').value,
+                author: document.getElementById('author').value,
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                status: document.getElementById('status').value
+            };
+
+            try {
+                if (selectedBookId) {
+                    await api.updateOne('books', selectedBookId, bookData); // Adjust the API method as necessary
+                    alert('Book has been modified.');
+                } else {
+                    await api.createOne('books', bookData); // Adjust the API method as necessary
+                    alert('Book has been added.');
+                }
+                bookModal.style.display = 'none';
+                loadBooks();
+            } catch (error) {
+                console.error('Error saving book:', error);
+                alert('Failed to save book. Please try again.');
+            }
+        });
+
+        // Initialize the page
+        loadBooks();
+    </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+</head>
+
+<body>
+    <div class="row content welcome_content">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <p class="highlight">
+                <b>Saegar Library SQL Database</b>
+                <br>
+            </p>
+            <p class="highlight">
+                <b>
+                   Regardless of the size your library is, Saegar Library SQL Database is the solution to your problems. This 
+                   simple to use database has been designed specifically to safely store all of your data, allowing you quick and easy access to them.
+                </b>
+                <br><br><br>
+            </p>
+            <!-- Button to open the modal login form -->
+            <br><br>
+            <button id="loginBtn" onclick="document.getElementById('id_1').style.display='block'">LOG IN</button><br><br>
+            <button id="registerBtn" onclick="document.getElementById('id_2').style.display='block'">REGISTER</button>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+    <!-- The Modal for Login -->
+    <div id="id_1" class="modal">
+        <span onclick="document.getElementById('id_1').style.display='none'" class="close" title="Close Form">&times;</span>
+        <!-- Modal Content -->
+        <form class="login_form modal-content animate" style="background-color: #55215f;">
+            <div class="col-2"></div>
+            <div class="container col-8">
+                <div class="row centered_container">
+                    <div class="col-6 form_fields">
+                        <label for="uname"><b>Username</b></label><br><br>
+                        <input type="text" placeholder="Enter Username" name="uname" id="uname" required><br><br><br />
+                        <label>
+                            <input type="checkbox" name="remember" id="remember"> Remember me
+                        </label>
+                        <br><br>
+                        <button type="button" class="LoginInto" id="finalloginbtn">Login</button>
+                    </div>
+                    <div class="col-6 form_fields">
+                        <label for="psw"><b>Password</b></label><br><br>
+                        <input type="password" placeholder="Enter Password" name="psw" id="psw" required><br><br>
+                        <label for="userType"><b>User Type</b></label><br><br>
+                        <select name="userType" id="userType">
+                            <option value="Teacher">Teacher</option>
+                            <option value="Student">Student</option>
+                        </select><br><br>
+                        <div id="addLogin">Forgot password?</div>
+                        <span id="forgotPasswordLink">Reset password</span><br><br>
+                        <button type="button" onclick="document.getElementById('id_1').style.display='none'" class="Login_cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <script src="API.js">
+                var unameInput = document.getElementById('uname');
+                var password = document.getElementById('psw');
+                var remember = document.getElementById('remember');
+                var passwordLink = document.getElementById('forgotPasswordLink');
+                var label = document.getElementById('addLogin');
+                var finallog = document.getElementById('finalloginbtn');
+                var registerBtn = document.getElementById('registerBtn');
+                var userType = document.getElementById('userType');
+
+                passwordLink.disabled = true;
+                unameInput.addEventListener('input', function () {
+                    if (unameInput.value.trim() === '') {
+                        label.style.display = "block";
+                        passwordLink.style.display = "none";
+                    } else {
+                        label.style.display = "none";
+                        passwordLink.style.display = "block";
+                    }
+                });
+
+                passwordLink.addEventListener('click', function () {
+                    document.getElementById('id_reset').style.display='block';
+                });
+
+                finallog.addEventListener('click', sendLoginData);
+
+                function sendLoginData() {
+                    var formData = new FormData();
+                    formData.append('uname', unameInput.value);
+                    formData.append('psw', password.value);
+                    formData.append('remember', remember.checked);
+                    formData.append('userType', userType.value);
+
+                    var unameValue = encodeURIComponent(unameInput.value);
+                    var pswValue = encodeURIComponent(password.value);
+                    var rememberValue = encodeURIComponent(remember.checked);
+                    var userTypeValue = encodeURIComponent(userType.value);
+                    var body = 'uname=' + unameValue + '&psw=' + pswValue + '&remember=' + rememberValue + '&userType=' + userTypeValue;
+
+                    API.login(unameInput.value, password.value, 0)
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(JSON.stringify(data))
+                        if (data.mess) {
+                            alert(data.mess);
+                            if (data.mess === 'Welcome boss') {
+                                window.location.href = '/Home/AdminPanel';
+                                registerBtn.style.display = 'none';
+                            } else if (data.mess === 'Login correctly') {
+                                window.location.href = '/Home/Index';
+                                registerBtn.style.display = 'none';
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            </script>
+            <div class="col-2"></div>
+        </form>
+    </div>
+
+    <!-- The Modal for Reset Password -->
+    <div id="id_reset" class="modal">
+        <span onclick="document.getElementById('id_reset').style.display='none'" class="close" title="Close Form">&times;</span>
+        <!-- Modal Content -->
+        <form class="reset_form modal-content animate" style="background-color: #55215f;">
+            <div class="col-2"></div>
+            <div class="container col-8">
+                <div class="row centered_container">
+                    <div class="col-6 form_fields">
+                        <label for="resetEmail"><b>Email</b></label><br><br>
+                        <input type="email" placeholder="Enter Your Email" name="resetEmail" id="resetEmail" required><br><br>
+                        <button type="button" onclick="sendResetPasswordEmail()">Reset Password</button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function sendResetPasswordEmail() {
+                    var resetEmailInput = document.getElementById('resetEmail').value;
+
+                    fetch('/Home/ResetPassword', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'email=' + encodeURIComponent(resetEmailInput)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.mess) {
+                            alert(data.mess);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            </script>
+            <div class="col-2"></div>
+        </form>
+    </div>
+
+    <!-- The Modal for Register -->
+    <!-- Registration Form -->
+    <div id="id_2" class="modal">
+        <span onclick="document.getElementById('id_2').style.display='none'" class="close" title="Close Form">&times;</span>
+        <form class="modal-content animate register_form row" id="registrationForm" style="background-color: #55215f;">
+            <div class="col-2"></div>
+            <div class="container col-8">
+                <div class="row centered_container">
+                    <div class="col-12 form_fields">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="name"><b>Name</b></label><br>
+                                <input type="text" placeholder="Enter Your name" name="name" id="name" autocomplete="on" required><br><br>
+                                <label for="surname"><b>Last Name</b></label><br>
+                                <input type="text" placeholder="Enter Your last name" name="surname" id="surname" required><br><br>
+                                <label for="email"><b>Email</b></label><br>
+                                <input type="email" placeholder="Email" name="email" id="email" autocomplete="on" required><br><br>
+                                <label for="age"><b>Age</b></label><br>
+                                <input type="number" placeholder="Enter age" name="age" id="age" min="1" max="1000000" required><br><br>
+                                <label for="accountType"><b>Account type</b></label><br>
+                                <select name="accountType" id="accountType" multiple>
+                                    <option value="Teacher">Teacher</option>
+                                    <option value="Student">Student</option>
+                                </select><br />
+                            </div>
+                            <div class="col-6">
+                                <label for="regname"><b>Login</b></label><br>
+                                <input type="text" placeholder="Enter Your login" name="regname" id="regname" required><br><br>
+                                <label for="regpass"><b>Password</b></label><br>
+                                <input type="password" placeholder="Enter Your password" name="regpass" id="regpass" required oninput="check()"><br><br><br>
+                                <button type="button" class="cancelbtn formBtn" id="regbtn">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="logincheck"><span></span> </div>
+                        <div id="passVal"><span>Password requirements:</span></div>
+                        <div id="check0"><span>Length more than 5</span></div>
+                        <div id="check1"><span>Contains numerical character</span></div>
+                        <div id="check2"><span>Contains special character</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </form>
+    </div>
+
+
+    <!-- Scripts -->
+
+    <script>
+        // Function to validate the password
+        function check() {
+            var passInput = document.getElementById('regpass').value;
+            var passLength = passInput.length;
+            var button = document.getElementById('regbtn');
+            var ch0 = document.getElementById('check0');
+            var ch1 = document.getElementById('check1');
+            var ch2 = document.getElementById('check2');
+    
+            if (passLength > 5) {
+                ch0.style.color = "green";
+            } else {
+                ch0.style.color = "red";
+            }
+    
+            if (passInput.match(/[0-9]/)) {
+                ch1.style.color = "green";
+            } else {
+                ch1.style.color = "red";
+            }
+    
+            if (passInput.match(/[^A-Za-z0-9-'']/)) {
+                ch2.style.color = "green";
+            } else {
+                ch2.style.color = "red";
+            }
+    
+            if (passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/)) {
+                button.disabled = false;
+                button.style.color = "green";
+            } else {
+                button.disabled = true;
+                button.style.color = "red";
+            }
+        }
+    
+        // Function to send registration data
+        document.getElementById('regbtn').addEventListener('click', function() {
+            var name = document.getElementById('name').value;
+            var surname = document.getElementById('surname').value;
+            var email = document.getElementById('email').value;
+            var age = document.getElementById('age').value;
+            var accountType = Array.from(document.getElementById('accountType').selectedOptions).map(option => option.value);
+            var regname = document.getElementById('regname').value;
+            var regpass = document.getElementById('regpass').value;
+    
+            var body = new URLSearchParams();
+            body.append('name', name);
+            body.append('surname', surname);
+            body.append('email', email);
+            body.append('age', age);
+            body.append('accountType', accountType);
+            body.append('regname', regname);
+            body.append('regpass', regpass);
+    
+            fetch('/Home/Register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: body.toString()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.mess) {
+                    alert(data.mess);
+                    if (data.mess === 'Registration successful') {
+                        document.getElementById('id_2').style.display='none';
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
