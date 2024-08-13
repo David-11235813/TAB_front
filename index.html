@@ -149,29 +149,19 @@
     </div>
 
 
+
+
     <!-- Scripts -->
-    <script type="module">
+    <script type="module" src="API.js"></script>
+
+    
+    <!-- back-end dependant -->
+    <script>
         import FrontEndAPI, { UserType } from './API.js';
 
         // Initialize API
-        const API = new FrontEndAPI(''); // Replace with your server path if necessary
+        const API = new FrontEndAPI('https://127.0.0.1:3000/'); // Replace with your server path if necessary
 
-        // Registration scripts
-        function checkPasswordRequirements() {
-            var passInput = document.getElementById('regpass').value;
-            var passLength = passInput.length;
-            var regButton = document.getElementById('regbtn');
-            var ch0 = document.getElementById('check0');
-            var ch1 = document.getElementById('check1');
-            var ch2 = document.getElementById('check2');
-
-            ch0.style.color = passLength > 5 ? "green" : "red";
-            ch1.style.color = passInput.match(/[0-9]/) ? "green" : "red";
-            ch2.style.color = passInput.match(/[^A-Za-z0-9-'']/) ? "green" : "red";
-
-            regButton.disabled = !(passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/));
-            regButton.style.color = regButton.disabled ? "red" : "green";
-        }
 
         // Function to send registration data
         document.getElementById('regbtn').addEventListener('click', function() {
@@ -210,26 +200,7 @@
             })
             .catch(error => console.error('Error:', error));
         });
-
-        // Reset Password script
-        function sendResetPasswordEmail() {
-            var resetEmailInput = document.getElementById('resetEmail').value;
-
-            fetch('/Home/ResetPassword', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'email=' + encodeURIComponent(resetEmailInput)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.mess) {
-                    alert(data.mess);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        
 
         // Login script
         document.addEventListener('DOMContentLoaded', function() {
@@ -269,6 +240,8 @@
                 formData.append('remember', remember.checked);
                 formData.append('userType', userType.value);
 
+
+                //http request start - sending path and params
                 API.apiCall('/Home/Login', {
                     uname: unameInput.value,
                     psw: password.value,
@@ -291,8 +264,50 @@
                 .catch(error => console.error('Error:', error));
             }
         });
+
+
+
+        // Reset Password script
+        function sendResetPasswordEmail() {
+            var resetEmailInput = document.getElementById('resetEmail').value;
+
+            fetch('/Home/ResetPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'email=' + encodeURIComponent(resetEmailInput)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.mess) {
+                    alert(data.mess);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 
+
+    <!-- client-side only, no back-end required-->
+    <script>
+        // Registration scripts
+        function checkPasswordRequirements() {
+            var passInput = document.getElementById('regpass').value;
+            var passLength = passInput.length;
+            var regButton = document.getElementById('regbtn');
+            var ch0 = document.getElementById('check0');
+            var ch1 = document.getElementById('check1');
+            var ch2 = document.getElementById('check2');
+
+            ch0.style.color = passLength > 5 ? "green" : "red";
+            ch1.style.color = passInput.match(/[0-9]/) ? "green" : "red";
+            ch2.style.color = passInput.match(/[^A-Za-z0-9-'']/) ? "green" : "red";
+
+            regButton.disabled = !(passLength > 5 && passInput.match(/[0-9]/) && passInput.match(/[^A-Za-z0-9-'']/));
+            regButton.style.color = regButton.disabled ? "red" : "green";
+        }
+    </script>
 
 
 
