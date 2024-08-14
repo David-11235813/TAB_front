@@ -34,18 +34,19 @@
     <div id="id_1" class="modal">
         <span onclick="document.getElementById('id_1').style.display='none'" class="close" title="Close Form">&times;</span>
         <!-- Modal Content -->
-        <form class="login_form modal-content animate" style="background-color: #55215f;">
-            <div class="col-2"></div>
-            <div class="container col-8">
-                <div class="row centered_container">
+        <div class="col-2"></div>
+        <div class="container col-8">
+            <div class="row centered_container">
+
+                <form class="login_form modal-content animate" style="background-color: #55215f;">
                     <div class="col-6 form_fields">
-                        <label><b>Username</b><br>
-                            <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+                        <label><b>Email</b><br>
+                            <input type="text" placeholder="Enter email" name="uname" id="uname" required>
                         </label><br><br>
 
                         <label><input type="checkbox" name="remember" id="remember"> Remember me </label><br><br>
 
-                        <button type="button" class="LoginInto" id="finalloginbtn">Login</button>
+                        <button type="button" class="LoginInto" id="finalloginbtn" onclick="login_func()">Login</button>
                     </div>
                     <div class="col-6 form_fields">
                         <label><b>Password</b><br>
@@ -63,38 +64,42 @@
                         <span id="forgotPasswordLink">Reset password</span><br><br>
                         <button type="button" onclick="document.getElementById('id_1').style.display='none'" class="Login_cancel"> Cancel </button>
                     </div>
-                </div>
+                </form>
+
             </div>
-            <div class="col-2"></div>
-        </form>
+        </div>
+        <div class="col-2"></div>
     </div>
 
     <!-- The Modal for Reset Password -->
     <div id="id_reset" class="modal">
         <span onclick="document.getElementById('id_reset').style.display='none'" class="close" title="Close Form">&times;</span>
         <!-- Modal Content -->
-        <form class="reset_form modal-content animate" style="background-color: #55215f;">
-            <div class="col-2"></div>
-            <div class="container col-8">
-                <div class="row centered_container">
+        <div class="col-2"></div>
+        <div class="container col-8">
+            <div class="row centered_container">
+
+                <form class="reset_form modal-content animate" style="background-color: #55215f;">
                     <div class="col-6 form_fields">
                         <label><b>Email</b><br><input type="email" placeholder="Enter Your Email" name="resetEmail" id="resetEmail" required></label><br><br><br>
                         <button type="button" onclick="sendResetPasswordEmail()">Reset Password</button>
                     </div>
-                </div>
+                </form>
+
             </div>
-            <div class="col-2"></div>
-        </form>
+        </div>
+        <div class="col-2"></div>
     </div>
 
     <!-- The Modal for Register -->
     <!-- Registration Form -->
     <div id="id_2" class="modal">
         <span onclick="document.getElementById('id_2').style.display='none'" class="close" title="Close Form">&times;</span>
-        <form class="modal-content animate register_form row" id="registrationForm" style="background-color: #55215f;">
-            <div class="col-2"></div>
-            <div class="container col-8">
-                <div class="row centered_container">
+        <div class="col-2"></div>
+        <div class="container col-8">
+            <div class="row centered_container">
+
+                <form class="modal-content animate register_form row" id="registrationForm" style="background-color: #55215f;">
                     <div class="col-12 form_fields">
                         <div class="row">
                             <div class="col-6">
@@ -142,10 +147,11 @@
                         <div id="check1"><span>Contains numerical character</span></div>
                         <div id="check2"><span>Contains special character</span></div>
                     </div>
-                </div>
+                </form>
+
             </div>
-            <div class="col-2"></div>
-        </form>
+        </div>
+        <div class="col-2"></div>
     </div>
 
 
@@ -162,16 +168,16 @@
         // Initialize API
         const API = new FrontEndAPI('https://127.0.0.1:3000/'); // Replace with your server path if necessary
 
-        // Example: Login Function
-        //function sendLoginData() {
-        //    const uname = document.getElementById('uname').value;
-        //    const psw = document.getElementById('psw').value;
-        //    const remember = document.getElementById('remember').checked;
-        //    const userType = document.getElementById('userType').value;
-        //
-        //    API.login(userType, email, psw);
-        //}
-        //
+        //Login Function: WORK IN PROGRESS!
+        function login_func() {
+            const email = document.getElementById('uname').value;
+            const password = document.getElementById('psw').value;
+            const remember = document.getElementById('remember').checked;
+            const userType = document.getElementById('userType').value;
+
+            var response = API.login(userType, email, password);
+        }
+
         //document.getElementById('finalloginbtn').addEventListener('click', sendLoginData);
 
 
