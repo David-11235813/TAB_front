@@ -162,130 +162,19 @@
         // Initialize API
         const API = new FrontEndAPI('https://127.0.0.1:3000/'); // Replace with your server path if necessary
 
-
-        // Function to send registration data
-        document.getElementById('regbtn').addEventListener('click', function() {
-            var name = document.getElementById('name').value;
-            var surname = document.getElementById('surname').value;
-            var email = document.getElementById('email').value;
-            var age = document.getElementById('age').value;
-            var accountType = Array.from(document.getElementById('accountType').selectedOptions).map(option => option.value);
-            var regname = document.getElementById('regname').value;
-            var regpass = document.getElementById('regpass').value;
-
-            var body = new URLSearchParams();
-            body.append('name', name);
-            body.append('surname', surname);
-            body.append('email', email);
-            body.append('age', age);
-            body.append('accountType', accountType);
-            body.append('regname', regname);
-            body.append('regpass', regpass);
-
-            fetch('/Home/Register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: body.toString()
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.mess) {
-                    alert(data.mess);
-                    if (data.mess === 'Registration successful') {
-                        document.getElementById('id_2').style.display='none';
-                    }
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-        
-
-        // Login script
-        document.addEventListener('DOMContentLoaded', function() {
-            var unameInput = document.getElementById('uname');
-            var password = document.getElementById('psw');
-            var remember = document.getElementById('remember');
-            var passwordLink = document.getElementById('forgotPasswordLink');
-            var label = document.getElementById('addLogin');
-            var finallog = document.getElementById('finalloginbtn');
-            var registerBtn = document.getElementById('registerBtn');
-            var userType = document.getElementById('userType');
-
-            passwordLink.disabled = true;
-            unameInput.addEventListener('input', togglePasswordLink);
-            password.addEventListener('input', togglePasswordLink);
-
-            function togglePasswordLink() {
-                if (unameInput.value.trim() === '') {
-                    label.style.display = "block";
-                    passwordLink.style.display = "none";
-                } else {
-                    label.style.display = "none";
-                    passwordLink.style.display = "block";
-                }
-            }
-
-            passwordLink.addEventListener('click', function () {
-                document.getElementById('id_reset').style.display='block';
-            });
-
-            finallog.addEventListener('click', sendLoginData);
-
-            function sendLoginData() {
-                var formData = new FormData();
-                formData.append('uname', unameInput.value);
-                formData.append('psw', password.value);
-                formData.append('remember', remember.checked);
-                formData.append('userType', userType.value);
+        // Example: Login Function
+        //function sendLoginData() {
+        //    const uname = document.getElementById('uname').value;
+        //    const psw = document.getElementById('psw').value;
+        //    const remember = document.getElementById('remember').checked;
+        //    const userType = document.getElementById('userType').value;
+        //
+        //    API.login(userType, email, psw);
+        //}
+        //
+        //document.getElementById('finalloginbtn').addEventListener('click', sendLoginData);
 
 
-                //http request start - sending path and params
-                API.apiCall('/Home/Login', {
-                    uname: unameInput.value,
-                    psw: password.value,
-                    remember: remember.checked,
-                    userType: userType.value
-                })
-                .then(data => {
-                alert(JSON.stringify(data))
-                    if (data.mess) {
-                        alert(data.mess);
-                        if (data.mess === 'Welcome boss') {
-                            window.location.href = '/Home/AdminPanel';
-                            registerBtn.style.display = 'none';
-                        } else if (data.mess === 'Login correctly') {
-                            window.location.href = '/Home/Index';
-                            registerBtn.style.display = 'none';
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        });
-
-
-
-        // Reset Password script
-        function sendResetPasswordEmail() {
-            var resetEmailInput = document.getElementById('resetEmail').value;
-
-            fetch('/Home/ResetPassword', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'email=' + encodeURIComponent(resetEmailInput)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.mess) {
-                    alert(data.mess);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
     </script>
 
 
