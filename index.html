@@ -5,6 +5,11 @@
     <title>Login</title>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css.css">
+
+
+
+
+
 </head>
 
 <body>
@@ -155,33 +160,43 @@
     </div>
 
 
-
-
+    
+    
     <!-- Scripts -->
     <script type="module" src="API.js"></script>
 
     
     <!-- back-end dependant -->
-    <script>
+    <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
 
         // Initialize API
-        const API = new FrontEndAPI('https://127.0.0.1:3000/'); // Replace with your server path if necessary
+        const API = new FrontEndAPI('https://127.0.0.1:3000'); // Replace with your server path if necessary
+        //const API = new FrontEndAPI('API.js'); // Replace with your server path if necessary
 
         //Login Function: WORK IN PROGRESS!
         function login_func() {
-            const email = document.getElementById('uname').value;
-            const password = document.getElementById('psw').value;
-            const remember = document.getElementById('remember').checked;
-            const userType = document.getElementById('userType').value;
+            const email = document.getElementById('uname').value;           // admin@admin.pl   
+            const password = document.getElementById('psw').value;          // zaq1@WSX
+            const remember = document.getElementById('remember').checked;   // 
+            const userType = document.getElementById('userType').value;     // Librarian
 
-            var response = API.login(userType, email, password);
+            let isStudent = 0;
+            if(userType == "Student") isStudent = 1;
+
+            var response = API.login(email, password, isStudent);
+
+            //var out = "42";
+            //document.write(response);
         }
 
+        //deprecated:
         //document.getElementById('finalloginbtn').addEventListener('click', sendLoginData);
 
+        window.login_func = login_func;
 
     </script>
+
 
 
     <!-- client-side only, no back-end required-->

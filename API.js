@@ -1,4 +1,4 @@
-import JSONHelpers from "JSONHelpers.js"
+import JSONHelpers from "./JSONHelpers.js"
 
 export let UserType
 
@@ -38,7 +38,7 @@ export default class FrontEndAPI {
     }
 
     // Account-related
-    async login(userType, email, password) {
+    async login(email, password, userType) {
         return this.apiCall("/user/login", { email, password, userType })
     }
 
