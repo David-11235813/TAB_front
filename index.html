@@ -42,7 +42,6 @@
         <div class="col-2"></div>
         <div class="container col-8">
             <div class="row centered_container">
-
                 <form class="login_form modal-content animate" style="background-color: #55215f;">
                     <div class="col-6 form_fields">
                         <label><b>Email</b><br>
@@ -54,6 +53,7 @@
                         <button type="button" class="LoginInto" id="finalloginbtn" onclick="login_func()">Login</button>
                     </div>
                     <div class="col-6 form_fields">
+<p>zaq1@WSX</p>
                         <label><b>Password</b><br>
                             <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
                         </label><br><br>
@@ -184,7 +184,30 @@
             let isStudent = 0;
             if(userType == "Student") isStudent = 1;
 
-            var response = API.login(email, password, isStudent);
+            //API.login(email, password, isStudent)
+            //    .then(data => {
+            //        // Assuming the login was successful, data will hold the JSON response
+            //        console.log(data); // This logs the entire response
+            //
+            //        // Display the entire JSON response on the page
+            //        document.body.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            //
+            //        // If you want to display a specific part of the data, e.g., the user name:
+            //        //document.body.innerHTML = `Welcome, ${data.userName}!`;
+            //    })
+
+            API.login(email, password, isStudent)
+                .then(data => {
+                if (isStudent === 1) { // If the user is a student
+                    window.location.href = 'student.html';
+                } else if (isStudent === 0) {
+                    window.location.href = 'librarian.html';
+                    //console.log("Librarian logged in.");
+                }
+                }).catch(err => {
+                    console.error("Login failed:", err);
+                    document.write("Login failed.");
+                });
 
             //var out = "42";
             //document.write(response);
