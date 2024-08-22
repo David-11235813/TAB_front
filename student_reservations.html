@@ -125,21 +125,47 @@
     <div class="content">
         <h1>Reserve Books</h1>
 
-        <!-- Editable Row with 6 columns -->
-        <div class="editable">
-            <div contenteditable="true">Column 1</div>
-            <div contenteditable="true">Column 2</div>
-            <div contenteditable="true">Column 3</div>
-            <div contenteditable="true">Column 4</div>
-            <div contenteditable="true">Column 5</div>
-            <div contenteditable="true">Column 6</div>
-        </div>
-
         <div class="book-sections">
             <div class="borrowed-books">
                 <h2>Borrowed Books</h2>
                 <form id="borrowedBooksForm">
                     <ul id="borrowedBooksList">
+                        <table id="booksTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ISBN</th>
+                                    <th>Author</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-id="1000">
+                                    <td>1000</td>
+                                    <td>123456789</td>
+                                    <td>J.K. Rowling</td>
+                                    <td>Harry Potter and the Sorcerer's Stone</td>
+                                    <td>Fantasy</td>
+                                    <td>Free</td>
+                                    <td>
+                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="2000">
+                                    <td>2000</td>
+                                    <td>123456783</td>
+                                    <td>George Orwell</td>
+                                    <td>1984</td>
+                                    <td>Dystopian</td>
+                                    <td>Reserved</td>
+                                    <td>
+                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <!-- Borrowed books will be populated here -->
                     </ul>
                     <button type="submit" id="returnBooksBtn">Commit</button>
@@ -150,6 +176,42 @@
                 <h2>Available Books</h2>
                 <form id="availableBooksForm">
                     <ul id="availableBooksList">
+                        <table id="booksTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ISBN</th>
+                                    <th>Author</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-id="1000">
+                                    <td>1000</td>
+                                    <td>123456789</td>
+                                    <td>J.K. Rowling</td>
+                                    <td>Harry Potter and the Sorcerer's Stone</td>
+                                    <td>Fantasy</td>
+                                    <td>Free</td>
+                                    <td>
+                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="2000">
+                                    <td>2000</td>
+                                    <td>123456783</td>
+                                    <td>George Orwell</td>
+                                    <td>1984</td>
+                                    <td>Dystopian</td>
+                                    <td>Reserved</td>
+                                    <td>
+                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <!-- Available books will be populated here -->
                     </ul>
                     <button type="submit" id="reserveBooksBtn">Commit</button>
