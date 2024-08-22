@@ -70,6 +70,48 @@
             flex-direction: column;
             align-items: flex-start;
         }
+
+        .bottomleft1 {
+            position: absolute;
+            bottom: 8px;
+            left: 1%;
+            font-size: 18px;
+        }
+        .bottomleft2 {
+            position: absolute;
+            bottom: 8px;
+            left: 11%;
+            font-size: 18px;
+
+        }
+        .bottomleft3 {
+            position: absolute;
+            bottom: 8px;
+            left: 21%;
+            font-size: 18px;
+        }
+
+        /* Editable Row Styles */
+        .editable {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 10%;
+            gap: 10px;
+        }
+
+        .editable div {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .editable div[contenteditable="true"] {
+            background-color: #f9f9f9;
+            cursor: text;
+        }
+
     </style>
 </head>
 
@@ -80,9 +122,19 @@
         <button onclick="window.location.href='student.html'" id="backBtn">Back</button>
     </div>
    
-
     <div class="content">
         <h1>Reserve Books</h1>
+
+        <!-- Editable Row with 6 columns -->
+        <div class="editable">
+            <div contenteditable="true">Column 1</div>
+            <div contenteditable="true">Column 2</div>
+            <div contenteditable="true">Column 3</div>
+            <div contenteditable="true">Column 4</div>
+            <div contenteditable="true">Column 5</div>
+            <div contenteditable="true">Column 6</div>
+        </div>
+
         <div class="book-sections">
             <div class="borrowed-books">
                 <h2>Borrowed Books</h2>
