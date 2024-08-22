@@ -37,6 +37,39 @@
     </div>
     
     
+
+
+
+    
+    <!-- Dave -->
+    <!--
+    <script type="module">
+        import FrontEndAPI, { UserType } from './API.js';
+
+        // Initialize API
+        const API = new FrontEndAPI('https://127.0.0.1:3000');
+
+        //logout
+        function logout_func() {
+
+            API.logout()
+                .then(data => {
+                    window.location.href = "index.html";
+                }
+                }).catch(err => {
+                    console.error("Logout failed:", err);
+                    document.write("Logout failed.");
+                });
+
+
+        }
+
+        window.logout_func = logout_func;
+    </script>
+    -->
+
+
+    <!--Scripts (gpt)-->
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
 
@@ -113,37 +146,6 @@
             }
         });
     </script>
-
-
-
-    
-    <!-- Dave -->
-    <!--
-    <script type="module">
-        import FrontEndAPI, { UserType } from './API.js';
-
-        // Initialize API
-        const API = new FrontEndAPI('https://127.0.0.1:3000');
-
-        //logout
-        function logout_func() {
-
-            API.logout()
-                .then(data => {
-                    window.location.href = "index.html";
-                }
-                }).catch(err => {
-                    console.error("Logout failed:", err);
-                    document.write("Logout failed.");
-                });
-
-
-        }
-
-        window.logout_func = logout_func;
-    </script>
-    -->
-
 
 
 </body>

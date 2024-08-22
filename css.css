@@ -365,21 +365,21 @@ li {
 /*reservations*/
 
 .book-sections {
-    display: flex;
     justify-content: space-between;
     padding: 20px;
 }
 
 .borrowed-books {
-    width: 30%;
+    width: 50%;
     height: 90%;
     border: 1px solid #ccc;
     padding: 20px;
     overflow-y: auto;
+    float: left;
 }
 
 .available-books {
-    width: 60%;
+    width: 50%;
     height: 90%;
     border: 1px solid #ccc;
     padding: 20px;

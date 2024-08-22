@@ -16,9 +16,10 @@
         <h1>Reserve Books</h1>
 
         <div class="book-sections">
-            <div class="borrowed-books">
-                <h2>Borrowed Books</h2>
-                <form id="borrowedBooksForm">
+            <form id="libraryForm">
+
+                <div class="borrowed-books">
+                    <h2>Borrowed Books</h2>
                     <ul id="borrowedBooksList">
                         <table id="booksTable">
                             <thead>
@@ -38,9 +39,9 @@
                                     <td>J.K. Rowling</td>
                                     <td>Harry Potter and the Sorcerer's Stone</td>
                                     <td>Fantasy</td>
-                                    <td>Free</td>
+                                    <td>In possession</td>
                                     <td>
-                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                        <label><input type="checkbox">Declare Return Intent</label>
                                     </td>
                                 </tr>
                                 <tr data-id="2000">
@@ -51,20 +52,28 @@
                                     <td>Dystopian</td>
                                     <td>Reserved</td>
                                     <td>
-                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                        <label><input type="checkbox">Cancel Reservation</label>
+                                    </td>
+                                </tr>
+                                <tr data-id="3000">
+                                    <td>3000</td>
+                                    <td>234567890</td>
+                                    <td>J.R.R. Tolkien</td>
+                                    <td>Hobbit</td>
+                                    <td>Fantasy</td>
+                                    <td>In possession (return intent declared)</td>
+                                    <td>
+                                        <label><input type="checkbox">Cancel Return Intent</label>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <!-- Borrowed books will be populated here -->
                     </ul>
-                    <button type="submit" id="returnBooksBtn">Commit</button>
-                </form>
-            </div>
+                </div>
 
-            <div class="available-books">
-                <h2>Available Books</h2>
-                <form id="availableBooksForm">
+                <div class="available-books">
+                    <h2>Available Books</h2>
                     <ul id="availableBooksList">
                         <table id="booksTable">
                             <thead>
@@ -84,9 +93,9 @@
                                     <td>J.K. Rowling</td>
                                     <td>Harry Potter and the Sorcerer's Stone</td>
                                     <td>Fantasy</td>
-                                    <td>Free</td>
+                                    <td>Available</td>
                                     <td>
-                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                        <label><input type="checkbox">Reserve</label>
                                     </td>
                                 </tr>
                                 <tr data-id="2000">
@@ -95,19 +104,32 @@
                                     <td>George Orwell</td>
                                     <td>1984</td>
                                     <td>Dystopian</td>
-                                    <td>Reserved</td>
+                                    <td>No free copies available</td>
                                     <td>
-                                        <button onclick="window.location.href='www.google.com'">View</button>
+                                        <label><input type="checkbox">Reserve</label>
+                                    </td>
+                                </tr>
+                                <tr data-id="3000">
+                                    <td>3000</td>
+                                    <td>234567890</td>
+                                    <td>J.R.R. Tolkien</td>
+                                    <td>Hobbit</td>
+                                    <td>Fantasy</td>
+                                    <td>Unavailable</td>
+                                    <td>
+                                        <label><input type="checkbox" disabled>Reserve</label>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <!-- Available books will be populated here -->
                     </ul>
-                    <button type="submit" id="reserveBooksBtn">Commit</button>
-                </form>
-            </div>
+                </div>
+
+                <button type="submit" id="reserveBooksBtn">Save</button>
+            </form>
         </div>
+
     </div>
 
 
