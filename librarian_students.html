@@ -107,6 +107,25 @@
             padding: 8px;
             box-sizing: border-box;
         }
+        .editable {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 10%;
+            gap: 10px;
+        }
+
+        .editable div {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .editable div[contenteditable="true"] {
+            background-color: #f9f9f9;
+            cursor: text;
+        }
     </style>
 </head>
 
@@ -141,6 +160,14 @@
                 <button type="submit">Apply Fine</button>
             </form>
         </div>
+    </div>
+    <div class="editable">
+        <div contenteditable="true">Column 1</div>
+        <div contenteditable="true">Column 2</div>
+        <div contenteditable="true">Column 3</div>
+        <div contenteditable="true">Column 4</div>
+        <div contenteditable="true">Column 5</div>
+        <div contenteditable="true">Column 6</div>
     </div>
 
     <script type="module">
