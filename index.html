@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Login</title>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css.css">
-
-
-
-
-
+    <script type="module" src="API.js"></script>
 </head>
 
 <body>
@@ -76,7 +71,7 @@
         <div class="col-2"></div>
     </div>
 
-    <!-- The Modal for Reset Password -->
+    <!-- The Modal for Reset Password, todo -->
     <div id="id_reset" class="modal">
         <span onclick="document.getElementById('id_reset').style.display='none'" class="close" title="Close Form">&times;</span>
         <!-- Modal Content -->
@@ -96,8 +91,7 @@
         <div class="col-2"></div>
     </div>
 
-    <!-- The Modal for Register -->
-    <!-- Registration Form -->
+    <!-- The Modal for Register, todo -->
     <div id="id_2" class="modal">
         <span onclick="document.getElementById('id_2').style.display='none'" class="close" title="Close Form">&times;</span>
         <div class="col-2"></div>
@@ -163,8 +157,6 @@
     
     
     <!-- Scripts -->
-    <script type="module" src="API.js"></script>
-
     
     <!-- back-end dependant -->
     <script type="module">
@@ -174,7 +166,7 @@
         const API = new FrontEndAPI('https://127.0.0.1:3000'); // Replace with your server path if necessary
         //const API = new FrontEndAPI('API.js'); // Replace with your server path if necessary
 
-        //Login Function: WORK IN PROGRESS!
+        //Login Function
         function login_func() {
             const email = document.getElementById('uname').value;           // admin@admin.pl   
             const password = document.getElementById('psw').value;          // zaq1@WSX
@@ -217,9 +209,7 @@
         //document.getElementById('finalloginbtn').addEventListener('click', sendLoginData);
 
         window.login_func = login_func;
-
     </script>
-
 
 
     <!-- client-side only, no back-end required-->
