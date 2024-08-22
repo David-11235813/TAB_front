@@ -4,141 +4,28 @@
     <title>Manage Students</title>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .content {
-            text-align: center;
-            margin: 60px 20px 20px 20px;
-        }
-
-        .students-list {
-            margin: 20px auto;
-            width: 80%;
-            border: 1px solid #ccc;
-            padding: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        #backBtn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .editable {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 10%;
-            gap: 10px;
-        }
-
-        .editable div {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-            font-size: 18px;
-        }
-
-        .editable div[contenteditable="true"] {
-            background-color: #f9f9f9;
-            cursor: text;
-        }
-    </style>
+    <script type="module" src="API.js"></script>
 </head>
-
-<script type="module" src="API.js"></script>
 
 <body>
     <div class="content">
         <h1>Manage Students</h1>
+
         <div class="students-list">
             <ul id="studentsList">
                 <!-- Students will be populated here -->
             </ul>
         </div>
+
+        <div class="editable">
+            <div id="slot1" contenteditable="true"></div>
+            <div id="slot2" contenteditable="true"></div>
+            <div id="slot3" contenteditable="true"></div>
+            <div id="slot4" contenteditable="true"></div>
+            <div id="slot5" contenteditable="true"></div>
+            <div id="slot6" contenteditable="true"></div>
+        </div>
+
         <div class="buttons">
             <button id="removeStudentBtn">Remove Student Account</button>
             <button id="applyFineBtn">Apply Fine for Breaking Rules</button>
@@ -161,14 +48,9 @@
             </form>
         </div>
     </div>
-    <div class="editable">
-        <div contenteditable="true">Column 1</div>
-        <div contenteditable="true">Column 2</div>
-        <div contenteditable="true">Column 3</div>
-        <div contenteditable="true">Column 4</div>
-        <div contenteditable="true">Column 5</div>
-        <div contenteditable="true">Column 6</div>
-    </div>
+
+
+
 
     <script type="module">
         import FrontEndAPI from './API.js';
@@ -239,30 +121,30 @@
         });
 
         // Handle fine form submission
-        fineForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const fineAmount = document.getElementById('fineAmount').value;
-            try {
-                await api.applyFine(selectedStudentId, fineAmount); // Adjust the API method as necessary
-                alert('Fine has been applied.');
-                fineModal.style.display = 'none';
-                loadStudents();
-            } catch (error) {
-                console.error('Error applying fine:', error);
-                alert('Failed to apply fine. Please try again.');
-            }
-        });
-
+        //fineForm.addEventListener('submit', async (event) => {
+        //    event.preventDefault();
+        //    const fineAmount = document.getElementById('fineAmount').value;
+        //    try {
+        //        await api.applyFine(selectedStudentId, fineAmount); // Adjust the API method as necessary
+        //        alert('Fine has been applied.');
+        //        fineModal.style.display = 'none';
+        //        loadStudents();
+        //    } catch (error) {
+        //        console.error('Error applying fine:', error);
+        //        alert('Failed to apply fine. Please try again.');
+        //    }
+        //});
+        //
         // Email student
-        emailStudentBtn.addEventListener('click', () => {
-            const checkedBoxes = document.querySelectorAll('input[name="students"]:checked');
-            if (checkedBoxes.length !== 1) {
-                alert('Please select exactly one student to email.');
-                return;
-            }
-            const studentEmail = checkedBoxes[0].parentElement.textContent.split('(')[1].slice(0, -1);
-            window.location.href = `mailto:${studentEmail}`;
-        });
+        //emailStudentBtn.addEventListener('click', () => {
+        //    const checkedBoxes = document.querySelectorAll('input[name="students"]:checked');
+        //    if (checkedBoxes.length !== 1) {
+        //        alert('Please select exactly one student to email.');
+        //        return;
+        //    }
+        //    const studentEmail = checkedBoxes[0].parentElement.textContent.split('(')[1].slice(0, -1);
+        //    window.location.href = `mailto:${studentEmail}`;
+        //});
 
         // Initialize the page
         loadStudents();
