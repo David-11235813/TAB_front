@@ -340,28 +340,6 @@ li {
 }
 
 
-/* Editable Row Styles */
-.editable {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 10%;
-    gap: 10px;
-}
-
-.editable div {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-size: 18px;
-}
-
-.editable div[contenteditable="true"] {
-    background-color: #f9f9f9;
-    cursor: text;
-}
-
-
 /*reservations*/
 
 .book-sections {
