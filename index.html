@@ -55,8 +55,8 @@
 
                         <label><b>User Type</b><br>
                         <select name="userType" id="userType">
-                            <option value="Teacher">Teacher</option>
-                            <option selected value="Student">Student</option>
+                            <option selected value="Teacher">Teacher</option>
+                            <option value="Student">Student</option>
                         </select>
                         </label><br><br>
 
@@ -163,7 +163,7 @@
         import FrontEndAPI, { UserType } from './API.js';
 
         // Initialize API
-        const API = new FrontEndAPI('https://127.0.0.1:3000'); // Replace with your server path if necessary
+        var API = new FrontEndAPI('https://127.0.0.1:3000'); // Replace with your server path if necessary
         //const API = new FrontEndAPI('API.js'); // Replace with your server path if necessary
 
         //Login Function
@@ -173,8 +173,7 @@
             const remember = document.getElementById('remember').checked;   // 
             const userType = document.getElementById('userType').value;     // Librarian
 
-            let isStudent = 0;
-            if(userType == "Student") isStudent = 1;
+            let isStudent = userType === "Student" ? 1 : 0;
 
             //API.login(email, password, isStudent)
             //    .then(data => {
@@ -200,6 +199,7 @@
                     console.error("Login failed:", err);
                     document.write("Login failed.");
                 });
+
 
             //var out = "42";
             //document.write(response);
