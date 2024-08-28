@@ -12,4 +12,6 @@
  ### Deploying steps:
 
 1) run the backend server
-2) open index.html in VS Code, install "Live Server" extension by Ritwick Dey, click 'Go Live' in the bottom right corner - couldn't make it work otherwise.
+2) open index.html in VS Code, install "Live Server" extension by Ritwick Dey, change settings to localhost with port 3001, click 'Go Live' in the bottom right corner - couldn't make it work otherwise
+3) in the web browser login: F12, error in console about security -> click and accept in the exclamation point website.
+4) now it should finally work.

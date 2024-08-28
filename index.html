@@ -187,7 +187,7 @@
             //        //document.body.innerHTML = `Welcome, ${data.userName}!`;
             //    })
 
-            API.login(email, password, isStudent)
+            API.login(isStudent, email, password)
                 .then(data => {
                 if (isStudent === 1) { // If the user is a student
                     window.location.href = 'student.html';

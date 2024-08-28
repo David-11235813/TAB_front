@@ -1,116 +1,124 @@
-import JSONHelpers from "./JSONHelpers.js"
-
 export let UserType
 
-    ; (function (UserType) {
-        UserType[(UserType["Librarian"] = 0)] = "Librarian"
-        UserType[(UserType["Student"] = 1)] = "Student"
-    })(UserType || (UserType = {}))
+;(function(UserType) {
+  UserType[(UserType["Librarian"] = 0)] = "Librarian"
+  UserType[(UserType["Student"] = 1)] = "Student"
+})(UserType || (UserType = {}))
 
 export default class FrontEndAPI {
-    cookie = ""
+  constructor(path) {
+    this.ServerPath = path
+  }
 
-    constructor(path) {
-        this.ServerPath = path
-    }
-
-    async apiCall(path, params) {
-        const response = await fetch(`${this.ServerPath}${path}`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Cookie: this.cookie
-            },
-            body: JSON.stringify(params, JSONHelpers.stringify),
-            credentials: "include"
-        })
-
-        // Extract the set-cookie header if present and update the cookie field
-        const setCookie = response.headers.get("set-cookie")
-        if (setCookie) {
-            this.cookie = setCookie
+  async apiCall(path, params) {
+    const response = await fetch(`${this.ServerPath}${path}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": `${this.ServerPath}`,
+        "Access-Control-Allow-Headers": `${this.ServerPath}`,
+      },
+      rejectUnauthorized: false,
+      body: JSON.stringify(params, function(key, value) {
+        if (value instanceof Map) {
+            return {
+                __type: 'Map',
+                value: Object.fromEntries(value)
+            };
+        } else if (this[key] instanceof Date) {
+            return {
+                value: this[key].toUTCString(),
+                __type: 'Date',
+            }
         }
+  
+        return value;
+    }),
+      credentials: "include"
+    })
 
-        return response.text().then(it => {
-            return JSON.parse(it, JSONHelpers.parse)
-        })
-    }
+    return response.text().then(it => {
+      return JSON.parse(it, (key, value) => {
+        if (value != null && typeof value == "object") {
+            if (value.__type === 'Map') {
+                return new Map(Object.entries(value.value));
+            } else if (value.__type === 'Date') {
+                return new Date(value.value)
+            }
+        }
+  
+        return value;
+    })
+    })
+  }
 
-    // Account-related
-    async login(email, password, userType) {
-        return this.apiCall("/user/login", { email, password, userType })
-    }
+  // Account-related
+  async login(userType, email, password) {
+    return this.apiCall("/user/login", { email, password, userType })
+  }
 
-    async logout() {
-        return this.apiCall("/user/logout", {})
-    }
+  async logout() {
+    return this.apiCall("/user/logout", {})
+  }
 
-    async changePassword(oldPassword, newPassword) {
-        return this.apiCall("/user/change-password", { oldPassword, newPassword })
-    }
+  async changePassword(oldPassword, newPassword) {
+    return this.apiCall("/user/change-password", { oldPassword, newPassword })
+  }
 
-    async resetPassword(email) {
-        return this.apiCall("/user/reset-password", { email })
-    }
+  async resetPassword(email) {
+    return this.apiCall("/user/reset-password", { email })
+  }
 
-    returnBookItem = async (bookItemId, fee) => {
-        return this.apiCall("/books/return", { bookItemId, fee })
-    }
+  returnBookItem = async (bookItemId, fee) => {
+    return this.apiCall("/books/return", { bookItemId, fee })
+  }
 
-    reserveBook = async (studentId, bookId) => {
-        return this.apiCall("/books/reserve", { studentId, bookId })
-    }
+  reserveBook = async (studentId, bookId) => {
+    return this.apiCall("/books/reserve", { studentId, bookId })
+  }
 
-    cancelReservation = async reservationId => {
-        return this.apiCall("/books/cancel-reservation", { reservationId })
-    }
+  cancelReservation = async reservationId => {
+    return this.apiCall("/books/cancel-reservation", { reservationId })
+  }
 
-    lendBook = async (librarianId, studentId, bookItemId) => {
-        return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
-    }
+  lendBook = async (librarianId, studentId, bookItemId) => {
+    return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
+  }
 
-    getMessages = async (studentId, range) => {
-        return this.apiCall("/messages/get", { studentId, range })
-    }
+  createOne = async (type, obj) => {
+    return this.apiCall(`/crud/${type}/create-one`, { item: obj })
+  }
 
-    sendMessage = async (studentId, content) => {
-        return this.apiCall("/messages/send", { studentId, content })
-    }
+  deleteOne = async (type, id) => {
+    return this.apiCall(`/crud/${type}/delete-one`, { id })
+  }
 
-    createOne = async (type, obj) => {
-        return this.apiCall(`/crud/${type}/create-one`, { item: obj })
-    }
+  updateOne = async (type, id, obj) => {
+    return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
+  }
 
-    deleteOne = async (type, id) => {
-        return this.apiCall(`/crud/${type}/delete-one`, { id })
-    }
+  getOne = async (type, id) => {
+    return this.apiCall(`/crud/${type}/get-one`, { id })
+  }
 
-    updateOne = async (type, id, obj) => {
-        return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
-    }
+  getMany = async (type, query, range) => {
+    return this.apiCall(`/crud/${type}/get-many`, { query, range })
+  }
 
-    getOne = async (type, id) => {
-        return this.apiCall(`/crud/${type}/get-one`, { id })
-    }
+  getCurrentUser = async () => {
+    return (await this.apiCall(`/user/current-user`, {})).data
+  }
 
-    getMany = async (type, query, range) => {
-        return this.apiCall(`/crud/${type}/get-many`, { query, range })
-    }
+  downloadReport = async reportId => {
+    return this.apiCall(`/reports/download`, { reportId })
+  }
 
-    getCurrentUser = async () => {
-        return (await this.apiCall(`/user/current-user`, {})).data
-    }
+  getAllGeneratedReports = async reportId => {
+    return this.apiCall(`/reports/get-all-generated`, { reportId })
+  }
 
-    downloadReport = async reportId => {
-        return this.apiCall(`/reports/download`, { reportId })
-    }
-
-    getAllGeneratedReports = async reportId => {
-        return this.apiCall(`/reports/get-all-generated`, { reportId })
-    }
-
-    requestReportGeneration = async reportId => {
-        return this.apiCall(`/reports/request-creation`, { reportId })
-    }
+  requestReportGeneration = async reportId => {
+    return this.apiCall(`/reports/request-creation`, { reportId })
+  }
 }
