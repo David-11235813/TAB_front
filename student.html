@@ -35,41 +35,42 @@
         <button onclick='logout_func()' style="float:right"> Log out</button>
         <button onclick='window.location.href = "student_reservations.html"' style="float:right"> Student reservations </button>
     </div>
-    
-    
 
 
 
-    
+
+
+
     <!-- Dave -->
-    <!--
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
 
         // Initialize API
         const API = new FrontEndAPI('https://127.0.0.1:3000');
 
-        //logout
+        //logout (work in progress)
         function logout_func() {
 
             API.logout()
-                .then(data => {
-                    window.location.href = "index.html";
-                }
-                }).catch(err => {
+                .then(() => {
+                    // Clear any local session storage or cookies if needed
+                    //.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Example of clearing a cookie
+
+                    // Redirect to the login page
+                    window.location.href = 'index.html';
+                })
+                .catch(err => {
                     console.error("Logout failed:", err);
                     document.write("Logout failed.");
                 });
-
 
         }
 
         window.logout_func = logout_func;
     </script>
-    -->
 
 
-    <!--Scripts (gpt)-->
+    <!--Scripts (gpt)
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
 
@@ -146,7 +147,7 @@
             }
         });
     </script>
-
+    -->
 
 </body>
 </html>

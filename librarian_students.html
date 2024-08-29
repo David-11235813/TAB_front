@@ -12,9 +12,22 @@
         <h1>Manage Students</h1>
 
         <div class="students-list">
-            <ul id="studentsList">
-                <!-- Students will be populated here -->
-            </ul>
+            <table id="studentsTable" class="internal-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Birth Date</th>
+                        <th>Added</th>
+                        <th>Class ID:</th>
+                        <th>email</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsContents">
+                    <!-- Students will be populated here -->
+                </tbody>
+            </table>
         </div>
 
         <div class="editable">
@@ -24,6 +37,7 @@
             <div id="slot4" contenteditable="true"></div>
             <div id="slot5" contenteditable="true"></div>
             <div id="slot6" contenteditable="true"></div>
+            <div id="slot7" contenteditable="true"></div>
         </div>
 
         <div class="buttons">
@@ -51,7 +65,47 @@
 
 
 
-    <!--Scripts (gpt)-->
+
+
+    <!--Scripts (populating with books)-->
+    <script type="module">
+        import FrontEndAPI from './API.js';
+        var API = new FrontEndAPI('https://127.0.0.1:3000');
+
+        function populate_students() {
+
+            API.getMany("Students", {}, [0, 0])
+                .then(response => {
+
+                    var inside = '';
+                    response.data.forEach(student => {
+                        inside += `
+                            <tr data-id="${student.id}">
+                                <td>${student.id}</td>
+                                <td>${student.name}</td>
+                                <td>${student.surname}</td>
+                                <td>${student.birthDate}</td>
+                                <td>${student.addedDate}</td>
+                                <td>${student.classId}</td>
+                                <td>${student.email}</td>
+                            </tr>
+                        `;
+                    });
+                    document.getElementById("studentsContents").innerHTML = inside;
+
+
+                }).catch(err => {
+                    console.error("Students fetch failed:", err);
+                    document.write("Students couldn't load.");
+                });
+        }
+
+        window.onload = populate_students;
+        window.populate_students = populate_students;
+    </script>
+
+
+    <!--Scripts (gpt)
     <script type="module">
         import FrontEndAPI from './API.js';
 
@@ -149,5 +203,7 @@
         // Initialize the page
         loadStudents();
     </script>
+    -->
+
 </body>
 </html>

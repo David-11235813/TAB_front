@@ -271,14 +271,17 @@ ul
 
 /* wyciete z podstron */
 
+.internal-table {
+    width: 100%;
+}
 
 .books-list,
 .students-list {
     margin: 20px auto;
-    width: 80%;
+    width: 90%;
     border: 1px solid #ccc;
     padding: 20px;
-    max-height: 400px;
+    max-height: 340px;
     overflow-y: auto;
 }
 
@@ -291,7 +294,7 @@ li {
 
 #backBtn {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     right: 20px;
     padding: 10px 20px;
     font-size: 16px;

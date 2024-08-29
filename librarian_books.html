@@ -7,20 +7,21 @@
     <script type="module" src="API.js"></script>
 </head>
 
-<body onload="populate_books()">
+<body>
     <div class="content">
         <h1>Manage Books</h1>
 
         <div class="books-list">
-                <table id="booksTable">
+                <table id="booksTable" class="internal-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>ISBN</th>
-                            <th>Author</th>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Status</th>
+                            <th width="5%">ID</th>
+                            <th width="10%">ISBN</th>
+                            <th width="15%">Author</th>
+                            <th width="25%">Title</th>
+                            <th width="20%">Category</th>
+                            <th width="13%">Status</th>
+                            <th>Return intent?</th>
                         </tr>
                     </thead>
                     <tbody id="booksContents">
@@ -89,26 +90,23 @@
 
         function populate_books() {
 
-            API.getMany("Books", {}, [1, 2]) //not possible to retrieve, must fix cookies first
-                .then(data => {
+            API.getMany("Books", {}, [0, 0])
+                .then(response => {
 
-                    //document.write(JsonGetArrayLength(data));
                     var inside = '';
-                    for(i=0; i<10; i++) {
-                        inside = inside + `
-                            <tr data-id="1000">
-                                <td>1000</td>
-                                <td>123456789</td>
-                                <td>J.K. Rowling</td>
-                                <td>Harry Potter and the Sorcerer's Stone</td>
-                                <td>Fantasy</td>
-                                <td>In possession</td>
-                                <td>
-                                    <label><input type="checkbox">Declare Return Intent</label>
-                                </td>
-                            </tr>
-                        `
-                    }
+                    response.data.forEach(book => {
+                        inside += `
+                        <tr data-id="${book.id}">
+	                        <td>${book.id}</td>
+	                        <td>isbn</td>
+	                        <td>author</td>
+	                        <td>${book.title}</td>
+	                        <td>category</td>
+	                        <td>?In possession</td>
+	                        <td>?Declared</td>
+                        </tr>
+                    `;
+                    });
                     document.getElementById("booksContents").innerHTML = inside;
 
 
