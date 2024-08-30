@@ -1,124 +1,143 @@
 export let UserType
 
-;(function(UserType) {
-  UserType[(UserType["Librarian"] = 0)] = "Librarian"
-  UserType[(UserType["Student"] = 1)] = "Student"
-})(UserType || (UserType = {}))
+    ; (function (UserType) {
+        UserType[(UserType["Librarian"] = 0)] = "Librarian"
+        UserType[(UserType["Student"] = 1)] = "Student"
+    })(UserType || (UserType = {}))
 
 export default class FrontEndAPI {
-  constructor(path) {
-    this.ServerPath = path
-  }
+    constructor(path) {
+        this.ServerPath = path
+    }
 
-  async apiCall(path, params) {
-    const response = await fetch(`${this.ServerPath}${path}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": `${this.ServerPath}`,
-        "Access-Control-Allow-Headers": `${this.ServerPath}`,
-      },
-      rejectUnauthorized: false,
-      body: JSON.stringify(params, function(key, value) {
-        if (value instanceof Map) {
-            return {
-                __type: 'Map',
-                value: Object.fromEntries(value)
-            };
-        } else if (this[key] instanceof Date) {
-            return {
-                value: this[key].toUTCString(),
-                __type: 'Date',
-            }
-        }
-  
-        return value;
-    }),
-      credentials: "include"
-    })
+    async apiCall(path, params) {
+        const response = await fetch(`${this.ServerPath}${path}`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": `${this.ServerPath}`,
+                "Access-Control-Allow-Headers": `${this.ServerPath}`,
+            },
+            rejectUnauthorized: false,
+            body: JSON.stringify(params, function (key, value) {
+                if (value instanceof Map) {
+                    return {
+                        __type: 'Map',
+                        value: Object.fromEntries(value)
+                    };
+                } else if (this[key] instanceof Date) {
+                    return {
+                        value: this[key].toUTCString(),
+                        __type: 'Date',
+                    }
+                }
 
-    return response.text().then(it => {
-      return JSON.parse(it, (key, value) => {
-        if (value != null && typeof value == "object") {
-            if (value.__type === 'Map') {
-                return new Map(Object.entries(value.value));
-            } else if (value.__type === 'Date') {
-                return new Date(value.value)
-            }
-        }
-  
-        return value;
-    })
-    })
-  }
+                return value;
+            }),
+            credentials: "include"
+        })
 
-  // Account-related
-  async login(userType, email, password) {
-    return this.apiCall("/user/login", { email, password, userType })
-  }
+        return response.text().then(it => {
+            return JSON.parse(it, (key, value) => {
+                if (value != null && typeof value == "object") {
+                    if (value.__type === 'Map') {
+                        return new Map(Object.entries(value.value));
+                    } else if (value.__type === 'Date') {
+                        return new Date(value.value)
+                    }
+                }
 
-  async logout() {
-    return this.apiCall("/user/logout", {})
-  }
+                return value;
+            })
+        })
+    }
 
-  async changePassword(oldPassword, newPassword) {
-    return this.apiCall("/user/change-password", { oldPassword, newPassword })
-  }
+    // Account-related
+    async login(userType, email, password) {
+        return this.apiCall("/user/login", { email, password, userType })
+    }
 
-  async resetPassword(email) {
-    return this.apiCall("/user/reset-password", { email })
-  }
+    //ok
+    async logout() {
+        return this.apiCall("/user/logout", {})
+    }
 
-  returnBookItem = async (bookItemId, fee) => {
-    return this.apiCall("/books/return", { bookItemId, fee })
-  }
+    async changePassword(oldPassword, newPassword) {
+        return this.apiCall("/user/change-password", { oldPassword, newPassword })
+    }
 
-  reserveBook = async (studentId, bookId) => {
-    return this.apiCall("/books/reserve", { studentId, bookId })
-  }
+    async resetPassword(email) {
+        return this.apiCall("/user/reset-password", { email })
+    }
 
-  cancelReservation = async reservationId => {
-    return this.apiCall("/books/cancel-reservation", { reservationId })
-  }
+    returnBookItem = async (bookItemId, fee) => {
+        return this.apiCall("/books/return", { bookItemId, fee })
+    }
 
-  lendBook = async (librarianId, studentId, bookItemId) => {
-    return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
-  }
+    reserveBook = async (studentId, bookId) => {
+        return this.apiCall("/books/reserve", { studentId, bookId })
+    }
 
-  createOne = async (type, obj) => {
-    return this.apiCall(`/crud/${type}/create-one`, { item: obj })
-  }
+    cancelReservation = async reservationId => {
+        return this.apiCall("/books/cancel-reservation", { reservationId })
+    }
 
-  deleteOne = async (type, id) => {
-    return this.apiCall(`/crud/${type}/delete-one`, { id })
-  }
+    lendBook = async (librarianId, studentId, bookItemId) => {
+        return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
+    }
 
-  updateOne = async (type, id, obj) => {
-    return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
-  }
+    createOne = async (type, obj) => {
+        return this.apiCall(`/crud/${type}/create-one`, { item: obj })
+    }
 
-  getOne = async (type, id) => {
-    return this.apiCall(`/crud/${type}/get-one`, { id })
-  }
+    deleteOne = async (type, id) => {
+        return this.apiCall(`/crud/${type}/delete-one`, { id })
+    }
 
-  getMany = async (type, query, range) => {
-    return this.apiCall(`/crud/${type}/get-many`, { query, range })
-  }
+    updateOne = async (type, id, obj) => {
+        return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
+    }
 
-  getCurrentUser = async () => {
-    return (await this.apiCall(`/user/current-user`, {})).data
-  }
+    //Author
+    //Genre
+    //Librarian
+    //Student
+    getOne = async (type, id) => {
+        return this.apiCall(`/crud/${type}/get-one`, { id })
+    }
 
-  downloadReport = async reportId => {
-    return this.apiCall(`/reports/download`, { reportId })
-  }
+    //Authors
+    //X BookItems - troubleshoot
+    //Books
+    //Borrowings
+    //Fees
+    //Languages
+    //Librarians
+    //Locations
+    //Reservations
+    //Students
+    getMany = async (type, query, range) => {
+        return this.apiCall(`/crud/${type}/get-many`, { query, range })
+    }
 
-  getAllGeneratedReports = async reportId => {
-    return this.apiCall(`/reports/get-all-generated`, { reportId })
-  }
+    //ok
+    getCurrentUser = async () => {
+        return (await this.apiCall(`/user/current-user`, {})).data
+    }
 
-  requestReportGeneration = async reportId => {
-    return this.apiCall(`/reports/request-creation`, { reportId })
-  }
+    //doesnt work yet, todo
+    downloadReport = async reportId => {
+        return this.apiCall(`/reports/download`, { reportId })
+    }
+
+    //doesnt work yet, todo
+    getAllGeneratedReports = async reportId => {
+        return this.apiCall(`/reports/get-all-generated`, { reportId })
+    }
+
+    //doesnt work yet, todo
+    requestReportGeneration = async reportId => {
+        return this.apiCall(`/reports/request-creation`, { reportId })
+    }
 }
