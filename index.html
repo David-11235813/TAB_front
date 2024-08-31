@@ -188,21 +188,17 @@
             //    })
 
             API.login(isStudent, email, password)
-                .then(data => {
+                .then(response => {
                 if (isStudent === 1) { // If the user is a student
                     window.location.href = 'student.html';
                 } else if (isStudent === 0) {
                     window.location.href = 'librarian.html';
-                    //console.log("Librarian logged in.");
                 }
                 }).catch(err => {
                     console.error("Login failed:", err);
                     document.write("Login failed.");
                 });
 
-
-            //var out = "42";
-            //document.write(response);
         }
 
         //deprecated:

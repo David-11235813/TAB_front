@@ -115,7 +115,7 @@ export default class FrontEndAPI {
     }
 
     //Authors
-    //X BookItems - troubleshoot
+    //BookItems
     //Books
     //Borrowings
     //Fees
@@ -130,7 +130,7 @@ export default class FrontEndAPI {
 
     //ok
     getCurrentUser = async () => {
-        return (await this.apiCall(`/user/current-user`, {})).data
+        return (await this.apiCall(`/user/current-user`, {}))
     }
 
     //doesnt work yet, todo

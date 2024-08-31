@@ -9,7 +9,7 @@
 
 <body>
     <div class="content">
-        <h1>Manage Students</h1>
+        <h1 id="h">Manage Students</h1>
 
         <div class="students-list">
             <table id="studentsTable" class="internal-table">
@@ -78,7 +78,7 @@
                 .then(response => {
 
                     var inside = '';
-                    response.data.forEach(student => {
+                    response.data.items.forEach(student => {
                         inside += `
                             <tr data-id="${student.id}">
                                 <td>${student.id}</td>
@@ -92,6 +92,7 @@
                         `;
                     });
                     document.getElementById("studentsContents").innerHTML = inside;
+                    document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
 
 
                 }).catch(err => {
