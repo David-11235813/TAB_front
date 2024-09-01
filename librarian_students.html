@@ -18,8 +18,8 @@
                         <th>Student ID</th>
                         <th>Name</th>
                         <th>Surname</th>
-                        <th>Birth Date</th>
-                        <th>Added</th>
+                        <th width="15%">Birth Date</th>
+                        <th width="15%">Added</th>
                         <th>Class ID:</th>
                         <th>email</th>
                     </tr>
@@ -42,8 +42,9 @@
 
         <div class="buttons">
             <button id="removeStudentBtn">Remove Student Account</button>
+            <button id="updateStudentBtn">Edit Student Account</button>
             <button id="applyFineBtn">Apply Fine for Breaking Rules</button>
-            <button id="emailStudentBtn">Email Student</button>
+            <button id="addStudentBtn">Add new Student Account</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -74,35 +75,46 @@
 
         function populate_students() {
 
-            API.getMany("Students", {}, [0, 0])
-                .then(response => {
+            API.getMany("Students", {}, [0, 0]).then(response => {
 
-                    var inside = '';
-                    response.data.items.forEach(student => {
-                        inside += `
-                            <tr data-id="${student.id}">
+                var inside = '';
+                response.data.items.forEach(student => {
+                    inside += `
+                            <tr id="student_${student.id}">
                                 <td>${student.id}</td>
                                 <td>${student.name}</td>
                                 <td>${student.surname}</td>
                                 <td>${student.birthDate}</td>
                                 <td>${student.addedDate}</td>
                                 <td>${student.classId}</td>
-                                <td>${student.email}</td>
+                                <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
                             </tr>
                         `;
-                    });
-                    document.getElementById("studentsContents").innerHTML = inside;
-                    document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
-
-
-                }).catch(err => {
-                    console.error("Students fetch failed:", err);
-                    document.write("Students couldn't load.");
                 });
-        }
+                document.getElementById("studentsContents").innerHTML = inside;
+                document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
 
+            }).catch(err => {
+                console.error("Students fetch failed:", err);
+                document.write("Students couldn't load.");
+            });
+        }
         window.onload = populate_students;
         window.populate_students = populate_students;
+
+        //add details about reserved and borrowed books
+
+        function email_hyperlink(email) {
+            var subject = "Saegar Library librarian email"; // Subject of the email
+            var body = "Hello, I'm one of the librarians of Saegar Library.\n\n\n"; // Body of the email
+
+            var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailtoLink;
+        }
+        window.email_hyperlink = email_hyperlink;
+
+
     </script>
 
 
