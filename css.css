@@ -353,7 +353,7 @@ li {
 .borrowed-books {
     width: 50%;
     height: 90%;
-    max-height: 340px;
+    height: 340px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;
@@ -363,7 +363,7 @@ li {
 .available-books {
     width: 50%;
     height: 90%;
-    max-height: 340px;
+    height: 340px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;
