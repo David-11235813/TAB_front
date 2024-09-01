@@ -15,15 +15,17 @@
             <table id="bookItemsTable" class="internal-table">
                 <thead>
                     <tr>
-                        <th width="5%">ID</th>
-                        <th width="10%">ISBN</th>
-                        <th width="15%">Author</th>
+                        <th width="3%">id</th>
+                        <th width="5%">ean</th>
+                        <th width="5%">ISBN</th>
                         <th width="25%">Title</th>
-                        <th width="20%">Category</th>
-                        <th>Status</th>
+                        <th width="10%">Lang id</th>
+                        <th width="10%">Location id</th>
+                        <th width="30%">Remarks</th>
+                        <th>Borrowed?</th>
                     </tr>
                 </thead>
-                <tbody id="booksContents">
+                <tbody id="bookItemsContents">
                         
                 </tbody>
             </table>
@@ -36,6 +38,8 @@
             <div id="slot4" contenteditable="true"></div>
             <div id="slot5" contenteditable="true"></div>
             <div id="slot6" contenteditable="true"></div>
+            <div id="slot7" contenteditable="true"></div>
+            <div id="slot8" contenteditable="true"></div>
         </div>
 
         <div class="buttons">
@@ -87,36 +91,37 @@
         import FrontEndAPI from './API.js';
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
-        function populate_books() {
+        function populate_book_items() {
 
-            API.getMany("Books", {}, [0, 0])
+            API.getMany("BookItems", {}, [0, 0])
                 .then(response => {
 
                     var inside = '';
-                    response.data.items.forEach(book => {
+                    response.data.items.forEach(bItem => {
                         inside += `
-                        <tr data-id="${book.id}">
-	                        <td>${book.id}</td>
-	                        <td>isbn</td>
-	                        <td>author</td>
-	                        <td>${book.title}</td>
-	                        <td>category</td>
-	                        <td>?In possession</td>
+                        <tr data-id="${bItem.ean}">
+	                        <td>${bItem.book_id}</td>
+	                        <td>${bItem.ean}</td>
+	                        <td>${bItem.ISBN}</td>
+	                        <td>${bItem.book_title}</td>
+	                        <td>${bItem.language_id}</td>
+	                        <td>${bItem.location_id}</td>
+	                        <td>${bItem.remarks}</td>
+	                        <td>${bItem.isBorrowed}</td>
                         </tr>
                     `;
                     });
-                    document.getElementById("booksContents").innerHTML = inside;
-                    document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " titles registered)";
-
+                    document.getElementById("bookItemsContents").innerHTML = inside;
+                    document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " items registered)";
 
                 }).catch(err => {
-                    console.error("Books fetch failed:", err);
-                    document.write("Books couldn't load.");
+                    console.error("BookItems fetch failed:", err);
+                    document.write("BookItems couldn't load.");
                 });
         }
 
-        window.onload = populate_books;
-        window.populate_books = populate_books;
+        window.onload = populate_book_items;
+        window.populate_book_items = populate_book_items;
     </script>
 
 

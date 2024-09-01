@@ -278,7 +278,7 @@ ul
 .books-list,
 .students-list {
     margin: 20px auto;
-    width: 90%;
+    width: 95%;
     border: 1px solid #ccc;
     padding: 20px;
     max-height: 340px;
@@ -325,7 +325,7 @@ li {
 .editable {
     display: flex;
     justify-content: space-between;
-    margin: 20px 10%;
+    margin: 20px 5%;
     gap: 10px;
 }
 
@@ -353,6 +353,7 @@ li {
 .borrowed-books {
     width: 50%;
     height: 90%;
+    max-height: 340px;
     border: 1px solid #ccc;
     padding: 20px;
     overflow-y: auto;
@@ -362,6 +363,7 @@ li {
 .available-books {
     width: 50%;
     height: 90%;
+    max-height: 340px;
     border: 1px solid #ccc;
     padding: 20px;
     overflow-y: auto;
@@ -369,4 +371,12 @@ li {
 
 h1, h2 {
     color: #333;
+}
+
+
+th {
+    background-color: lightslategray;
+}
+tr:nth-child(even) {
+    background-color: lightslategray;
 }
