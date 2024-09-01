@@ -355,7 +355,7 @@ li {
     height: 90%;
     max-height: 340px;
     border: 1px solid #ccc;
-    padding: 20px;
+    padding: 5px;
     overflow-y: auto;
     float: left;
 }
@@ -365,7 +365,7 @@ li {
     height: 90%;
     max-height: 340px;
     border: 1px solid #ccc;
-    padding: 20px;
+    padding: 5px;
     overflow-y: auto;
 }
 
