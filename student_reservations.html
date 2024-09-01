@@ -154,7 +154,7 @@
                             let inside = ''; //here is code that gets inserted into your borrowings
                             response.data.items.forEach(borrowing => {
                                 inside += `
-                            <tr id="mybook_${borrowing.bookItemEan}">
+                            <tr id="mybook_{book_id}_${borrowing.bookItemEan}">
                                 <td>${borrowing.bookItemEan}</td>
                                 <td>${borrowing.bookItemEan}</td>
                                 <td>${borrowing.bookItemEan}</td>
