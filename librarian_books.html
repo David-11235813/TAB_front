@@ -33,20 +33,25 @@
         </div>
 
         <div class="editable">
-            <div id="slot1" contenteditable="true"></div>
-            <div id="slot2" contenteditable="true"></div>
-            <div id="slot3" contenteditable="true"></div>
+            <div id="slot1" contenteditable="true" style="max-width: 65px;"></div>
+            <div id="slot2" contenteditable="true" style="max-width: 65px;"></div>
+            <div id="slot3" contenteditable="true" style="max-width: 160px;"></div>
             <div id="slot4" contenteditable="true"></div>
-            <div id="slot5" contenteditable="true"></div>
-            <div id="slot6" contenteditable="true"></div>
+            <div id="slot5" contenteditable="true" style="max-width: 50px;"></div>
+            <div id="slot6" contenteditable="true" style="max-width: 50px;"></div>
             <div id="slot7" contenteditable="true"></div>
-            <div id="slot8" contenteditable="true"></div>
+            <div id="slot8" contenteditable="true" style="max-width: 70px;"></div>
+
+            <div style="all: unset; max-width:10px;">
+                <button class=smallButton onclick="clearSlots()">clear</button>
+            </div>
         </div>
 
+
         <div class="buttons">
-            <button id="addBookBtn" class="bottomleft1">Add Book</button>
-            <button id="modifyBookBtn" class="bottomleft2">Modify Book</button>
-            <button id="removeBookBtn" class="bottomleft3">Remove Book</button>
+            <button onclick="addNewBook()" class="bottomleft1">Add new BookItem (ignore selected)</button>
+            <button onclick="modifySelectedBook()" class="bottomleft2">Modify selected Book</button>
+            <button onclick="removeSelectedBook()" class="bottomleft3">Remove selected Book</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -87,13 +92,17 @@
 
 
 
-    <!--Scripts (populating with books)-->
+    <!--Scripts-->
     <script type="module">
         import FrontEndAPI from './API.js';
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
+
+        window.onload = populate_book_items;
+        window.populate_book_items = populate_book_items;
         function populate_book_items() {
 
+            //add info abt authors
             API.getMany("BookItems", {}, [0, 0])
                 .then(response => {
 
@@ -110,7 +119,7 @@
 	                        <td>${bItem.remarks}</td>
 	                        <td>${bItem.isBorrowed}</td>
 	                        <td>
-                                <button style="padding: 5px; width: 80px" onclick="extractBookItem('bItem_${bItem.ean}')">select</button>
+                                <button class="smallButton" id="bItem_${bItem.ean}_button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
                             </td>
                         </tr>
                     `;
@@ -123,21 +132,70 @@
                     document.write("BookItems couldn't load.");
                 });
         }
-        window.onload = populate_book_items;
-        window.populate_book_items = populate_book_items;
 
 
-        function extractBookItem(row_id) {
-            let row = document.getElementById(row_id);
+        let selected_row_id = "";
+
+        window.selectBookItem = selectBookItem;
+        function selectBookItem(row_id) {
+
+            //unselect the chosen row (leave editable divs intact)
+            if (selected_row_id === row_id) {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+                selected_row_id = "";
+                return;
+            }
+
+            //unselect the previous row
+            if (selected_row_id != "") {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+            }
+
+            selected_row_id = row_id;
+
+            //get row data
+            let row = document.getElementById(selected_row_id);
             let cells = row.children;
             let cellsAlt = row.querySelectorAll('td');
 
+            //paste data from row into editable slots
             for (let i = 1; i <= 8; i++) {
                 document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
             }
-        }
-        window.extractBookItem = extractBookItem;
 
+            //highlight selected row and change button appearence
+            document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
+        }
+
+
+        window.clearSlots = clearSlots;
+        function clearSlots() {
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById("slot" + i).innerHTML = "";
+            }
+        }
+
+
+        window.addNewBook = addNewBook;
+        function addNewBook() {
+
+        }
+
+        window.modifySelectedBook = modifySelectedBook;
+        function modifySelectedBook() {
+
+        }
+
+        window.removeSelectedBook = removeSelectedBook;
+        function removeSelectedBook() {
+            //no checks required (just toast ok/cancel); need to implement removing only
+        }
 
     </script>
 

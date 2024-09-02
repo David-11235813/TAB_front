@@ -32,28 +32,32 @@
         </div>
 
         <div class="editable">
-            <div id="slot1" contenteditable="true"></div>
-            <div id="slot2" contenteditable="true"></div>
-            <div id="slot3" contenteditable="true"></div>
+            <div id="slot1" contenteditable="true" style="max-width: 65px;"></div>
+            <div id="slot2" contenteditable="true" style="max-width: 150px;"></div>
+            <div id="slot3" contenteditable="true" style="max-width: 180px;"></div>
             <div id="slot4" contenteditable="true"></div>
             <div id="slot5" contenteditable="true"></div>
-            <div id="slot6" contenteditable="true"></div>
-            <div id="slot7" contenteditable="true"></div>
+            <div id="slot6" contenteditable="true" style="max-width: 50px;"></div>
+            <div id="slot7" contenteditable="true" style="max-width: 250px;"></div>
+
+            <div style="all: unset; max-width:10px;">
+                <button class=smallButton onclick="clearSlots()">clear</button>
+            </div>
         </div>
 
         <div class="buttons">
-            <button id="removeStudentBtn">Remove Student Account</button>
-            <button id="updateStudentBtn">Edit Student Account</button>
-            <button id="applyFineBtn">Apply Fine for Breaking Rules</button>
-            <button id="addStudentBtn">Add new Student Account</button>
+            <button onclick="addNewStudent()" class="bottomleft1">Add new Student (ignore selected)</button>
+            <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
+            <button onclick="removeSelectedStudent()" class="bottomleft3">Remove selected Student account</button>
+            <button onclick="document.getElementById('studentModal').style.display='block'">Manage selected Student</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
 
-    <!-- Apply Fine Modal -->
-    <div id="fineModal" class="modal">
+    <!-- Manage reservations/borrowings -->
+    <div id="studentModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span onclick="document.getElementById('studentModal').style.display='none'" class="close" title="Close Form">&times;</span>
             <h2>Apply Fine</h2>
             <form id="fineForm">
                 <div class="form-group">
@@ -69,11 +73,14 @@
 
 
 
-    <!--Scripts (populating with books)-->
+    <!--Scripts-->
     <script type="module">
         import FrontEndAPI from './API.js';
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
+
+        window.onload = populate_students;
+        window.populate_students = populate_students;
         function populate_students() {
         //add details about reserved and borrowed books
 
@@ -90,8 +97,8 @@
                                 <td>${student.addedDate}</td>
                                 <td>${student.classId}</td>
                                 <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
-                                <td>
-                                    <button style="padding: 5px; width: 80px" onclick="extractStudent('student_${student.id}')">select</button>
+	                            <td>
+                                    <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
                                 </td>
                             </tr>
                         `;
@@ -104,10 +111,9 @@
                 document.write("Students couldn't load.");
             });
         }
-        window.onload = populate_students;
-        window.populate_students = populate_students;
 
 
+        window.email_hyperlink = email_hyperlink;
         function email_hyperlink(email) {
             var subject = "Saegar Library librarian email"; // Subject of the email
             var body = "Hello, I'm one of the librarians of Saegar Library.\n\n\n"; // Body of the email
@@ -116,18 +122,70 @@
 
             window.location.href = mailtoLink;
         }
-        window.email_hyperlink = email_hyperlink;
 
-        function extractStudent(row_id) {
-            let row = document.getElementById(row_id);
+
+        let selected_row_id = "";
+
+        window.selectStudent = selectStudent
+        function selectStudent(row_id) {
+
+            //unselect the chosen row (leave editable divs intact)
+            if (selected_row_id === row_id) {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+                selected_row_id = "";
+                return;
+            }
+
+            //unselect the previous row
+            if (selected_row_id != "") {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+            }
+
+            selected_row_id = row_id;
+
+            //get row data
+            let row = document.getElementById(selected_row_id);
             let cells = row.children;
             let cellsAlt = row.querySelectorAll('td');
 
+            //paste data from row into editable slots
             for (let i = 1; i <= 7; i++) {
                 document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
             }
+
+            //highlight selected row and change button appearence
+            document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
         }
-        window.extractStudent = extractStudent
+
+
+        window.clearSlots = clearSlots;
+        function clearSlots() {
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById("slot" + i).innerHTML = "";
+            }
+        }
+
+
+        window.addNewStudent = addNewStudent;
+        function addNewStudent() {
+
+        }
+
+        window.modifySelectedStudent = modifySelectedStudent;
+        function modifySelectedStudent() {
+
+        }
+
+        window.removeSelectedStudent = removeSelectedStudent;
+        function removeSelectedStudent() {
+            //no checks required (just toast ok/cancel); need to implement removing only
+        }
 
     </script>
 

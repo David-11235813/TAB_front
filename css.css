@@ -48,10 +48,39 @@ button
     padding: 10px 20px;
 }
 
+.smallButton {
+    font-size: 18px;
+    color: var(--aux-text-color);
+    background-color: darkolivegreen;
+    border-radius: 10em;
+    border-color: var(--main-border-color);
+    border-width: 2px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    transition: background-color 0.5s;
+    padding: 5px;
+}
+
+.smallRedButton {
+    font-size: 18px;
+    color: var(--aux-text-color);
+    background-color: darkred;
+    border-radius: 10em;
+    border-color: var(--main-border-color);
+    border-width: 2px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 5px;
+}
+
+
 .buttons {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 7px;
     margin-top: 20px;
 }
 
