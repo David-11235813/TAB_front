@@ -22,6 +22,7 @@
                         <th width="15%">Added</th>
                         <th>Class ID:</th>
                         <th>email</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="studentsContents">
@@ -74,6 +75,7 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
         function populate_students() {
+        //add details about reserved and borrowed books
 
             API.getMany("Students", {}, [0, 0]).then(response => {
 
@@ -88,6 +90,9 @@
                                 <td>${student.addedDate}</td>
                                 <td>${student.classId}</td>
                                 <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
+                                <td>
+                                    <button style="padding: 5px; width: 80px" onclick="extractStudent('student_${student.id}')">select</button>
+                                </td>
                             </tr>
                         `;
                 });
@@ -102,7 +107,6 @@
         window.onload = populate_students;
         window.populate_students = populate_students;
 
-        //add details about reserved and borrowed books
 
         function email_hyperlink(email) {
             var subject = "Saegar Library librarian email"; // Subject of the email
@@ -114,6 +118,16 @@
         }
         window.email_hyperlink = email_hyperlink;
 
+        function extractStudent(row_id) {
+            let row = document.getElementById(row_id);
+            let cells = row.children;
+            let cellsAlt = row.querySelectorAll('td');
+
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
+            }
+        }
+        window.extractStudent = extractStudent
 
     </script>
 

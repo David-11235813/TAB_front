@@ -17,12 +17,13 @@
                     <tr>
                         <th width="3%">id</th>
                         <th width="5%">ean</th>
-                        <th width="5%">ISBN</th>
+                        <th width="10%">ISBN</th>
                         <th width="25%">Title</th>
-                        <th width="10%">Lang id</th>
-                        <th width="10%">Location id</th>
-                        <th width="30%">Remarks</th>
-                        <th>Borrowed?</th>
+                        <th width="5%">Lang id</th>
+                        <th width="5%">Location id</th>
+                        <th width="20%">Remarks</th>
+                        <th width="8%">Borrowed?</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="bookItemsContents">
@@ -99,7 +100,7 @@
                     var inside = '';
                     response.data.items.forEach(bItem => {
                         inside += `
-                        <tr data-id="${bItem.ean}">
+                        <tr id="bItem_${bItem.ean}">
 	                        <td>${bItem.book_id}</td>
 	                        <td>${bItem.ean}</td>
 	                        <td>${bItem.ISBN}</td>
@@ -108,6 +109,9 @@
 	                        <td>${bItem.location_id}</td>
 	                        <td>${bItem.remarks}</td>
 	                        <td>${bItem.isBorrowed}</td>
+	                        <td>
+                                <button style="padding: 5px; width: 80px" onclick="extractBookItem('bItem_${bItem.ean}')">select</button>
+                            </td>
                         </tr>
                     `;
                     });
@@ -119,9 +123,22 @@
                     document.write("BookItems couldn't load.");
                 });
         }
-
         window.onload = populate_book_items;
         window.populate_book_items = populate_book_items;
+
+
+        function extractBookItem(row_id) {
+            let row = document.getElementById(row_id);
+            let cells = row.children;
+            let cellsAlt = row.querySelectorAll('td');
+
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
+            }
+        }
+        window.extractBookItem = extractBookItem;
+
+
     </script>
 
 
