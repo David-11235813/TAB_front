@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Allura&family=Lato&display=swap');
 
-:root
-{
+:root {
     --main-color: #ffffff;
     --main-color-shaded: #dddddd;
     --aux-color: #55215f;
@@ -12,13 +11,11 @@
     --main-background-color: #dc00f0;
 }
 
-*
-{
+* {
     box-sizing: border-box;
 }
 
-body
-{
+body {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     margin: 0px;
@@ -27,14 +24,12 @@ body
     background-color: slategray;
 }
 
-a
-{
+a {
     color: var(--aux-color);
     text-decoration: none;
 }
 
-button
-{
+button {
     font-size: 18px;
     color: var(--aux-text-color);
     background-color: darkolivegreen;
@@ -84,14 +79,12 @@ button
     margin-top: 20px;
 }
 
-button:hover
-{
+button:hover {
     background-color: var(--aux-color-shaded);
     transition: background-color 0.5s;
 }
 
-.header
-{
+.header {
     background-color: var(--aux-color);
     color: var(--aux-text-color);
     font-size: 22px;
@@ -102,23 +95,20 @@ button:hover
     align-items: center;
     justify-content: center;
     border-radius: 0 0 7vh 7vh;
-	box-shadow: 1px 1px 15px var(--aux-color-shaded); 
+    box-shadow: 1px 1px 15px var(--aux-color-shaded);
     width: 100%;
 }
 
-ul
-{
+ul {
     list-style-type: none;
     padding: 0px;
 }
 
-.headerPage
-{
+.headerPage {
     font-size: 16px;
 }
 
-.header-text
-{
+.header-text {
     display: inline-block;
     vertical-align: middle;
 }
@@ -129,19 +119,16 @@ ul
     margin-top: 2vh;
 }
 
-.welcome_content
-{
+.welcome_content {
     text-align: center;
 }
 
-.highlight
-{
+.highlight {
     font-weight: bold;
     font-size: 22px;
 }
 
-.login_form
-{
+.login_form {
     border-radius: 2em;
     display: flex;
     height: 25vh;
@@ -150,37 +137,32 @@ ul
     width: 60vw;
 }
 
-.centered_container
-{
+.centered_container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 
-.formBtn
-{
+.formBtn {
     width: 100%;
 }
 
-.form_fields
-{
+.form_fields {
     text-align: center;
 }
 
-.selection_box
-{
+.selection_box {
     border-radius: 2em;
     margin-top: 1em;
     border: 4px solid var(--aux-color);
-	box-shadow: 1px 1px 10px var(--aux-color-shaded); 
+    box-shadow: 1px 1px 10px var(--aux-color-shaded);
     padding: 20px;
     padding-top: 0px;
     text-align: justify;
 }
 
-.eventName
-{
+.eventName {
     font-weight: bold;
     font-size: 28px;
     margin-top: 20px;
@@ -190,8 +172,7 @@ ul
     text-align: center;
 }
 
-.eventDetail
-{
+.eventDetail {
     font-weight: bold;
     font-size: 18px;
     width: 100%;
@@ -201,40 +182,71 @@ ul
     text-align: center;
 }
 
-.eventBtn
-{
+.eventBtn {
     margin-top: 30px;
 }
 
 
-.row::after
-{
+.row::after {
     content: "";
     clear: both;
     display: table;
 }
 
-.col-1 {width: 8.33%;}
-.col-2 {width: 16.66%;}
-.col-3 {width: 25%;}
-.col-4 {width: 33.33%;}
-.col-5 {width: 41.66%;}
-.col-6 {width: 50%;}
-.col-7 {width: 58.33%;}
-.col-8 {width: 66.66%;}
-.col-9 {width: 75%;}
-.col-10 {width: 83.33%;}
-.col-11 {width: 91.66%;}
-.col-12 {width: 100%;}
+.col-1 {
+    width: 8.33%;
+}
 
-[class*="col-"]
-{
+.col-2 {
+    width: 16.66%;
+}
+
+.col-3 {
+    width: 25%;
+}
+
+.col-4 {
+    width: 33.33%;
+}
+
+.col-5 {
+    width: 41.66%;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-7 {
+    width: 58.33%;
+}
+
+.col-8 {
+    width: 66.66%;
+}
+
+.col-9 {
+    width: 75%;
+}
+
+.col-10 {
+    width: 83.33%;
+}
+
+.col-11 {
+    width: 91.66%;
+}
+
+.col-12 {
+    width: 100%;
+}
+
+[class*="col-"] {
     float: left;
     padding: 15px;
 }
 
-.nav-item
-{
+.nav-item {
     border-left: 2px solid var(--aux-color-shaded);
     text-align: center;
     display: block;
@@ -244,25 +256,21 @@ ul
     transition: background-color 0.3s ease 0s;
 }
 
-.nav-item:last-child
-{
-    border-right: 2px solid var(--aux-color-shaded);
-}
+    .nav-item:last-child {
+        border-right: 2px solid var(--aux-color-shaded);
+    }
 
-.header-content
-{
+.header-content {
     width: 80%;
 }
 
-.nav-item:hover
-{
+.nav-item:hover {
     background-color: var(--aux-color-shaded);
     transition: background-color 0.5s ease 0s;
 }
 
 /* The Modal (background) */
-.modal
-{
+.modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -278,20 +286,20 @@ ul
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 5px auto; /* 15% from the top and centered */
+    background-color: #fefefe;
+    margin: 5px auto; /* 15% from the top and centered */
 }
 
 /* The Close Button */
 .close {
-  /* Position it in the top right corner outside of the modal */
-  position: absolute;
-  right: 25px;
-  top: 0;
-  color: #000;
-  font-size: 35px;
-  font-weight: bold;
-  cursor: pointer;
+    /* Position it in the top right corner outside of the modal */
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 
@@ -328,6 +336,7 @@ li {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    max-width: 10%;
 }
 
 
@@ -337,16 +346,16 @@ li {
     margin-bottom: 15px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
 
-.form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
 
 
 
@@ -358,18 +367,18 @@ li {
     gap: 10px;
 }
 
-.editable div {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-size: 18px;
-}
+    .editable div {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-size: 18px;
+    }
 
-.editable div[contenteditable="true"] {
-    background-color: #f9f9f9;
-    cursor: text;
-}
+        .editable div[contenteditable="true"] {
+            background-color: #f9f9f9;
+            cursor: text;
+        }
 
 
 /*reservations*/
@@ -398,6 +407,40 @@ li {
     overflow-y: auto;
 }
 
+.Available {
+    background-color: slategray;
+    width: 50%;
+    height: 90%;
+    height: 340px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.Process-Book-Reservation {
+    background-color: slategray;
+    width: 50%;
+    height: 90%;
+    height: 340px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    overflow-y: auto;
+    float: left;
+}
+
+
+.Borrowings {
+    background-color: slategray;
+    width: 100%;
+    height: 40%;
+    height: 340px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    overflow-y: auto;
+    float: left;
+}
+
+
 h1, h2 {
     color: #333;
 }
@@ -406,6 +449,7 @@ h1, h2 {
 th {
     background-color: lightslategray;
 }
+
 tr:nth-child(even) {
     background-color: lightslategray;
 }

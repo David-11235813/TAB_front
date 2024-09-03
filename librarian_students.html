@@ -130,46 +130,103 @@
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
 
+
+
     <!-- Manage reservations/borrowings -->
     <div id="studentModal" class="modal">
         <div class="modal-content">
             <span onclick="document.getElementById('studentModal').style.display='none'" class="close" title="Close Form">&times;</span>
 
-            <form id="returnForm">
-                <h2>Process Book Reservation</h2>
-                <div class="reservation-info">
-                    <p><strong>Student Information:</strong> <span id="studentInfo"></span></p>
-                    <p><strong>Book to Reserve:</strong> <span id="bookInfo"></span></p>
-                    <p><strong>Reservation Status:</strong> <span id="reservationStatus"></span></p>
+            <form id="lendForm">
+                <div class="Process-Book-Reservation">
+                    <h2>Process Book Reservation</h2>
+                    <table id="Process-Book-Reservation-Table" class="internal-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">Student Information:</th>
+                                <th width="15%">Book to lend:</th>
+                                <th width="10%">Reservation Status:</th>
+                                <th width="25%">Confirm lending</th>
+                                <th width="35%">Cancel lending</th>
+                                <th width="10%">Something else:</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ProcessBookReservation">
+                            <!-- Reserved books will be populated here -->
+                            <tr data-id="1000">
+                                <td>Jan Kowalski</td>
+                                <td>Tasty plastic glass</td>
+                                <td>In process</td>
+                                <td><button id="processReservationBtn" onclick="processReservation()">OK</button></td>
+                                <td><button onclick="cancelReservation()">Cancel</button></td>
+                                <td>Test</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="reservation-buttons">
-                    <button id="processReservationBtn" onclick="processReservation()">OK</button>
-                    <button onclick="cancelReservation()">Cancel</button>
+                <div class="Available">
+                    <h2 id="h_available">Available BookItems</h2>
+                    <table id="Available-Book-Table" class="internal-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">id</th>
+                                <th width="25%">Title</th>
+                                <th width="15%">Author</th>
+                                <th width="20%">Category</th>
+                                <th width="10%">Languages</th>
+                                <th width="10%">Status</th>
+                                <th width="5%">something</th>
+                                <th width="10%">else</th>
+                            </tr>
+                        </thead>
+                        <tbody id="AvailableBooks">
+                            <tr data-id="1000">
+                                <td>1000</td>
+                                <td>123456789</td>
+                                <td>J.K. Rowling</td>
+                                <td>Harry Potter and the Sorcerer's Stone</td>
+                                <td>Fantasy</td>
+                                <td>Available</td>
+                                <td>Test</td>
+                                <td>Test2</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </form>
 
-            <br><br><br><br>
-
-            <form id="returnForm">
-                <h2>Process Book Return</h2>
-                <div class="return-info">
-                    <p><strong>Book to Return:</strong> <span id="bookReturnInfo"></span></p>
-                    <label for="confirmReturn">
-                        <input type="checkbox" id="confirmReturn"> Confirm Return
-                    </label>
-                </div>
-                <div class="return-buttons">
-                    <button id="processReturnBtn" onclick="processBookReturn()">OK</button>
-                </div>
-
-                <h2>Apply Fine</h2>
-                <div class="form-group">
-                    <label for="fineAmount">Fine Amount</label>
-                    <input type="number" id="fineAmount" name="fineAmount" required>
-                </div>
-                <button type="submit">Apply Fine</button>
-            </form>
+            <div class="Borrowings">
+                <h2>Borrowed books</h2>
+                <form id="borrowForm">
+                    <table id="Borrowing-Book-Reservation-Table" class="internal-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">id</th>
+                                <th width="25%">Title</th>
+                                <th width="15%">Author</th>
+                                <th width="20%">Category</th>
+                                <th width="10%">Languages</th>
+                            </tr>
+                        </thead>
+                        <tbody id="BorrowedBookReservation">
+                            <tr data-id="1000">
+                                <td>1000</td>
+                                <td>123456789</td>
+                                <td>J.K. Rowling</td>
+                                <td>Harry Potter and the Sorcerer's Stone</td>
+                                <td>Fantasy</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h2>Apply Fine?</h2>
+                    <div class="form-group">
+                        <label for="fineAmount">Fine Amount</label>
+                        <input type="number" id="fineAmount" name="fineAmount" style="max-width:10%" required />
+                        <button type="submit">Conclude the borrowing</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -192,19 +249,19 @@
                 var inside = '';
                 response.data.items.forEach(student => {
                     inside += `
-                        <tr id="student_${student.id}">
-                            <td>${student.id}</td>
-                            <td>${student.name}</td>
-                            <td>${student.surname}</td>
-                            <td>${student.birthDate}</td>
-                            <td>${student.addedDate}</td>
-                            <td>${student.classId}</td>
-                            <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
-                            <td>
-                                <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
-                            </td>
-                        </tr>
-                    `;
+                            <tr id="student_${student.id}">
+                                <td>${student.id}</td>
+                                <td>${student.name}</td>
+                                <td>${student.surname}</td>
+                                <td>${student.birthDate}</td>
+                                <td>${student.addedDate}</td>
+                                <td>${student.classId}</td>
+                                <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
+                                <td>
+                                    <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
+                                </td>
+                            </tr>
+                        `;
                 });
                 document.getElementById("studentsContents").innerHTML = inside;
                 document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
