@@ -17,8 +17,8 @@
             </p>
             <p class="highlight">
                 <b>
-                   Regardless of the size your library is, Saegar Library SQL Database is the solution to your problems. This 
-                   simple to use database has been designed specifically to safely store all of your data, allowing you quick and easy access to them.
+                    Regardless of the size your library is, Saegar Library SQL Database is the solution to your problems. This
+                    simple to use database has been designed specifically to safely store all of your data, allowing you quick and easy access to them.
                 </b>
                 <br><br><br>
             </p>
@@ -33,14 +33,14 @@
     <!-- The Modal for Login -->
     <div id="id_1" class="modal">
         <span onclick="document.getElementById('id_1').style.display='none'" class="close" title="Close Form">&times;</span>
-        <!-- Modal Content -->
         <div class="col-2"></div>
         <div class="container col-8">
             <div class="row centered_container">
-                <form class="login_form modal-content animate" style="background-color: #55215f;">
+                <div class="login_form modal-content animate" style="background-color: #55215f;">
                     <div class="col-6 form_fields">
-<p>admin@admin.pl</p>
-                        <label><b>Email</b><br>
+                        <p>admin@admin.pl</p>
+                        <label>
+                            <b>Email</b><br>
                             <input type="text" placeholder="Enter email" name="uname" id="uname" required>
                         </label><br><br>
 
@@ -49,33 +49,34 @@
                         <button type="button" class="LoginInto" id="finalloginbtn" onclick="login_func()">Login</button>
                     </div>
                     <div class="col-6 form_fields">
-<p>zaq1@WSX</p>
-                        <label><b>Password</b><br>
+                        <p>zaq1@WSX</p>
+                        <label>
+                            <b>Password</b><br>
                             <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
                         </label><br><br>
 
-                        <label><b>User Type</b><br>
-                        <select name="userType" id="userType">
-                            <option selected value="Teacher">Teacher</option>
-                            <option value="Student">Student</option>
-                        </select>
+                        <label>
+                            <b>User Type</b><br>
+                            <select name="userType" id="userType">
+                                <option selected value="Teacher">Teacher</option>
+                                <option value="Student">Student</option>
+                            </select>
                         </label><br><br>
 
                         <div id="addLogin">Forgot password?</div>
                         <span id="forgotPasswordLink">Reset password</span><br><br>
                         <button type="button" onclick="document.getElementById('id_1').style.display='none'" class="Login_cancel"> Cancel </button>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
         <div class="col-2"></div>
     </div>
 
     <!-- The Modal for Reset Password, todo -->
+    <!--
     <div id="id_reset" class="modal">
         <span onclick="document.getElementById('id_reset').style.display='none'" class="close" title="Close Form">&times;</span>
-        <!-- Modal Content -->
         <div class="col-2"></div>
         <div class="container col-8">
             <div class="row centered_container">
@@ -91,8 +92,10 @@
         </div>
         <div class="col-2"></div>
     </div>
+    -->
 
-    <!-- The Modal for Register, todo -->
+    <!-- The Modal for Register -->
+    <!--
     <div id="id_2" class="modal">
         <span onclick="document.getElementById('id_2').style.display='none'" class="close" title="Close Form">&times;</span>
         <div class="col-2"></div>
@@ -153,12 +156,10 @@
         </div>
         <div class="col-2"></div>
     </div>
+    -->
 
 
-    
-    
     <!-- Scripts -->
-    
     <!-- back-end dependant -->
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
@@ -169,9 +170,9 @@
 
         //Login Function
         function login_func() {
-            const email = document.getElementById('uname').value;           // admin@admin.pl   
+            const email = document.getElementById('uname').value;           // admin@admin.pl
             const password = document.getElementById('psw').value;          // zaq1@WSX
-            const remember = document.getElementById('remember').checked;   // 
+            const remember = document.getElementById('remember').checked;   //
             const userType = document.getElementById('userType').value;     // Librarian
 
             let isStudent = userType === "Student" ? 1 : 0;
@@ -190,11 +191,11 @@
 
             API.login(isStudent, email, password)
                 .then(response => {
-                if (isStudent === 1) { // If the user is a student
-                    window.location.href = 'student.html';
-                } else if (isStudent === 0) {
-                    window.location.href = 'librarian.html';
-                }
+                    if (isStudent === 1) { // If the user is a student
+                        window.location.href = 'student.html';
+                    } else if (isStudent === 0) {
+                        window.location.href = 'librarian.html';
+                    }
                 }).catch(err => {
                     console.error("Login failed:", err);
                     document.write("Login failed.");

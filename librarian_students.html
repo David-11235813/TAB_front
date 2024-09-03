@@ -62,7 +62,7 @@
         <div class="modal-content">
             <span onclick="document.getElementById('studentModal').style.display='none'" class="close" title="Close Form">&times;</span>
 
-            <form id="lendForm">
+            <div id="lendForm">
                 <div class="Process-Book-Reservation">
                     <h2>Process Book Reservation</h2>
                     <table id="Process-Book-Reservation-Table" class="internal-table">
@@ -119,11 +119,11 @@
                         </tbody>
                     </table>
                 </div>
-            </form>
+            </div>
 
             <div class="Borrowings">
                 <h2>Borrowed books</h2>
-                <form id="borrowForm">
+                <div id="borrowForm">
                     <table id="Borrowing-Book-Reservation-Table" class="internal-table">
                         <thead>
                             <tr>
@@ -150,7 +150,7 @@
                         <input type="number" id="fineAmount" name="fineAmount" style="max-width:10%" required />
                         <button type="submit">Conclude the borrowing</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

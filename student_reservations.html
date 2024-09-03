@@ -12,74 +12,76 @@
         <h1>Reserve Books</h1>
 
         <div class="book-sections">
-            <form id="libraryForm">
 
-                <div class="borrowed-books">
-                    <h2 id="h_personal">Your bookItems</h2>
-                    <table id="borrowedBookItemsTable" class="internal-table">
-                        <thead>
-                            <tr>
-                                <th width="5%">id</th>
-                                <th width="25%">Title</th>
-                                <th width="15%">Author</th>
-                                <th width="15%">Category</th>
-                                <th width="10%">Languages</th>
-                                <th width="10%">ean</th>
-                                <th width="13%">Status</th>
-                                <th>Unreserve?</th>
-                            </tr>
-                        </thead>
-                        <tbody id="borrowedBooksContents">
-                            <!-- Borrowed books will be populated here -->
-                            <tr data-id="1000">
-                                <td>1000</td>
-                                <td>123456789</td>
-                                <td>J.K. Rowling</td>
-                                <td>Harry Potter and the Sorcerer's Stone</td>
-                                <td>Fantasy</td>
-                                <td>In possession</td>
-                                <td>-</td>
-                            </tr>
-                            <tr data-id="2000">
-                                <td>2000</td>
-                                <td>123456783</td>
-                                <td>George Orwell</td>
-                                <td>1984</td>
-                                <td>Dystopian</td>
-                                <td>Reserved</td>
-                                <td>
-                                    <label><input type="checkbox">Cancel Reservation</label>
-                                </td>
-                            </tr>
-                            <tr data-id="3000">
-                                <td>3000</td>
-                                <td>234567890</td>
-                                <td>J.R.R. Tolkien</td>
-                                <td>Hobbit</td>
-                                <td>Fantasy</td>
-                                <td>In possession</td>
-                                <td>-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="borrowed-books">
+                <h2 id="h_personal">Your bookItems:</h2>
+                <table id="reservationsBorrowingsTable" class="internal-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">id</th>
+                            <th width="25%">Title</th>
+                            <th width="15%">Author</th>
+                            <th width="15%">Category</th>
+                            <th width="10%">Languages</th>
+                            <th width="10%">ean</th>
+                            <th width="13%">Status</th>
+                            <th>Cancel?</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBorrowingsContents">
+                        <!-- Borrowed books will be populated here -->
+                        <!--
+                        <tr data-id="1000">
+                            <td>1000</td>
+                            <td>123456789</td>
+                            <td>J.K. Rowling</td>
+                            <td>Harry Potter and the Sorcerer's Stone</td>
+                            <td>Fantasy</td>
+                            <td>In possession</td>
+                            <td>-</td>
+                        </tr>
+                        <tr data-id="2000">
+                            <td>2000</td>
+                            <td>123456783</td>
+                            <td>George Orwell</td>
+                            <td>1984</td>
+                            <td>Dystopian</td>
+                            <td>Reserved</td>
+                            <td>
+                                <label><input type="checkbox">Cancel Reservation</label>
+                            </td>
+                        </tr>
+                        <tr data-id="3000">
+                            <td>3000</td>
+                            <td>234567890</td>
+                            <td>J.R.R. Tolkien</td>
+                            <td>Hobbit</td>
+                            <td>Fantasy</td>
+                            <td>In possession</td>
+                            <td>-</td>
+                        </tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
 
-                <div class="available-books">
-                    <h2 id="h_available">Available Books</h2>
-                    <table id="availableBooksTable" class="internal-table">
-                        <thead>
-                            <tr>
-                                <th width="5%">id</th>
-                                <th width="25%">Title</th>
-                                <th width="15%">Author</th>
-                                <th width="20%">Category</th>
-                                <th width="10%">Languages</th>
-                                <th width="13%">Status</th>
-                                <th>Reserve?</th>
-                            </tr>
-                        </thead>
-                        <tbody id="availableBooksContents">
-                            <!-- Available books will be populated here -->
+            <div class="available-books">
+                <h2 id="h_available">Available Books</h2>
+                <table id="availableBooksTable" class="internal-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">id</th>
+                            <th width="25%">Title</th>
+                            <th width="15%">Author</th>
+                            <th width="20%">Category</th>
+                            <th width="10%">Languages</th>
+                            <th width="13%">Status</th>
+                            <th>Reserve?</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availableBooksContents">
+                        <!-- Available books will be populated here -->
+                        <!--
                             <tr data-id="1000">
                                 <td>1000</td>
                                 <td>123456789</td>
@@ -113,12 +115,12 @@
                                     <label><input type="checkbox" disabled>Reserve</label>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
+                            -->
+                    </tbody>
+                </table>
+            </div>
 
-                <button type="submit" id="reserveBooksBtn">Save</button>
-            </form>
+            <button onclick="changeReservations()">Save</button>
         </div>
 
     </div>
@@ -126,26 +128,25 @@
 
 
 
-    <!--Scripts (populating with books)-->
+    <!--Scripts-->
     <script type="module">
         import FrontEndAPI from './API.js';
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
-        function populate_books() {
-            //try {
-                populate_your_BookItems();
-                populate_available_Books();
-            //} catch {
-            //    console.error("Books fetch failed:", err);
-            //    document.write("Books couldn't load.");
-            //}
-        }
-
         window.onload = populate_books;
         window.populate_books = populate_books;
+        function populate_books() {
+            try {
+                populate_your_ReservationsBorrowings();
+                populate_available_Books();
+            } catch {
+                console.error("Books fetch failed:", err);
+                document.write("Books couldn't load.");
+            }
+        }
 
 
-        function populate_your_BookItems() {
+        function populate_your_ReservationsBorrowings() {
 
             let inside = '';
 
@@ -164,49 +165,48 @@
                             <td>?category</td>
                             <td>?languages</td>
                             <td>${borrowing.bookItemEan}</td>
-                            <td>In possession since ${borrowing.borrowingDate}</td>
+                            <td>In possession since: ${formatDate(borrowing.borrowingDate)}</td>
                             <td>-</td>
                         </tr>
                         `;
                     });
 
-                    //document.getElementById("h_personal").innerHTML += " (" + response.data.totalAmount + " positions)";
+                    document.getElementById("h_personal").innerHTML += (" " + response.data.totalAmount + " borrowed;");
+                    document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+
                 }).catch(err => {
                     console.error("Borrowings fetch failed:", err);
                     document.write("Borrowings couldn't load.");
                 });
 
                 //add reservations onto page
-            //    API.getMany("Reservations", { studentId: student.id }, [0, 0]).then(response => {
-            //        //response = all reservations of student
-            //        response.data.items.forEach(reservation => {
-            //            inside += `
-            //                <tr id="mybook_${reservation.bookId}">
-            //                    <td>${reservation.bookId}</td>
-            //                    <td>?title</td>
-            //                    <td>?author</td>
-            //                    <td>?category</td>
-            //                    <td>?languages</td>
-            //                    <td>-</td>
-            //                    <td>Reserved since ${reservation.date}</td>
-            //                    <td><label id="${reservation.id}"><input type="checkbox">Cancel</label></td>
-            //                </tr>
-            //                `;
-            //        });
-            //
-            //        //document.getElementById("h_personal").innerHTML += " (" + response.data.totalAmount + " positions)";
-            //    }).catch(err => {
-            //        console.error("Reservations fetch failed:", err);
-            //        document.write("Reservations couldn't load.");
-            //    });
+                API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(response => {
+                    //response = all reservations of student
+                    response.data.items.forEach(reservation => {
+                        inside += `
+                            <tr id="mybook_${reservation.bookId}">
+                                <td>${reservation.bookId}</td>
+                                <td>?title</td>
+                                <td>?author</td>
+                                <td>?category</td>
+                                <td>?languages</td>
+                                <td>-</td>
+                                <td>Reserved since: ${formatDate(reservation.date)}</td>
+                                <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                            </tr>
+                            `;
+                    });
+                    document.getElementById("h_personal").innerHTML += (" " + response.data.totalAmount + " reserved;");
+                    document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                }).catch(err => {
+                    console.error("Reservations fetch failed:", err);
+                    document.write("Reservations couldn't load.");
+                });
             
             });
-
-            document.getElementById("borrowedBooksContents").innerHTML = inside;
-
         }
 
-        //can't populate rest of fields until getMany BookItems (book_id) is fixed
+        //todo
         function populate_available_Books() {
             API.getMany("Books", {}, [0, 0])
                 .then(response => {
@@ -221,7 +221,7 @@
                                 <td>?category</td>
                                 <td>?lang</td>
                                 <td>?status</td>
-                                <td><input type="checkbox" id="title_${book.id}"></td>
+                                <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
                             </tr>
                         `;
                     });
@@ -235,7 +235,77 @@
         }
 
 
+        window.changeReservations = changeReservations;
+        function changeReservations() {
+            try {
+                cancelReservations();
+                makeReservations();
+            } catch {
+                console.error("Reservations change failed:", err);
+                document.write("Reservations change failed.");
+            }
 
+        }
+
+        //todo
+        function cancelReservations() {
+            var cancelCheckboxes = document.getElementsByName('cancelReservation_checkbox');
+            var cancelCheckboxesChecked = [];
+
+            for (var checkboxCancel of cancelCheckboxes) {
+                if (checkboxCancel.checked)
+                    cancelCheckboxesChecked.push(checkboxCancel); //construct array of checked
+            }
+
+            if (!(cancelCheckboxesChecked.length > 0)) return;
+
+            document.write(cancelCheckboxesChecked.length);
+
+            //cancel chosen reservations
+            for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
+
+                API.cancelReservation(Number(checkboxCancel.value)).then(response => { //?
+                    //document.body.append("rezerwacja usunieta || ");
+                }).catch(err => {
+                    console.error("Reservation cancel with id " + checkboxCancel.value + " failed:", err);
+                    document.write("Reservation cancel with id " + checkboxCancel.value + " failed:");
+                });
+            }
+
+        }
+
+        function makeReservations() {
+            var reserveCheckboxes = document.getElementsByName('reserveBook_checkbox');
+            var reserveCheckboxesChecked = [];
+
+            for (var checkboxReserve of reserveCheckboxes) {
+                if (checkboxReserve.checked)
+                    reserveCheckboxesChecked.push(checkboxReserve); //construct array of checked
+            }
+
+            if (!(reserveCheckboxesChecked.length > 0)) return;
+
+            //make reservations
+            API.getCurrentUser().then(student => {
+
+                for (var checkboxReserve of reserveCheckboxesChecked) { //go through all checked and make reservations
+
+                    API.reserveBook(student.id, Number(checkboxReserve.value)).then(response => { //?
+                        //document.body.append("rezerwacja udana || ");
+                    }).catch(err => {
+                        console.error("Reservation of book id " + checkboxReserve.value + " failed:", err);
+                        document.write("Reservation of book id " + checkboxReserve.value + " failed:");
+                    });
+                }
+            });
+        }
+
+
+
+
+        function formatDate(date) {
+            return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+        }
 
     </script>
 
