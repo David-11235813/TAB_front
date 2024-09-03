@@ -49,9 +49,9 @@
 
 
         <div class="buttons">
-            <button onclick="addNewBook()" class="bottomleft1">Add new BookItem (ignore selected)</button>
-            <button onclick="modifySelectedBook()" class="bottomleft2">Modify selected Book</button>
-            <button onclick="removeSelectedBook()" class="bottomleft3">Remove selected Book</button>
+            <button onclick="addNewBookItem()" class="bottomleft1">Add new BookItem (ignore selected)</button>
+            <button onclick="modifySelectedBookItem()" class="bottomleft2">Modify selected Book</button>
+            <button onclick="removeSelectedBookItem()" class="bottomleft3">Remove selected Book</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -181,19 +181,19 @@
             }
         }
 
-
+        //todo 3 vvv
         window.addNewBook = addNewBook;
-        function addNewBook() {
-
+        function addNewBookItem() {
+            //needed full data from get-one BookItem
         }
 
         window.modifySelectedBook = modifySelectedBook;
-        function modifySelectedBook() {
+        function modifySelectedBookItem() {
 
         }
 
         window.removeSelectedBook = removeSelectedBook;
-        function removeSelectedBook() {
+        function removeSelectedBookItem() {
             //no checks required (just toast ok/cancel); need to implement removing only
         }
 
