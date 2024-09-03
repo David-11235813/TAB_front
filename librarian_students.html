@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <title>Manage Students</title>
@@ -8,6 +9,81 @@
 </head>
 
 <body>
+    <Style>
+        /* Flexbox container for student and reservation info */
+        .reservation-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Flexbox container for buttons */
+        .reservation-buttons {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 20px;
+        }
+
+        /* Ensure all elements within the reservation-info are properly spaced */
+        .reservation-info p {
+            flex: 1;
+            padding: 10px;
+            margin: 0;
+        }
+
+        /* Modal content layout */
+        .modal-content-reserve {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .reservation-buttons button {
+            width: 100px; /* Ensures the buttons are consistent in size */
+        }
+
+        /* Modal adjustments to ensure the content stays compact */
+        .modal-content-reserve {
+            width: 50%; /* Adjust the width as needed */
+        }
+
+        .return-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Button container for return modal */
+        .return-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Ensure spacing for return info */
+        .return-info p, .return-info label {
+            flex: 1;
+            padding: 10px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Modal content layout for return modal */
+        .modal-content-return {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%; /* Adjust the width as necessary */
+        }
+
+        /* Button styling for return modal */
+        .return-buttons button {
+            width: 100px; /* Ensures the buttons are consistent in size */
+        }
+    </Style>
     <div class="content">
         <h1 id="h">Manage Students</h1>
 
@@ -50,6 +126,8 @@
             <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
             <button onclick="removeSelectedStudent()" class="bottomleft3">Remove selected Student account</button>
             <button onclick="document.getElementById('studentModal').style.display='block'">Manage selected Student</button>
+            <button onclick="document.getElementById('reservationModal').style.display='block'">reservationModal</button>
+            <button onclick="document.getElementById('returnBookModal').style.display='block'">returnBookModal</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -71,6 +149,45 @@
 
 
 
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modalreserve">
+        <div class="modal-content-reserve">
+            <span onclick="document.getElementById('reservationModal').style.display='none'" class="close" title="Close Form">&times;</span>
+            <h2>Process Book Reservation</h2>
+
+            <div class="reservation-info">
+                <p><strong>Student Information:</strong> <span id="studentInfo"></span></p>
+                <p><strong>Book to Reserve:</strong> <span id="bookInfo"></span></p>
+                <p><strong>Reservation Status:</strong> <span id="reservationStatus"></span></p>
+            </div>
+
+            <div class="reservation-buttons">
+                <button id="processReservationBtn" onclick="processReservation()">OK</button>
+                <button onclick="cancelReservation()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Book Modal -->
+    <div id="returnBookModal" class="modalreturn">
+        <div class="modal-content-return">
+            <span onclick="document.getElementById('returnBookModal').style.display='none'" class="close" title="Close Form">&times;</span>
+            <h2>Process Book Return</h2>
+
+            <div class="return-info">
+                <p><strong>Book to Return:</strong> <span id="bookReturnInfo"></span></p>
+                <label for="confirmReturn">
+                    <input type="checkbox" id="confirmReturn"> Confirm Return
+                </label>
+            </div>
+
+            <div class="return-buttons">
+                <button id="processReturnBtn" onclick="processBookReturn()">OK</button>
+            </div>
+        </div>
+    </div>
+
+
 
 
     <!--Scripts-->
@@ -82,26 +199,26 @@
         window.onload = populate_students;
         window.populate_students = populate_students;
         function populate_students() {
-        //add details about reserved and borrowed books
+            //add details about reserved and borrowed books
 
             API.getMany("Students", {}, [0, 0]).then(response => {
 
                 var inside = '';
                 response.data.items.forEach(student => {
                     inside += `
-                            <tr id="student_${student.id}">
-                                <td>${student.id}</td>
-                                <td>${student.name}</td>
-                                <td>${student.surname}</td>
-                                <td>${student.birthDate}</td>
-                                <td>${student.addedDate}</td>
-                                <td>${student.classId}</td>
-                                <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
-	                            <td>
-                                    <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
-                                </td>
-                            </tr>
-                        `;
+                                    <tr id="student_${student.id}">
+                                        <td>${student.id}</td>
+                                        <td>${student.name}</td>
+                                        <td>${student.surname}</td>
+                                        <td>${student.birthDate}</td>
+                                        <td>${student.addedDate}</td>
+                                        <td>${student.classId}</td>
+                                        <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
+                                        <td>
+                                            <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
+                                        </td>
+                                    </tr>
+                                `;
                 });
                 document.getElementById("studentsContents").innerHTML = inside;
                 document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
