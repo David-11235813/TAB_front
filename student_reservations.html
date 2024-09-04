@@ -29,7 +29,6 @@
                         </tr>
                     </thead>
                     <tbody id="reservationsBorrowingsContents">
-                        <!-- Borrowed books will be populated here -->
                         <!--
                         <tr data-id="1000">
                             <td>1000</td>
@@ -80,7 +79,6 @@
                         </tr>
                     </thead>
                     <tbody id="availableBooksContents">
-                        <!-- Available books will be populated here -->
                         <!--
                             <tr data-id="1000">
                                 <td>1000</td>
@@ -133,19 +131,20 @@
         import FrontEndAPI from './API.js';
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
+        //done
         window.onload = populate_books;
         window.populate_books = populate_books;
         function populate_books() {
             try {
                 populate_your_ReservationsBorrowings();
                 populate_available_Books();
-            } catch {
+            } catch (err) {
                 console.error("Books fetch failed:", err);
                 document.write("Books couldn't load.");
             }
         }
 
-
+        //done
         function populate_your_ReservationsBorrowings() {
 
             let inside = '';
@@ -206,7 +205,7 @@
             });
         }
 
-        //todo
+        //TODO - print the ignored values & add info about available positions (getOne bookItem (id))
         function populate_available_Books() {
             API.getMany("Books", {}, [0, 0])
                 .then(response => {
@@ -235,19 +234,25 @@
         }
 
 
+        //TODO - implement sorting
+        function sortByColumn(column) {
+
+        }
+
+
+        //done
         window.changeReservations = changeReservations;
         function changeReservations() {
             try {
                 cancelReservations();
                 makeReservations();
-            } catch {
+            } catch (err) {
                 console.error("Reservations change failed:", err);
                 document.write("Reservations change failed.");
             }
-
         }
 
-        //todo
+        //done
         function cancelReservations() {
             var cancelCheckboxes = document.getElementsByName('cancelReservation_checkbox');
             var cancelCheckboxesChecked = [];
@@ -259,8 +264,6 @@
 
             if (!(cancelCheckboxesChecked.length > 0)) return;
 
-            //document.write(cancelCheckboxesChecked.length);
-
             //cancel chosen reservations
             for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
 
@@ -271,9 +274,9 @@
                     document.write("Reservation cancel with id " + checkboxCancel.value + " failed:");
                 });
             }
-
         }
 
+        //done
         function makeReservations() {
             var reserveCheckboxes = document.getElementsByName('reserveBook_checkbox');
             var reserveCheckboxesChecked = [];
@@ -301,8 +304,7 @@
         }
 
 
-
-
+        // dd.mm.yyyy
         function formatDate(date) {
             return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
         }
