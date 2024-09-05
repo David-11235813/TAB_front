@@ -87,6 +87,7 @@ export default class FrontEndAPI {
         return this.apiCall("/books/reserve", { studentId, bookId })
     }
 
+    //bugged but sorta ok
     cancelReservation = async reservationId => {
         return this.apiCall("/books/cancel-reservation", { reservationId })
     }
@@ -96,17 +97,17 @@ export default class FrontEndAPI {
         return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
     }
 
-    //ok
+    //needs test
     createOne = async (type, obj) => {
         return this.apiCall(`/crud/${type}/create-one`, { item: obj })
     }
 
-    //ok
+    //needs test
     deleteOne = async (type, id) => {
         return this.apiCall(`/crud/${type}/delete-one`, { id })
     }
 
-    //ok
+    //needs test
     updateOne = async (type, id, obj) => {
         return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
     }

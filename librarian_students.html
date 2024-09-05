@@ -23,6 +23,9 @@
                         <th width="15%">Added</th>
                         <th>Class ID:</th>
                         <th>email</th>
+                        <!--
+                        <th width="5%">borrowed | reserved</th>
+                        -->
                         <th></th>
                     </tr>
                 </thead>
@@ -50,7 +53,7 @@
             <button onclick="addNewStudent()" class="bottomleft1">Add new Student (ignore selected)</button>
             <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
             <button onclick="removeSelectedStudent()" class="bottomleft3">Remove selected Student account</button>
-            <button onclick="document.getElementById('studentModal').style.display='block'">Manage selected Student</button>
+            <button onclick="manageStudentBooks()" id="manageStudent" disabled>Manage selected Student</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -61,31 +64,27 @@
     <div id="studentModal" class="modal">
         <div class="modal-content">
             <span onclick="document.getElementById('studentModal').style.display='none'" class="close" title="Close Form">&times;</span>
+            
+            <div class="Student-Info">
+                <h2 id="studentData">[Student data]</h2>
+            </div>
 
             <div id="lendForm">
                 <div class="Process-Book-Reservation">
-                    <h2>Process Book Reservation</h2>
+                    <h2>Student's Book Reservations:</h2>
                     <table id="Process-Book-Reservation-Table" class="internal-table">
                         <thead>
                             <tr>
-                                <th width="15%">Student Information:</th>
-                                <th width="15%">Book to lend:</th>
-                                <th width="10%">Reservation Status:</th>
-                                <th width="25%">Confirm lending</th>
-                                <th width="35%">Cancel lending</th>
-                                <th width="10%">Something else:</th>
+                                <th width="15%">book_id</th>
+                                <th>title</th>
+                                <th width="10%">reserve id</th>
+                                <th width="25%">reserved since</th>
+                                <th width="20%">Show available</th>
+                                <th width="5%">Unreserve</th>
                             </tr>
                         </thead>
-                        <tbody id="ProcessBookReservation">
+                        <tbody id="studentReservations">
                             <!-- Reserved books will be populated here -->
-                            <tr data-id="1000">
-                                <td>Jan Kowalski</td>
-                                <td>Tasty plastic glass</td>
-                                <td>In process</td>
-                                <td><button id="processReservationBtn" onclick="processReservation()">OK</button></td>
-                                <td><button onclick="cancelReservation()">Cancel</button></td>
-                                <td>Test</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -95,17 +94,18 @@
                     <table id="Available-Book-Table" class="internal-table">
                         <thead>
                             <tr>
-                                <th width="5%">id</th>
+                                <th width="5%">ean</th>
+                                <th width="5%">ISBN</th>
+                                <th width="15%">Authors</th>
                                 <th width="25%">Title</th>
-                                <th width="15%">Author</th>
-                                <th width="20%">Category</th>
-                                <th width="10%">Languages</th>
-                                <th width="10%">Status</th>
-                                <th width="5%">something</th>
-                                <th width="10%">else</th>
+                                <th width="10%">Lang</th>
+                                <th width="20%">Loc</th>
+                                <th width="10%">remarks</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="AvailableBooks">
+                            <!--
                             <tr data-id="1000">
                                 <td>1000</td>
                                 <td>123456789</td>
@@ -116,13 +116,14 @@
                                 <td>Test</td>
                                 <td>Test2</td>
                             </tr>
+                            -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <div class="Borrowings">
-                <h2>Borrowed books</h2>
+                <h2>Student's Book Borrowings:</h2>
                 <div id="borrowForm">
                     <table id="Borrowing-Book-Reservation-Table" class="internal-table">
                         <thead>
@@ -169,11 +170,18 @@
         function populate_students() {
             //add details about reserved and borrowed books
 
+            let inside = '';
+
             API.getMany("Students", {}, [0, 0]).then(response => {
 
-                var inside = '';
+                //let borNr = 0;
+                //let resNr=0;
                 response.data.items.forEach(student => {
-                    inside += `
+                    //API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(reservations => {
+                    //    resNr = reservations.data.totalAmount;
+                    //    API.getMany("Borrowings", { studentId: student.id}, [0, 0]).then(borrowings => {
+                    //        borNr = reservations.data.totalAmount;
+                            inside += `
                             <tr id="student_${student.id}">
                                 <td>${student.id}</td>
                                 <td>${student.name}</td>
@@ -186,7 +194,10 @@
                                     <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
                                 </td>
                             </tr>
-                        `;
+                            `;
+                    //<td>${borNr}|${resNr}</td>
+                    //    });
+                    //});
                 });
                 document.getElementById("studentsContents").innerHTML = inside;
                 document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
@@ -198,6 +209,7 @@
         }
 
 
+        //done
         window.email_hyperlink = email_hyperlink;
         function email_hyperlink(email) {
             var subject = "Saegar Library librarian email"; // Subject of the email
@@ -211,15 +223,17 @@
 
         let selected_row_id = "";
 
-        window.selectStudent = selectStudent
+        //done
+        window.selectStudent = selectStudent;
         function selectStudent(row_id) {
 
-            //unselect the chosen row (leave editable divs intact)
+            //clicked 'unselect' (leave editable divs intact)
             if (selected_row_id === row_id) {
                 document.getElementById(selected_row_id).setAttribute("style", ""); //row
                 document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+                document.getElementById(selected_row_id + "_button").innerHTML = "select"; //button
                 selected_row_id = "";
+                document.getElementById("manageStudent").disabled = true;
                 return;
             }
 
@@ -227,10 +241,11 @@
             if (selected_row_id != "") {
                 document.getElementById(selected_row_id).setAttribute("style", ""); //row
                 document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+                document.getElementById(selected_row_id + "_button").innerHTML = "select"; //button
             }
 
             selected_row_id = row_id;
+            document.getElementById("manageStudent").disabled = false;
 
             //get row data
             let row = document.getElementById(selected_row_id);
@@ -249,6 +264,90 @@
         }
 
 
+        //TODO - bug with getMany Borrowings
+        window.manageStudentBooks = manageStudentBooks;
+        function manageStudentBooks() {
+
+            document.getElementById('AvailableBooks').innerHTML = '';
+            document.getElementById('studentModal').style.display = 'block';
+
+            let row = document.getElementById(selected_row_id);
+            let cells = row.children;
+            let cellsAlt = row.querySelectorAll('td');
+
+            let inside = '';
+
+            API.getMany("Reservations", { studentId: cells[0].textContent, status: "active" }, [0, 0]).then(reservations => {
+                API.getMany("Borrowings", { studentId: cells[0].textContent, returnDate: null }, [0, 0]).then(borrowings => {
+
+                    //general info
+                    document.getElementById("studentData").innerHTML =
+                        cells[1].textContent + " " + cells[2].textContent +
+                        ": [" + reservations.data.totalAmount + "] active reservations, [" +
+                        borrowings.data.totalAmount + "] active borrowings.";
+
+
+                    //reservations
+                    reservations.data.items.forEach(reservation => {
+
+                        //API.getOne("Book", reservation.bookId).then(book => {
+                            let res = `
+                            <tr id="reservation_${reservation.id}">
+                                <td>${reservation.bookId}</td>
+                                <td>?title</td>
+                                <td>${reservation.id}</td>
+                                <td>${formatDate(reservation.date)}</td>
+                                <td><button class="smallButton" onclick="displayAvailableBookItems('${reservation.bookId}')">Show</button></td>
+                                <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                            </tr>
+                            `;
+                            document.getElementById("studentReservations").innerHTML += res;
+
+                        //});
+
+                    })
+
+
+                }).catch(err => {
+                    console.error("Borrowings fetch failed:", err);
+                    document.write("Borrowings couldn't load.");
+                });
+            }).catch(err2 => {
+                console.error("Reservations fetch failed:", err2);
+                document.write("Reservations couldn't load.");
+            });
+        }
+
+        document.displayAvailableBookItems = displayAvailableBookItems;
+        function displayAvailableBookItems(book_id) {
+
+            API.getMany("BookItems", { bookId: Number(book_id), "isBorrowed": false }, [0, 0]).then(response => {
+                let inside = '';
+                response.data.items.forEach(bookItem => {
+                    inside += `
+                            <tr id="bookItem_${bookItem.ean}">
+                                <td>${bookItem.ean}</td>
+                                <td>${bookItem.ISBN}</td>
+                                <td>?authors</td>
+                                <td>${bookItem.book_title}</td>
+                                <td>${bookItem.language_id}</td>
+                                <td>${bookItem.location_id}</td>
+                                <td>${bookItem.remarks}</td>
+                                <td><button class="smallButton">lend?</button></td>
+                            </tr>
+                        `;
+                });
+                document.getElementById("AvailableBooks").innerHTML = inside;
+
+            }).catch(err => {
+                console.error("BookItems fetch failed:", err);
+                document.write("BookItems couldn't load.");
+            });
+
+        }
+
+
+        //done
         window.clearSlots = clearSlots;
         function clearSlots() {
             for (let i = 1; i <= 7; i++) {
@@ -256,7 +355,13 @@
             }
         }
 
-        //todo 3 vvv
+        // dd.mm.yyyy, hh:mm
+        function formatDate(date) {
+            return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+
+
+        //TODO 3 vvv
         window.addNewStudent = addNewStudent;
         function addNewStudent() {
             //API.createOne("Student", )
