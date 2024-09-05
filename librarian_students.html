@@ -45,7 +45,8 @@
             <div id="slot7" contenteditable="true" style="max-width: 250px;"></div>
 
             <div style="all: unset; max-width:10px;">
-                <button class=smallButton onclick="clearSlots()">clear</button>
+                <button class=smallEditButton onclick="pasteSlots()">paste</button>
+                <button class=smallEditButton onclick="clearSlots()">clear</button>
             </div>
         </div>
 
@@ -53,7 +54,7 @@
             <button onclick="addNewStudent()" class="bottomleft1">Add new Student (ignore selected)</button>
             <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
             <button onclick="removeSelectedStudent()" class="bottomleft3">Remove selected Student account</button>
-            <button onclick="manageStudentBooks()" id="manageStudent" disabled>Manage selected Student</button>
+            <button onclick="loadStudentBooksModal()" id="manageStudent" disabled>Manage selected Student</button>
         </div>
     </div>
     <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
@@ -69,7 +70,7 @@
                 <h2 id="studentData">[Student data]</h2>
             </div>
 
-            <div id="lendForm">
+            <div>
                 <div class="Process-Book-Reservation">
                     <h2>Student's Book Reservations:</h2>
                     <table id="Process-Book-Reservation-Table" class="internal-table">
@@ -83,7 +84,7 @@
                                 <th width="5%">Unreserve</th>
                             </tr>
                         </thead>
-                        <tbody id="studentReservations">
+                        <tbody id="StudentReservations">
                             <!-- Reserved books will be populated here -->
                         </tbody>
                     </table>
@@ -105,18 +106,7 @@
                             </tr>
                         </thead>
                         <tbody id="AvailableBooks">
-                            <!--
-                            <tr data-id="1000">
-                                <td>1000</td>
-                                <td>123456789</td>
-                                <td>J.K. Rowling</td>
-                                <td>Harry Potter and the Sorcerer's Stone</td>
-                                <td>Fantasy</td>
-                                <td>Available</td>
-                                <td>Test</td>
-                                <td>Test2</td>
-                            </tr>
-                            -->
+                            <!-- Available bookItems will be populated here -->
                         </tbody>
                     </table>
                 </div>
@@ -124,33 +114,30 @@
 
             <div class="Borrowings">
                 <h2>Student's Book Borrowings:</h2>
-                <div id="borrowForm">
-                    <table id="Borrowing-Book-Reservation-Table" class="internal-table">
+                <div>
+                    <table id="Borrowings-Table" class="internal-table">
                         <thead>
                             <tr>
-                                <th width="5%">id</th>
-                                <th width="25%">Title</th>
-                                <th width="15%">Author</th>
-                                <th width="20%">Category</th>
-                                <th width="10%">Languages</th>
+                                <th>conclude:</th>
+                                <th>book_id</th>
+                                <th>book_ean</th>
+                                <th>isbn</th>
+                                <th>Title</th>
+                                <th>borrowing_id</th>
+                                <th width="11%">borrowing_date</th>
+                                <th>librarian_id</th>
+                                <th>location_id</th>
+                                <th>language_id</th>
+                                <th>remarks</th>
+                                <th>fee?</th>
                             </tr>
                         </thead>
-                        <tbody id="BorrowedBookReservation">
-                            <tr data-id="1000">
-                                <td>1000</td>
-                                <td>123456789</td>
-                                <td>J.K. Rowling</td>
-                                <td>Harry Potter and the Sorcerer's Stone</td>
-                                <td>Fantasy</td>
-                            </tr>
+                        <tbody id="StudentBorrowings">
+                            <!-- Borrowed bookItems will be populated here -->
                         </tbody>
                     </table>
-                    <h2>Apply Fine?</h2>
-                    <div class="form-group">
-                        <label for="fineAmount">Fine Amount</label>
-                        <input type="number" id="fineAmount" name="fineAmount" style="max-width:10%" required />
-                        <button type="submit">Conclude the borrowing</button>
-                    </div>
+                    <button onclick="concludeBorrowings(); ">Conclude the borrowings?</button>
+                    <!--loadStudentBooksModal() ^^^ powyzej dodatkowo-->
                 </div>
             </div>
         </div>
@@ -227,7 +214,7 @@
         window.selectStudent = selectStudent;
         function selectStudent(row_id) {
 
-            //clicked 'unselect' (leave editable divs intact)
+            //clicked 'unselect'
             if (selected_row_id === row_id) {
                 document.getElementById(selected_row_id).setAttribute("style", ""); //row
                 document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
@@ -247,16 +234,6 @@
             selected_row_id = row_id;
             document.getElementById("manageStudent").disabled = false;
 
-            //get row data
-            let row = document.getElementById(selected_row_id);
-            let cells = row.children;
-            let cellsAlt = row.querySelectorAll('td');
-
-            //paste data from row into editable slots
-            for (let i = 1; i <= 7; i++) {
-                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
-            }
-
             //highlight selected row and change button appearence
             document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
             document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
@@ -264,11 +241,14 @@
         }
 
 
-        //TODO - bug with getMany Borrowings
-        window.manageStudentBooks = manageStudentBooks;
-        function manageStudentBooks() {
+        //TODO - BORROWINGS!, better display; BUG_2 (get-many Borrowings), BUG_3 (get-many Reservations studentId)
+        window.loadStudentBooksModal = loadStudentBooksModal;
+        function loadStudentBooksModal() {
 
+            document.getElementById('StudentReservations').innerHTML = '';
             document.getElementById('AvailableBooks').innerHTML = '';
+            document.getElementById('StudentBorrowings').innerHTML = '';
+
             document.getElementById('studentModal').style.display = 'block';
 
             let row = document.getElementById(selected_row_id);
@@ -277,12 +257,12 @@
 
             let inside = '';
 
-            API.getMany("Reservations", { studentId: cells[0].textContent, status: "active" }, [0, 0]).then(reservations => {
-                API.getMany("Borrowings", { studentId: cells[0].textContent, returnDate: null }, [0, 0]).then(borrowings => {
+            API.getMany("Reservations", { studentId: Number(cells[0].textContent), status: "active" }, [0, 0]).then(reservations => {
+                API.getMany("Borrowings", { studentId: Number(cells[0].textContent), returnDate: null }, [0, 0]).then(borrowings => {
 
                     //general info
                     document.getElementById("studentData").innerHTML =
-                        cells[1].textContent + " " + cells[2].textContent +
+                        cells[1].textContent + " " + cells[2].textContent + " (id " + cells[0].textContent + ") " +
                         ": [" + reservations.data.totalAmount + "] active reservations, [" +
                         borrowings.data.totalAmount + "] active borrowings.";
 
@@ -291,21 +271,49 @@
                     reservations.data.items.forEach(reservation => {
 
                         //API.getOne("Book", reservation.bookId).then(book => {
-                            let res = `
+                        let res = `
                             <tr id="reservation_${reservation.id}">
                                 <td>${reservation.bookId}</td>
                                 <td>?title</td>
                                 <td>${reservation.id}</td>
                                 <td>${formatDate(reservation.date)}</td>
-                                <td><button class="smallButton" onclick="displayAvailableBookItems('${reservation.bookId}')">Show</button></td>
+                                <td><button class="smallButton" onclick="displayLendableBookItems('${reservation.bookId}')">Show</button></td>
                                 <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
                             </tr>
                             `;
-                            document.getElementById("studentReservations").innerHTML += res;
-
+                        document.getElementById("StudentReservations").innerHTML += res;
                         //});
+                    });
 
-                    })
+
+                    //borrowings
+                    borrowings.data.items.forEach(borrowing => {
+
+                        //get-one bookItem data
+                        API.getOne("BookItem", Number(borrowing.bookItemEan)).then(bookItem => {
+                            let bor = `
+                            <tr id="borrowing_${borrowing.id}">
+                                <td><input type="checkbox" name="concludeBorrowing_checkbox" value="${borrowing.bookItemEan}"></td>
+                                <td>${bookItem.data.bookId}</td>
+                                <td>${borrowing.bookItemEan}</td>
+                                <td>${bookItem.data.isbn}</td>
+                                <td>bookItem.title(bug)</td>
+                                <td>${borrowing.id}</td>
+                                <td>${formatDate(borrowing.borrowingDate)}</td>
+                                <td>${borrowing.librarianId}</td>
+                                <td>${bookItem.data.locationId}</td>
+                                <td>${bookItem.data.languageId}</td>
+                                <td>${bookItem.data.remarks}</td>
+                                <td><input type="number" id="fineAmount_${borrowing.bookItemEan}" style="max-width: 50px;" value=0 required /></td>
+                            </tr>
+                            `;
+                            document.getElementById("StudentBorrowings").innerHTML += bor;
+                        }).catch(err => {
+                            console.error("BookItem fetch failed:", err);
+                            document.write("BookItem couldn't load.");
+                        })
+
+                    });
 
 
                 }).catch(err => {
@@ -318,12 +326,14 @@
             });
         }
 
-        document.displayAvailableBookItems = displayAvailableBookItems;
-        function displayAvailableBookItems(book_id) {
+        //TODO - lending logic; BUG_5
+        document.displayLendableBookItems = displayLendableBookItems;
+        function displayLendableBookItems(book_id) {
 
             API.getMany("BookItems", { bookId: Number(book_id), "isBorrowed": false }, [0, 0]).then(response => {
                 let inside = '';
                 response.data.items.forEach(bookItem => {
+if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                     inside += `
                             <tr id="bookItem_${bookItem.ean}">
                                 <td>${bookItem.ean}</td>
@@ -333,9 +343,10 @@
                                 <td>${bookItem.language_id}</td>
                                 <td>${bookItem.location_id}</td>
                                 <td>${bookItem.remarks}</td>
-                                <td><button class="smallButton">lend?</button></td>
+                                <td><button class="smallButton" onclick="lendBookItem('${bookItem.ean}')">lend</button></td>
                             </tr>
                         `;
+} //BUG_5 HANDLING
                 });
                 document.getElementById("AvailableBooks").innerHTML = inside;
 
@@ -346,12 +357,75 @@
 
         }
 
+        //WIP - BUG_6
+        document.lendBookItem = lendBookItem;
+        function lendBookItem(ean) {
+            API.getCurrentUser().then(self => {
+
+                let row = document.getElementById(selected_row_id);
+                let cells = row.children;
+                let cellsAlt = row.querySelectorAll('td');
+                let student_id = cells[0].textContent
+
+                if (confirm("Dear Librarian " + self.id + ",\nLend BookItem " + ean + " to student " + student_id + " ?")) {
+                    API.lendBook(Number(self.id), Number(student_id), Number(ean)).then(response => {
+                        loadStudentBooksModal(); //reload
+
+                    }).catch(err => {
+                        console.error("Lending failed:", err);
+                        document.write("Error while lending book.");
+                    });
+                }
+            })
+        }
+
+        //done - BUG_8
+        document.concludeBorrowings = concludeBorrowings;
+        function concludeBorrowings() {
+
+            var concludeCheckboxes = document.getElementsByName('concludeBorrowing_checkbox');
+            var concludeCheckboxesChecked = [];
+
+            for (var checkboxConclude of concludeCheckboxes) {
+                if (checkboxConclude.checked)
+                    concludeCheckboxesChecked.push(checkboxConclude); //construct array of checked
+            }
+
+            if (!(concludeCheckboxesChecked.length > 0)) return;
+
+            //return bookItems
+            for (var checkboxConclude of concludeCheckboxesChecked) { //go through all checked and return bookItems
+                let fee = document.getElementById("fineAmount_" + checkboxConclude.value).value;
+                //ean, fee
+                API.returnBookItem(Number(checkboxConclude.value), Number(fee)).then(response => { //?
+
+                }).catch(err => {
+                    console.error("Return of book id " + checkboxConclude.value + " failed:", err);
+                    document.write("Return of book id " + checkboxConclude.value + " failed:");
+                });
+            }
+        }
+
 
         //done
         window.clearSlots = clearSlots;
         function clearSlots() {
             for (let i = 1; i <= 7; i++) {
                 document.getElementById("slot" + i).innerHTML = "";
+            }
+        }
+
+        //done
+        window.pasteSlots = pasteSlots;
+        function pasteSlots() {
+            //get row data
+            let row = document.getElementById(selected_row_id);
+            let cells = row.children;
+            let cellsAlt = row.querySelectorAll('td');
+
+            //paste data from row into editable slots
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
             }
         }
 

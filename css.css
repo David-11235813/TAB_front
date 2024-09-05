@@ -71,6 +71,21 @@ button {
     padding: 5px;
 }
 
+.smallEditButton {
+    font-size: 18px;
+    color: var(--aux-text-color);
+    background-color: darkolivegreen;
+    border-radius: 10em;
+    border-color: var(--main-border-color);
+    border-width: 2px;
+    text-align: center;
+    width: 70px;
+    height: 25px;
+    cursor: pointer;
+    transition: background-color 0.5s;
+    padding: 0px;
+}
+
 
 .buttons {
     display: flex;
