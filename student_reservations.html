@@ -15,16 +15,16 @@
 
             <div class="borrowed-books">
                 <h2 id="h_personal">Your bookItems:</h2>
-                <table id="reservationsBorrowingsTable" class="internal-table">
+                <table id="reservationsBorrowingsTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%">id</th>
-                            <th width="25%">Title</th>
-                            <th width="15%">Author</th>
-                            <th width="15%">Category</th>
-                            <th width="10%">Languages</th>
-                            <th width="10%">ean</th>
-                            <th width="13%">Status</th>
+                            <th width="5%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
+                            <th width="25%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 1)">Title</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Author</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 3)">Category</label></th>
+                            <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 4)">Languages</label></th>
+                            <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 5)">ean</label></th>
+                            <th width="13%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 6)">Status</label></th>
                             <th>Cancel?</th>
                         </tr>
                     </thead>
@@ -66,15 +66,15 @@
 
             <div class="available-books">
                 <h2 id="h_available">Available Books</h2>
-                <table id="availableBooksTable" class="internal-table">
+                <table id="availableBooksTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%">id</th>
-                            <th width="25%">Title</th>
-                            <th width="15%">Author</th>
-                            <th width="20%">Category</th>
-                            <th width="10%">Languages</th>
-                            <th width="13%">Status</th>
+                            <th width="5%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
+                            <th width="25%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 1)">Title</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Author</label></th>
+                            <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Category</label></th>
+                            <th width="10%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 4)">Languages</label></th>
+                            <th width="13%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Status</label></th>
                             <th>Reserve?</th>
                         </tr>
                     </thead>
@@ -118,7 +118,7 @@
                 </table>
             </div>
 
-            <button onclick="changeReservations(); location.reload()">Save</button>
+            <button onclick="changeReservations(); populate_books()">Save</button>
         </div>
 
     </div>
@@ -146,6 +146,9 @@
 
         //done
         function populate_your_ReservationsBorrowings() {
+
+            document.getElementById("h_personal").innerHTML = '';
+            document.getElementById("reservationsBorrowingsContents").innerHTML = '';
 
             let inside = '';
 
@@ -207,6 +210,10 @@
 
         //TODO - print the ignored values & add info about available positions (getOne bookItem (id))
         function populate_available_Books() {
+
+            document.getElementById("availableBooksContents").innerHTML = '';
+            document.getElementById("h_available").innerHTML = '';
+
             API.getMany("Books", {}, [0, 0]).then(response => {
 
                     let inside = '';
@@ -302,10 +309,46 @@
             });
         }
 
+        
+        //done
+        window.sort_by_column = sort_by_column;
+        function sort_by_column(tableId, columnNr) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        // dd.mm.yyyy, hh:mm
+            // Determine if we're sorting ascending or descending
+            const isAscending = table.getAttribute('data-sort-order') === 'asc';
+            const direction = isAscending ? 1 : -1;
+
+            // Sort rows by the content of the cells in the specified column
+            const sortedRows = rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnNr].innerText.trim();
+                const cellB = rowB.cells[columnNr].innerText.trim();
+
+                // If the content is numeric, sort as numbers
+                if (!isNaN(cellA) && !isNaN(cellB)) {
+                    return direction * (Number(cellA) - Number(cellB));
+                }
+                // Otherwise, sort as strings
+                return direction * cellA.localeCompare(cellB);
+            });
+
+            // Remove existing rows
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            // Append sorted rows back to the table
+            sortedRows.forEach(row => tbody.appendChild(row));
+
+            // Toggle the sort order for the next click
+            table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
+        }
+
+        // yyyy/mm/dd, hh:mm
         function formatDate(date) {
-            return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
 
     </script>

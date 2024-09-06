@@ -521,3 +521,9 @@ tr:nth-child(even) {
 .return-buttons button {
     width: 100px; /* Ensures the buttons are consistent in size */
 }
+
+
+
+.pointy {
+    cursor: n-resize;
+}

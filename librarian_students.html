@@ -13,15 +13,15 @@
         <h1 id="h">Manage Students</h1>
 
         <div class="students-list">
-            <table id="studentsTable" class="internal-table">
+            <table id="studentsTable" class="internal-table" data-sort-order="asc">
                 <thead>
                     <tr>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th width="25%">Birth Date</th>
-                        <th>Class ID:</th>
-                        <th>email</th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 0)">Student ID</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 1)">Name</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 2)">Surname</label></th>
+                        <th width="25%"><label class="pointy" onclick="sort_by_column('studentsTable', 3)">Birth Date</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 4)">Class ID:</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 5)">email</label></th>
                         <!--
                         <th width="5%">borrowed | reserved</th>
                         -->
@@ -70,14 +70,14 @@
             <div>
                 <div class="Process-Book-Reservation">
                     <h2>Student's Book Reservations:</h2>
-                    <table id="Process-Book-Reservation-Table" class="internal-table">
+                    <table id="Process-Book-Reservation-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
-                                <th width="15%">book_id</th>
-                                <th>title</th>
-                                <th width="10%">reserve id</th>
-                                <th width="21%">reserved since</th>
-                                <th width="20%">Show available</th>
+                                <th width="15%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 0)">book_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 1)">title</label></th>
+                                <th width="10%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 2)">reserve id</label></th>
+                                <th width="22%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 3)">reserved since</label></th>
+                                <th width="20%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 4)">Show available</label></th>
                                 <th width="5%">Unreserve</th>
                             </tr>
                         </thead>
@@ -89,16 +89,16 @@
 
                 <div class="Available">
                     <h2 id="h_available">Available BookItems</h2>
-                    <table id="Available-Book-Table" class="internal-table">
+                    <table id="Available-Book-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
-                                <th width="5%">ean</th>
-                                <th width="5%">ISBN</th>
-                                <th width="15%">Authors</th>
-                                <th width="25%">Title</th>
-                                <th width="10%">Lang</th>
-                                <th width="20%">Loc</th>
-                                <th width="10%">remarks</th>
+                                <th width="5%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 0)">ean</label></th>
+                                <th width="5%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 1)">ISBN</label></th>
+                                <th width="15%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 2)">Authors</label></th>
+                                <th width="25%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 3)">Title</label></th>
+                                <th width="10%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 4)">Lang</label></th>
+                                <th width="20%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 5)">Loc</label></th>
+                                <th width="10%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 6)">remarks</label></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -112,20 +112,20 @@
             <div class="Borrowings">
                 <h2>Student's Book Borrowings:</h2>
                 <div>
-                    <table id="Borrowings-Table" class="internal-table">
+                    <table id="Borrowings-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
                                 <th>conclude:</th>
-                                <th>book_id</th>
-                                <th>book_ean</th>
-                                <th>isbn</th>
-                                <th>Title</th>
-                                <th>borrowing_id</th>
-                                <th width="11%">borrowing_date</th>
-                                <th>librarian_id</th>
-                                <th>location_id</th>
-                                <th>language_id</th>
-                                <th>remarks</th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 1)">book_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 2)">book_ean</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 3)">isbn</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 4)">Title</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 5)">borrowing_id</label></th>
+                                <th width="11%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 6)">borrowing_date</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 7)">librarian_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 8)">location_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 9)">language_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 10)">remarks</label></th>
                                 <th>fee?</th>
                             </tr>
                         </thead>
@@ -325,7 +325,7 @@
             });
         }
 
-        //TODO - lending logic; BUG_5
+        //done - BUG_5
         document.displayLendableBookItems = displayLendableBookItems;
         function displayLendableBookItems(book_id) {
 
@@ -428,10 +428,48 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
             }
         }
 
-        // dd.mm.yyyy, hh:mm
+        // yyyy/mm/dd, hh:mm
         function formatDate(date) {
-            return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
+
+
+        //done
+        window.sort_by_column = sort_by_column;
+        function sort_by_column(tableId, columnNr) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            // Determine if we're sorting ascending or descending
+            const isAscending = table.getAttribute('data-sort-order') === 'asc';
+            const direction = isAscending ? 1 : -1;
+
+            // Sort rows by the content of the cells in the specified column
+            const sortedRows = rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnNr].innerText.trim();
+                const cellB = rowB.cells[columnNr].innerText.trim();
+
+                // If the content is numeric, sort as numbers
+                if (!isNaN(cellA) && !isNaN(cellB)) {
+                    return direction * (Number(cellA) - Number(cellB));
+                }
+                // Otherwise, sort as strings
+                return direction * cellA.localeCompare(cellB);
+            });
+
+            // Remove existing rows
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            // Append sorted rows back to the table
+            sortedRows.forEach(row => tbody.appendChild(row));
+
+            // Toggle the sort order for the next click
+            table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
+        }
+
 
 
         //done
