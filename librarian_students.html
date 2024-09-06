@@ -19,8 +19,7 @@
                         <th>Student ID</th>
                         <th>Name</th>
                         <th>Surname</th>
-                        <th width="15%">Birth Date</th>
-                        <th width="15%">Added</th>
+                        <th width="25%">Birth Date</th>
                         <th>Class ID:</th>
                         <th>email</th>
                         <!--
@@ -36,13 +35,11 @@
         </div>
 
         <div class="editable">
-            <div id="slot1" contenteditable="true" style="max-width: 65px;"></div>
-            <div id="slot2" contenteditable="true" style="max-width: 150px;"></div>
-            <div id="slot3" contenteditable="true" style="max-width: 180px;"></div>
-            <div id="slot4" contenteditable="true"></div>
-            <div id="slot5" contenteditable="true"></div>
-            <div id="slot6" contenteditable="true" style="max-width: 50px;"></div>
-            <div id="slot7" contenteditable="true" style="max-width: 250px;"></div>
+            <div id="slot1" contenteditable="true" style="max-width: 150px;"></div>
+            <div id="slot2" contenteditable="true" style="max-width: 200px;"></div>
+            <div id="slot3" contenteditable="true"></div>
+            <div id="slot4" contenteditable="true" style="max-width: 50px;"></div>
+            <div id="slot5" contenteditable="true" style="max-width: 250px;"></div>
 
             <div style="all: unset; max-width:10px;">
                 <button class=smallEditButton onclick="pasteSlots()">paste</button>
@@ -53,7 +50,7 @@
         <div class="buttons">
             <button onclick="addNewStudent()" class="bottomleft1">Add new Student (ignore selected)</button>
             <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
-            <button onclick="removeSelectedStudent()" class="bottomleft3">Remove selected Student account</button>
+            <button onclick="removeSelectedStudent()" class="bottomleft3" style="background-color: dimgray;">Remove selected Student account</button>
             <button onclick="loadStudentBooksModal()" id="manageStudent" disabled>Manage selected Student</button>
         </div>
     </div>
@@ -157,6 +154,9 @@
         function populate_students() {
             //add details about reserved and borrowed books
 
+            document.getElementById("studentsContents").innerHTML = '';
+            document.getElementById("h").innerHTML = '';
+
             let inside = '';
 
             API.getMany("Students", {}, [0, 0]).then(response => {
@@ -174,7 +174,6 @@
                                 <td>${student.name}</td>
                                 <td>${student.surname}</td>
                                 <td>${student.birthDate}</td>
-                                <td>${student.addedDate}</td>
                                 <td>${student.classId}</td>
                                 <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
                                 <td>
@@ -410,7 +409,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
         //done
         window.clearSlots = clearSlots;
         function clearSlots() {
-            for (let i = 1; i <= 7; i++) {
+            for (let i = 1; i <= 5; i++) {
                 document.getElementById("slot" + i).innerHTML = "";
             }
         }
@@ -424,8 +423,8 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
             let cellsAlt = row.querySelectorAll('td');
 
             //paste data from row into editable slots
-            for (let i = 1; i <= 7; i++) {
-                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById("slot" + i).innerHTML = cells[i].textContent;
             }
         }
 
@@ -435,134 +434,92 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
         }
 
 
-        //TODO 3 vvv
+        //done
         window.addNewStudent = addNewStudent;
         function addNewStudent() {
-            //API.createOne("Student", )
+
+            //checks data integrity
+            let n = document.getElementById("slot1").innerHTML;
+            let s = document.getElementById("slot2").innerHTML;
+            let b = document.getElementById("slot3").innerHTML;
+            let c = document.getElementById("slot4").innerHTML;
+            let e = document.getElementById("slot5").innerHTML;
+
+            if (n === '' || s === '' || b === '' || c === '' || e === '') {
+                alert("Must fill all slots first!");
+                return;
+            }
+
+            //create
+            API.createOne("Student", {
+                name: String(n),
+                surname: String(s),
+                birthDate: new Date(b),
+                classId: Number(c),
+                email: String(e),
+                password: ""
+            }).then(response => { populate_students(); }).catch(err => {
+                console.error("Student " + id + " creation failed", err);
+                document.write("Student creation failed");
+            });
         }
 
+        //done
         window.modifySelectedStudent = modifySelectedStudent;
         function modifySelectedStudent() {
 
+            //checks data integrity
+            if (selected_row_id === '') {
+                alert("You must first select the student to modify!");
+                return;
+            }
+
+            let n = document.getElementById("slot1").innerHTML;
+            let s = document.getElementById("slot2").innerHTML;
+            let b = document.getElementById("slot3").innerHTML;
+            let c = document.getElementById("slot4").innerHTML;
+            let e = document.getElementById("slot5").innerHTML;
+
+            if (n === '' || s === '' || b === '' || c === '' || e === '') {
+                alert("Must fill all slots first!");
+                return;
+            }
+
+            let row = document.getElementById(selected_row_id);
+            let cells = row.children;
+            let cellsAlt = row.querySelectorAll('td');
+            let id = cells[0].textContent;
+
+            if (cells[4].textContent != c) {
+                alert("Class must stay the same!");
+                return;
+            }
+
+            //updates
+            API.updateOne("Student", Number(id), {
+                name: String(n),
+                surname: String(s),
+                birthDate: new Date(b),
+                classId: Number(c),
+                email: String(e),
+                password: ""
+            }).then(response => { populate_students(); }).catch(err => {
+                console.error("Student " + id + " update failed", err);
+                document.write("Student update failed");
+            });
+
         }
 
+        //doesn't work & won't
         window.removeSelectedStudent = removeSelectedStudent;
         function removeSelectedStudent() {
-            ////no checks required (just toast ok/cancel); need to implement removing only
-            //if (selected_row_id === "") {
-            //    return;
-            //}
-            //
-            //let row = document.getElementById(selected_row_id);
-            //let cells = row.children;
-            //let cellsAlt = row.querySelectorAll('td');
-            //let my_selected_id = cells[i - 1].textContent; //selected row's id
-            //
-            //API.deleteOne("Student", my_selected_id);
+
+            alert("function doesn't work due to students having connections to other references, sorry!");
+
+            //API.deleteOne("Student", 38).then(response => { populate_students(); });
         }
 
     </script>
-
-
-    <!--Scripts (gpt)
-    <script type="module">
-        import FrontEndAPI from './API.js';
-
-        const api = new FrontEndAPI('/api'); // Adjust the path as necessary
-        const studentsList = document.getElementById('studentsList');
-        const removeStudentBtn = document.getElementById('removeStudentBtn');
-        const applyFineBtn = document.getElementById('applyFineBtn');
-        const emailStudentBtn = document.getElementById('emailStudentBtn');
-        const fineModal = document.getElementById('fineModal');
-        const closeModal = document.querySelector('.close');
-        const fineForm = document.getElementById('fineForm');
-
-        let selectedStudentId = null;
-
-        // Load students
-        async function loadStudents() {
-            try {
-                const students = await api.getAllStudents(); // Adjust the API method as necessary
-                studentsList.innerHTML = '';
-                students.forEach(student => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <span>${student.name} (${student.email})</span>
-                        <input type="checkbox" name="students" value="${student.id}">
-                    `;
-                    studentsList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error('Error loading students:', error);
-            }
-        }
-
-        // Remove selected student account
-        removeStudentBtn.addEventListener('click', async () => {
-            const checkedBoxes = document.querySelectorAll('input[name="students"]:checked');
-            const studentIds = Array.from(checkedBoxes).map(box => box.value);
-            if (studentIds.length === 0) {
-                alert('Please select at least one student to remove.');
-                return;
-            }
-            try {
-                for (const id of studentIds) {
-                    await api.deleteOne('students', id); // Adjust the API method as necessary
-                }
-                alert('Selected students have been removed.');
-                loadStudents();
-            } catch (error) {
-                console.error('Error removing students:', error);
-                alert('Failed to remove students. Please try again.');
-            }
-        });
-
-        // Apply fine to selected student
-        applyFineBtn.addEventListener('click', () => {
-            const checkedBoxes = document.querySelectorAll('input[name="students"]:checked');
-            if (checkedBoxes.length !== 1) {
-                alert('Please select exactly one student to apply a fine.');
-                return;
-            }
-            selectedStudentId = checkedBoxes[0].value;
-            fineModal.style.display = 'block';
-        });
-
-        // Close modal
-        closeModal.addEventListener('click', () => {
-            fineModal.style.display = 'none';
-        });
-
-        // Handle fine form submission
-        //fineForm.addEventListener('submit', async (event) => {
-        //    event.preventDefault();
-        //    const fineAmount = document.getElementById('fineAmount').value;
-        //    try {
-        //        await api.applyFine(selectedStudentId, fineAmount); // Adjust the API method as necessary
-        //        alert('Fine has been applied.');
-        //        fineModal.style.display = 'none';
-        //        loadStudents();
-        //    } catch (error) {
-        //        console.error('Error applying fine:', error);
-        //        alert('Failed to apply fine. Please try again.');
-        //    }
-        //});
-        //
-        // Email student
-        //emailStudentBtn.addEventListener('click', () => {
-        //    const checkedBoxes = document.querySelectorAll('input[name="students"]:checked');
-        //    if (checkedBoxes.length !== 1) {
-        //        alert('Please select exactly one student to email.');
-        //        return;
-        //    }
-        //    const studentEmail = checkedBoxes[0].parentElement.textContent.split('(')[1].slice(0, -1);
-        //    window.location.href = `mailto:${studentEmail}`;
-        //});
-
-        // Initialize the page
-        loadStudents();
-    </script>
-    -->
 
 </body>
 </html>
