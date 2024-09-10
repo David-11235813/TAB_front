@@ -10,34 +10,14 @@
 <body>
     <div class="content">
         <h1>Welcome to the Library, Student!</h1>
-        <p>Select a book from the list to see more details.</p>
+        <p>Select one of the options below:</p>
     </div>
-    <div>
-        <table class="IDs" border="1">
-            <thead>
-                <tr>
-                    <th scope="col" class="book-id">Book ID</th>
-                    <th scope="col" class="author">Author</th>
-                    <th scope="col" class="title">Title</th>
-                    <th scope="col" class="category">Category</th>
-                    <th scope="col" class="status">Status</th>
-                </tr>
-            </thead>
-            <tbody id="bookTableBody">
-                <!-- Dynamic content will be inserted here -->
-            </tbody>
-        </table>
-        <br>
 
-        <!-- <button id="reserveBookBtn">Reserve a book</button> -->
+    <div>
         <button onclick='window.location.href = "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=152&ct=1717167620&rver=7.0.6738.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fcobrandid%3dab0455a0-8d03-46b9-b18b-df2f57b9e44c%26nlp%3d1%26deeplink%3dowa%252f%26RpsCsrfState%3d80fa27e5-41c8-2a9e-eed4-fdc543a072af&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=ab0455a0-8d03-46b9-b18b-df2f57b9e44c"' style="float:right"> Email the librarian</button>
-        <!-- <button id="logoutBtn">Logout</button> -->
         <button onclick='window.location.href = "student_reservations.html"' style="float:right"> Student reservations </button>
     </div>
     <button onclick="logout_func()" id="backBtn"> Log out</button>
-
-
-
 
 
 
@@ -68,86 +48,6 @@
 
         window.logout_func = logout_func;
     </script>
-
-
-    <!--Scripts (gpt)
-    <script type="module">
-        import FrontEndAPI, { UserType } from './API.js';
-
-        const api = new FrontEndAPI('/api'); // Adjust the path as necessary
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const books = await api.getMany('books', {}, {}); // Adjust API call as needed
-                populateBookTable(books);
-                populateBookSelect(books);
-            } catch (error) {
-                console.error('Error fetching books:', error);
-            }
-        });
-
-        function populateBookTable(books) {
-            const tableBody = document.getElementById('bookTableBody');
-            tableBody.innerHTML = ''; // Clear existing content
-            books.forEach(book => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${book.id}</td>
-                    <td>${book.author}</td>
-                    <td>${book.title}</td>
-                    <td>${book.category}</td>
-                    <td>${book.status}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        function populateBookSelect(books) {
-            const bookSelect = document.getElementById('bookSelect');
-            bookSelect.innerHTML = ''; // Clear existing options
-            books.forEach(book => {
-                const option = document.createElement('option');
-                option.value = book.id;
-                option.text = `${book.title} by ${book.author}`;
-                bookSelect.appendChild(option);
-            });
-        }
-
-        document.getElementById('reserveBookBtn').addEventListener('click', () => {
-            document.getElementById('reserveMenu').style.display = 'block';
-        });
-
-        document.getElementById('cancelReserveBtn').addEventListener('click', () => {
-            document.getElementById('reserveMenu').style.display = 'none';
-        });
-
-        document.getElementById('confirmReserveBtn').addEventListener('click', async () => {
-            const bookId = document.getElementById('bookSelect').value;
-            const userId = 1; // Replace with the actual user ID
-            try {
-                const response = await api.reserveBook(userId, bookId);
-                alert(response.message);
-                document.getElementById('reserveMenu').style.display = 'none';
-                // Optionally refresh the book list to reflect changes
-                const books = await api.getMany('books', {}, {}); // Adjust API call as needed
-                populateBookTable(books);
-                populateBookSelect(books);
-            } catch (error) {
-                console.error('Error reserving book:', error);
-            }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try {
-                const response = await api.logout();
-                alert(response.message);
-                window.location.href = '/login'; // Redirect to the login page
-            } catch (error) {
-                console.error('Error logging out:', error);
-            }
-        });
-    </script>
-    -->
 
 </body>
 </html>

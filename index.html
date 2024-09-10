@@ -11,26 +11,22 @@
     <div class="row content welcome_content">
         <div class="col-2"></div>
         <div class="col-8">
-            <p class="highlight">
-                <b>Saegar Library SQL Database</b>
-                <br>
-            </p>
-            <p class="highlight">
-                <b>
+            <p class="highlight"><b>Saegar Library SQL Database</b><br></p>
+            
+            <p class="highlight"><b>
                     Regardless of the size your library is, Saegar Library SQL Database is the solution to your problems. This
                     simple to use database has been designed specifically to safely store all of your data, allowing you quick and easy access to them.
-                </b>
-                <br><br><br>
+                </b><br><br><br>
             </p>
-            <!-- Button to open the modal login form -->
             <br><br>
+
             <button id="loginBtn" onclick="document.getElementById('id_1').style.display='block'">LOG IN</button><br><br>
             <button id="registerBtn" onclick="document.getElementById('id_2').style.display='block'">REGISTER</button>
         </div>
         <div class="col-2"></div>
     </div>
 
-    <!-- The Modal for Login -->
+    <!-- Login Modal -->
     <div id="id_1" class="modal">
         <span onclick="document.getElementById('id_1').style.display='none'" class="close" title="Close Form">&times;</span>
         <div class="col-2"></div>
@@ -73,7 +69,9 @@
         <div class="col-2"></div>
     </div>
 
-    <!-- The Modal for Reset Password, todo -->
+
+
+    <!-- The Modal for Reset Password? -->
     <!--
     <div id="id_reset" class="modal">
         <span onclick="document.getElementById('id_reset').style.display='none'" class="close" title="Close Form">&times;</span>
@@ -94,7 +92,7 @@
     </div>
     -->
 
-    <!-- The Modal for Register -->
+    <!-- The Modal for Register, zapytać dr Bach -->
     <!--
     <div id="id_2" class="modal">
         <span onclick="document.getElementById('id_2').style.display='none'" class="close" title="Close Form">&times;</span>
@@ -159,8 +157,9 @@
     -->
 
 
+
+
     <!-- Scripts -->
-    <!-- back-end dependant -->
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
 
@@ -209,8 +208,7 @@
         window.login_func = login_func;
     </script>
 
-
-    <!-- client-side only, no back-end required-->
+    <!-- Scripts: client-side only, no back-end required-->
     <script>
         // Registration scripts
         function checkPasswordRequirements() {
@@ -230,8 +228,5 @@
         }
     </script>
 
-
-
 </body>
-
 </html>

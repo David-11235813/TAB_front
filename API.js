@@ -78,6 +78,7 @@ export default class FrontEndAPI {
         return this.apiCall("/user/reset-password", { email })
     }
 
+
     returnBookItem = async (bookItemId, fee) => {
         return this.apiCall("/books/return", { bookItemId, fee })
     }
@@ -97,17 +98,17 @@ export default class FrontEndAPI {
         return this.apiCall("/books/lend", { librarianId, studentId, bookItemId })
     }
 
-    //needs test
+    //ok
     createOne = async (type, obj) => {
         return this.apiCall(`/crud/${type}/create-one`, { item: obj })
     }
 
-    //needs test
+    //heavily dependant
     deleteOne = async (type, id) => {
         return this.apiCall(`/crud/${type}/delete-one`, { id })
     }
 
-    //needs test
+    //dependant
     updateOne = async (type, id, obj) => {
         return this.apiCall(`/crud/${type}/update-one`, { id, item: obj })
     }
@@ -139,17 +140,17 @@ export default class FrontEndAPI {
         return (await this.apiCall(`/user/current-user`, {}))
     }
 
-    //doesnt work yet, todo
+    //WIP
     downloadReport = async reportId => {
         return this.apiCall(`/reports/download`, { reportId })
     }
 
-    //doesnt work yet, todo
+    //WIP
     getAllGeneratedReports = async reportId => {
         return this.apiCall(`/reports/get-all-generated`, { reportId })
     }
 
-    //doesnt work yet, todo
+    //WIP
     requestReportGeneration = async reportId => {
         return this.apiCall(`/reports/request-creation`, { reportId })
     }

@@ -10,46 +10,14 @@
 <body>
     <div class="content">
         <h1>Welcome to the Library, Librarian!</h1>
-        <p>Select a book from the list to see more details.</p>
+        <p>Select one of the options below:</p>
     </div>
 
     <div>
-        <table class="IDs" border="1">
-            <tr>
-                <th scope="col" class="book-id">Book ID</th>
-                <th scope="col" class="book-id">IBAN</th>
-                <th scope="col" class="author">Author</th>
-                <th scope="col" class="title">Title</th>
-                <th scope="col" class="category">Category</th>
-                <th scope="col" class="status">Status</th>
-            </tr>
-        </table>
-
-        <table class="book" border="1">
-            <tr>
-                <th scope="col" class="book-id">1000</th>
-                <th scope="col" class="book-id">123456789</th>
-                <th scope="col" class="author">J.K. Rowling</th>
-                <th scope="col" class="title">Harry Potter and the Sorcerer's Stone</th>
-                <th scope="col" class="category">Fantasy</th>
-                <th scope="col" class="status">Free</th>
-            </tr>
-
-            <tr>
-                <th scope="col" class="book-id">2000</th>
-                <th scope="col" class="book-id">123456783</th>
-                <th scope="col" class="author">George Orwell</th>
-                <th scope="col" class="title">1984</th>
-                <th scope="col" class="category">Dystopian</th>
-                <th scope="col" class="status">Reserved</th>
-            </tr>
-        </table>
-
         <button onclick='window.location.href = "librarian_books.html"' style="float:right"> Manage Books </button>
         <button onclick='window.location.href = "librarian_students.html"' style="float:right"> Manage Students </button>
         <button onclick=';' style="float:right"> Check report (todo) </button>
         <button onclick='logout_func()' id="backBtn"> Log out</button>
-
     </div>
     
 
@@ -80,9 +48,6 @@
 
         window.logout_func = logout_func;
     </script>
-
-
-
 
 </body>
 </html>
