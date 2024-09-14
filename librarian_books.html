@@ -11,6 +11,10 @@
     <div class="content">
         <h1 id="h">Manage Books</h1>
 
+        <div class="search-container">
+            <input type="text" id="searchBox" placeholder="Search for books..." onkeyup="searchBooks()">
+        </div>
+
         <div class="books-list">
             <table id="bookItemsTable" class="internal-table" data-sort-order="asc">
                 <thead>
@@ -27,7 +31,12 @@
                     </tr>
                 </thead>
                 <tbody id="bookItemsContents">
-                        
+
+                </tbody>
+            </table>
+            <table id="hiddenBookItemsTable" style="display:none;">
+                <tbody id="hiddenBookItemsContents">
+
                 </tbody>
             </table>
         </div>
@@ -66,7 +75,42 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
-        window.onload = populate_book_items;
+
+        window.onload = populate_books_onload;
+        window.populate_books_onload = populate_books_onload;
+        function populate_books_onload() {
+            API.getMany("Books", {}, [0, 0])
+                .then(response => {
+
+                    var inside = '';
+                    response.data.items.forEach(book => {
+                        inside += `
+            <tr id="book_${book.id}">
+                <td>${book.id}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${book.title}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>
+                    <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
+                </td>
+            </tr>
+        `;
+                    });
+                    document.getElementById("bookItemsContents").innerHTML = inside;
+                    document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " items registered)";
+
+                }).catch(err => {
+                    console.error("BookItems fetch failed:", err);
+                    document.write("BookItems couldn't load.");
+                });
+        }
+
+
+        //TODO UPDATE FUNCTIONALITY
         window.populate_book_items = populate_book_items;
         function populate_book_items() {
 
@@ -102,9 +146,10 @@
         }
 
 
+
         let selected_row_id = "";
 
-        //done
+        //TODO AGAIN
         window.selectBookItem = selectBookItem;
         function selectBookItem(row_id) {
 
@@ -131,6 +176,68 @@
             document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
             document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
         }
+
+
+
+        //KAMIL: add different BookItem inserting
+        window.selectBook = selectBook;
+        function selectBook(row_id) {
+
+            //clicked 'unselect'
+            if (selected_row_id === row_id) {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+                selected_row_id = "";
+                return;
+            }
+
+            //unselect the previous row
+            if (selected_row_id != "") {
+                document.getElementById(selected_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_row_id + "_button").innerHTML = "select";
+            }
+
+            selected_row_id = row_id;
+
+            //highlight selected row and change button appearence
+            document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
+
+            const selectedRow = document.getElementById(row_id);
+            const ile = 3;
+
+            if (!selectedRow) return;  // If no row is selected, return
+            const rowData = Array.from(selectedRow.cells).map(cell => cell.innerText);
+
+            const tbody = document.getElementById('bookItemsContents');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            for (let i = 0; i < ile; i++) {
+                let newRow = document.createElement('tr');
+                for (let j = 0; j < rowData.length; j++) {
+                    let newCell = document.createElement('td');
+                    newRow.appendChild(newCell);
+                }
+                tbody.appendChild(newRow);
+            }
+
+            for (let i = rows.length - 1; i >= 0; i--) {
+                const targetRow = rows[i + ile];
+                if (targetRow) {
+                    targetRow.innerHTML = rows[i].innerHTML;
+                }
+            }
+
+            for (let i = 1; i <= ile; i++) {
+                const cloneRow = selectedRow.cloneNode(true);
+                tbody.insertBefore(cloneRow, selectedRow.nextSibling);
+            }
+        }
+
+
 
         //done
         window.clearSlots = clearSlots;
@@ -230,6 +337,50 @@
             alert("function doesn't work due to problems with isbn serialization, sorry!");
             return;
         }
+
+        //KAMIL
+        window.searchBooks = function () {
+            const input = document.getElementById('searchBox').value.toLowerCase();
+            const visibleTable = document.getElementById('bookItemsTable').getElementsByTagName('tbody')[0];
+            const hiddenTable = document.getElementById('hiddenBookItemsContents');
+
+            // Get both tables' rows
+            const visibleRows = Array.from(visibleTable.getElementsByTagName('tr'));
+            const hiddenRows = Array.from(hiddenTable.getElementsByTagName('tr'));
+
+            // Move rows back from hidden to visible table if they now match
+            hiddenRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it matches, move back to the visible table
+                if (rowText.indexOf(input) > -1) {
+                    visibleTable.appendChild(row);
+                }
+            });
+
+            // Move non-matching rows from visible table to the hidden table
+            visibleRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it doesn't match, move to the hidden table
+                if (rowText.indexOf(input) === -1) {
+                    hiddenTable.appendChild(row);
+                }
+            });
+        }
+
 
 
 
