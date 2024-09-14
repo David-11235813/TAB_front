@@ -281,34 +281,52 @@
 
 
                     //borrowings
-                    borrowings.data.items.forEach(borrowing => {
+                    API.getMany("Fees", {}, [0, 0]).then(fees_response => {
 
-                        //get-one bookItem data
-                        API.getOne("BookItem", Number(borrowing.bookItemEan)).then(bookItem => {
-                            let bor = `
-                            <tr id="borrowing_${borrowing.id}">
-                                <td><input type="checkbox" name="concludeBorrowing_checkbox" value="${borrowing.bookItemEan}"></td>
-                                <td>${bookItem.data.bookId}</td>
-                                <td>${borrowing.bookItemEan}</td>
-                                <td>${bookItem.data.isbn}</td>
-                                <td>bookItem.title(bug)</td>
-                                <td>${borrowing.id}</td>
-                                <td>${formatDate(borrowing.borrowingDate)}</td>
-                                <td>${borrowing.librarianId}</td>
-                                <td>${bookItem.data.locationId}</td>
-                                <td>${bookItem.data.languageId}</td>
-                                <td>${bookItem.data.remarks}</td>
-                                <td><input type="number" id="fineAmount_${borrowing.bookItemEan}" style="max-width: 50px;" value=0 required /></td>
-                            </tr>
-                            `;
-                            document.getElementById("StudentBorrowings").innerHTML += bor;
-                        }).catch(err => {
-                            console.error("BookItem fetch failed:", err);
-                            document.write("BookItem couldn't load.");
-                        })
+                        const currentDate_ms = new Date();
+                        borrowings.data.items.forEach(borrowing => {
 
+                            //get-one bookItem data
+                            API.getOne("BookItem", Number(borrowing.bookItemEan)).then(bookItem => {
+
+                                //defining min fee
+                                const timeBorrowed_ms = currentDate_ms - borrowing.borrowingDate;
+                                let min_fee = 0;
+                                fees_response.data.items.forEach(item => {
+                                    if (timeBorrowed_ms >= item.rangeMsMin && timeBorrowed_ms < item.rangeMsMax) {
+                                        min_fee = item.fee;
+                                    }
+                                });
+                                let max_fee = 2 * min_fee;
+
+                                //html
+                                let bor = `
+                                <tr id="borrowing_${borrowing.id}">
+                                    <td><input type="checkbox" name="concludeBorrowing_checkbox" value="${borrowing.bookItemEan}"></td>
+                                    <td>${bookItem.data.bookId}</td>
+                                    <td>${borrowing.bookItemEan}</td>
+                                    <td>${bookItem.data.isbn}</td>
+                                    <td>bookItem.title(bug)</td>
+                                    <td>${borrowing.id}</td>
+                                    <td>${formatDate(borrowing.borrowingDate)}</td>
+                                    <td>${borrowing.librarianId}</td>
+                                    <td>${bookItem.data.locationId}</td>
+                                    <td>${bookItem.data.languageId}</td>
+                                    <td>${bookItem.data.remarks}</td>
+                                    <td><input type="number" id="fineAmount_${borrowing.bookItemEan}" style="width: 75px;" min=${min_fee} max=${max_fee} value=${min_fee} required onkeyup=enforceMinMax(this) /></td>
+                                </tr>
+                                `;
+                                document.getElementById("StudentBorrowings").innerHTML += bor;
+                            }).catch(err => {
+                                console.error("BookItem fetch failed:", err);
+                                document.write("BookItem couldn't load.");
+                            })
+
+                        });
+                    }).catch(err => {
+                        console.error("Fees fetch failed:", err);
+                        document.write("Fees couldn't load.");
                     });
-
 
                 }).catch(err => {
                     console.error("Borrowings fetch failed:", err);
@@ -464,6 +482,20 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
             // Toggle the sort order for the next click
             table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
         }
+
+        //done
+        window.enforceMinMax = enforceMinMax;
+        function enforceMinMax(el) {
+            if (el.value != "") {
+                if (parseInt(el.value) < parseInt(el.min)) {
+                    el.value = el.min;
+                }
+                if (parseInt(el.value) > parseInt(el.max)) {
+                    el.value = el.max;
+                }
+            }
+        }
+
 
 
 
