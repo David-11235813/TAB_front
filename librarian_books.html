@@ -10,10 +10,7 @@
 <body>
     <div class="content">
         <h1 id="h">Manage Books</h1>
-
-        <div class="search-container">
-            <input type="text" id="searchBox" placeholder="Search for books..." onkeyup="searchBooks()">
-        </div>
+        <input type="text" id="searchBox" placeholder="Search for books..." onkeyup="searchBooks()">
 
         <div class="books-list">
             <table id="bookItemsTable" class="internal-table" data-sort-order="asc">
@@ -75,141 +72,120 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
-
+        //almost done - ADD AUTHORS!
         window.onload = populate_books_onload;
         window.populate_books_onload = populate_books_onload;
         function populate_books_onload() {
             API.getMany("Books", {}, [0, 0])
                 .then(response => {
 
-                    var inside = '';
                     response.data.items.forEach(book => {
-                        inside += `
-            <tr id="book_${book.id}">
-                <td>${book.id}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>${book.title}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>
-                    <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
-                </td>
-            </tr>
-        `;
+                        var howmany = 0;
+                        API.getMany("BookItems", { bookId: book.id }, [0, 0])
+                            .then(response => {
+                                var inside = '';
+                                howmany = response.data.totalAmount;
+                                inside = `
+                                    <tr id="book_${book.id}">
+                                        <td>${book.id}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>${book.title}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>${howmany} positions</td>
+                                        <td>-</td>
+                                        <td>
+                                            <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
+                                        </td>
+                                    </tr>
+                                `;
+                                document.getElementById("bookItemsContents").innerHTML += inside;
+                            }).catch(err => {
+                                console.error("BookItems fetch failed:", err);
+                                document.write("BookItems couldn't load.");
+                            });
                     });
-                    document.getElementById("bookItemsContents").innerHTML = inside;
                     document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " items registered)";
 
                 }).catch(err => {
-                    console.error("BookItems fetch failed:", err);
-                    document.write("BookItems couldn't load.");
+                    console.error("Books fetch failed:", err);
+                    document.write("Books couldn't load.");
                 });
         }
 
 
-        //TODO UPDATE FUNCTIONALITY
-        window.populate_book_items = populate_book_items;
-        function populate_book_items() {
+        let selected_book_row_id = "";
+        let selected_bookItem_row_id = "";
 
-            //add info abt authors
-            API.getMany("BookItems", {}, [0, 0])
+
+        //TODO KAMIL: change BookItem rows inserting/removing onclick
+        window.selectBook = selectBook;
+        function selectBook(row_id) {
+
+            //clicked 'unselect'
+            if (selected_book_row_id === row_id) {
+                document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
+                document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
+                selected_book_row_id = "";
+                return;
+            }
+
+            ////NOT NEEDED: unselecting the previous row
+            //if (selected_book_row_id != "") {
+            //    document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
+            //    document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
+            //    document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
+            //}
+
+            selected_book_row_id = row_id;
+
+            //highlight selected row and change button appearence
+            document.getElementById(selected_book_row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_book_row_id + "_button").innerHTML = "unselect";
+
+
+
+            //temporary bad code: adds all selections at the start
+
+            var book_id = Number(selected_book_row_id.replace(/^\D+/g, ''));
+
+            API.getMany("BookItems", { bookId: book_id }, [0, 0])
                 .then(response => {
 
                     var inside = '';
                     response.data.items.forEach(bItem => {
                         inside += `
-                        <tr id="bItem_${bItem.ean}">
-	                        <td>${bItem.book_id}</td>
-	                        <td>${bItem.ean}</td>
-	                        <td>${bItem.ISBN}</td>
-	                        <td>${bItem.book_title}</td>
-	                        <td>${bItem.language_id}</td>
-	                        <td>${bItem.location_id}</td>
-	                        <td>${bItem.remarks}</td>
-	                        <td>${bItem.isBorrowed}</td>
-	                        <td>
-                                <button class="smallButton" id="bItem_${bItem.ean}_button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
-                            </td>
-                        </tr>
-                    `;
+            <tr id="bItem_${bItem.ean}" style="background: gray;">
+                <td>${bItem.book_id}</td>
+                <td>${bItem.ean}</td>
+                <td>${bItem.ISBN}</td>
+                <td>${bItem.book_title}</td>
+                <td>${bItem.language_id}</td>
+                <td>${bItem.location_id}</td>
+                <td>${bItem.remarks}</td>
+                <td>${bItem.isBorrowed}</td>
+                <td>
+                    <button class="smallButton" id="bItem_${bItem.ean}_button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
+                </td>
+            </tr>
+        `;
                     });
-                    document.getElementById("bookItemsContents").innerHTML = inside;
-                    document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " items registered)";
+                    document.getElementById("bookItemsContents").innerHTML = inside + document.getElementById("bookItemsContents").innerHTML;
 
                 }).catch(err => {
                     console.error("BookItems fetch failed:", err);
                     document.write("BookItems couldn't load.");
                 });
-        }
 
 
-
-        let selected_row_id = "";
-
-        //TODO AGAIN
-        window.selectBookItem = selectBookItem;
-        function selectBookItem(row_id) {
-
-            //clicked 'unselect'
-            if (selected_row_id === row_id) {
-                document.getElementById(selected_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
-                selected_row_id = "";
-                return;
-            }
-
-            //unselect the previous row
-            if (selected_row_id != "") {
-                document.getElementById(selected_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
-            }
-
-            selected_row_id = row_id;
-
-            //highlight selected row and change button appearence
-            document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
-            document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
-            document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
-        }
-
-
-
-        //KAMIL: add different BookItem inserting
-        window.selectBook = selectBook;
-        function selectBook(row_id) {
-
-            //clicked 'unselect'
-            if (selected_row_id === row_id) {
-                document.getElementById(selected_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
-                selected_row_id = "";
-                return;
-            }
-
-            //unselect the previous row
-            if (selected_row_id != "") {
-                document.getElementById(selected_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select";
-            }
-
-            selected_row_id = row_id;
-
-            //highlight selected row and change button appearence
-            document.getElementById(selected_row_id).setAttribute("style", "background: darkgreen;");
-            document.getElementById(selected_row_id + "_button").setAttribute("class", "smallRedButton");
-            document.getElementById(selected_row_id + "_button").innerHTML = "unselect";
-
+            //kamil:
+            /*
             const selectedRow = document.getElementById(row_id);
             const ile = 3;
 
-            if (!selectedRow) return;  // If no row is selected, return
             const rowData = Array.from(selectedRow.cells).map(cell => cell.innerText);
 
             const tbody = document.getElementById('bookItemsContents');
@@ -234,9 +210,34 @@
             for (let i = 1; i <= ile; i++) {
                 const cloneRow = selectedRow.cloneNode(true);
                 tbody.insertBefore(cloneRow, selectedRow.nextSibling);
-            }
+            }*/
         }
 
+
+        //done
+        window.selectBookItem = selectBookItem;
+        function selectBookItem(row_id) {
+
+            //unselect the previous row
+            if (selected_bookItem_row_id != "") {
+                document.getElementById(selected_bookItem_row_id).setAttribute("style", "background: gray;"); //row
+                document.getElementById(selected_bookItem_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_bookItem_row_id + "_button").innerHTML = "select";
+            }
+
+            //clicked 'unselect' - no need to select anything
+            if (selected_bookItem_row_id === row_id) {
+                selected_bookItem_row_id = "";
+                return;
+            }
+
+            selected_bookItem_row_id = row_id;
+
+            //highlight selected row and change button appearence
+            document.getElementById(selected_bookItem_row_id).setAttribute("style", "background: darkcyan;");
+            document.getElementById(selected_bookItem_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_bookItem_row_id + "_button").innerHTML = "unselect";
+        }
 
 
         //done
@@ -251,7 +252,7 @@
         window.pasteSlots = pasteSlots;
         function pasteSlots() {
             //get row data
-            let row = document.getElementById(selected_row_id);
+            let row = document.getElementById(selected_bookItem_row_id);
             let cells = row.children;
             let cellsAlt = row.querySelectorAll('td');
 

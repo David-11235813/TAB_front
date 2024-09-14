@@ -211,21 +211,18 @@
         window.selectStudent = selectStudent;
         function selectStudent(row_id) {
 
-            //clicked 'unselect'
-            if (selected_row_id === row_id) {
-                document.getElementById(selected_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_row_id + "_button").innerHTML = "select"; //button
-                selected_row_id = "";
-                document.getElementById("manageStudent").disabled = true;
-                return;
-            }
-
             //unselect the previous row
             if (selected_row_id != "") {
                 document.getElementById(selected_row_id).setAttribute("style", ""); //row
                 document.getElementById(selected_row_id + "_button").setAttribute("class", "smallButton"); //button
                 document.getElementById(selected_row_id + "_button").innerHTML = "select"; //button
+            }
+
+            //clicked 'unselect' - no need to select anything
+            if (selected_row_id === row_id) {
+                selected_row_id = "";
+                document.getElementById("manageStudent").disabled = true;
+                return;
             }
 
             selected_row_id = row_id;
