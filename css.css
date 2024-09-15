@@ -529,10 +529,10 @@ tr:nth-child(even) {
 }
 
 
-input[type="text"] {
+input[type="text"]:not(#uname) {
     background: slategrey;
 }
 
-    input[type="text"]::placeholder {
+    input[type="text"]::placeholder:not(#uname) {
         color: darkgray;
     }
