@@ -116,7 +116,7 @@
         }
 
 
-        let selected_book_row_id = "";
+        //let selected_book_row_id = "";
         let selected_bookItem_row_id = "";
 
 
@@ -125,34 +125,41 @@
         function selectBook(row_id) {
 
             //clicked 'unselect'
-            if (selected_book_row_id === row_id) {
-                document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
-                document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
-                document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
-                selected_book_row_id = "";
+            if (document.getElementById(row_id + "_button").innerHTML === "unselect") {
+                document.getElementById(row_id).setAttribute("style", ""); //row
+                document.getElementById(row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(row_id + "_button").innerHTML = "select";
                 return;
             }
 
-            ////NOT NEEDED: unselecting the previous row
+            ////NOT NEEDED: unselecting the previous rows
+            ////clicked 'unselect'
+            //if (selected_book_row_id === row_id) {
+            //    document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
+            //    document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
+            //    document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
+            //    selected_book_row_id = "";
+            //    return;
+            //}
+            //
             //if (selected_book_row_id != "") {
             //    document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
             //    document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
             //    document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
             //}
+            //
+            //selected_book_row_id = row_id;
 
-            selected_book_row_id = row_id;
-
-            //highlight selected row and change button appearence
-            document.getElementById(selected_book_row_id).setAttribute("style", "background: darkgreen;");
-            document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallRedButton");
-            document.getElementById(selected_book_row_id + "_button").innerHTML = "unselect";
+            document.getElementById(row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(row_id + "_button").innerHTML = "unselect";
+            //another 'select' ^^^; highlight selected row and change button appearence
 
 
+
+            var book_id = Number(row_id.replace(/^\D+/g, ''));
 
             //temporary bad code: adds all selections at the start
-
-            var book_id = Number(selected_book_row_id.replace(/^\D+/g, ''));
-
             API.getMany("BookItems", { bookId: book_id }, [0, 0])
                 .then(response => {
 
