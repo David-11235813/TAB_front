@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <title>Manage Students</title>
@@ -11,6 +10,7 @@
 <body>
     <div class="content">
         <h1 id="h">Manage Students</h1>
+        <input type="text" id="searchBoxStudents" placeholder="Search for students..." onkeyup="searchTable('searchBoxStudents', 'studentsTable')">
 
         <div class="students-list">
             <table id="studentsTable" class="internal-table" data-sort-order="asc">
@@ -23,8 +23,8 @@
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 4)">Class ID:</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 5)">email</label></th>
                         <!--
-                        <th width="5%">borrowed | reserved</th>
-                        -->
+                <th width="5%">borrowed | reserved</th>
+                -->
                         <th></th>
                     </tr>
                 </thead>
@@ -32,6 +32,13 @@
                     <!-- Students will be populated here -->
                 </tbody>
             </table>
+
+            <table id="hidden_studentsTable" style="display:none;">
+                <tbody id="hidden_studentsContents">
+
+                </tbody>
+            </table>
+
         </div>
 
         <div class="editable">
@@ -69,6 +76,8 @@
             <div>
                 <div class="Process-Book-Reservation">
                     <h2>Student's Book Reservations:</h2>
+                    <input type="text" id="searchBoxReservations" placeholder="Search for reservations..." onkeyup="searchTable('searchBoxReservations', 'Process-Book-Reservation-Table')">
+
                     <table id="Process-Book-Reservation-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
@@ -84,10 +93,18 @@
                             <!-- Reserved books will be populated here -->
                         </tbody>
                     </table>
+                    
+                    <table id="hidden_Process-Book-Reservation-Table" style="display:none;">
+                        <tbody id="hidden_StudentReservations">
+
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="Available">
                     <h2 id="h_available">Available BookItems</h2>
+                    <input type="text" id="searchBoxAvailableBooks" placeholder="Search for available books..." onkeyup="searchTable('searchBoxAvailableBooks', 'Available-Book-Table')">
+
                     <table id="Available-Book-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
@@ -105,11 +122,19 @@
                             <!-- Available bookItems will be populated here -->
                         </tbody>
                     </table>
+
+                    <table id="hidden_Available-Book-Table" style="display:none;">
+                        <tbody id="hidden_AvailableBooks">
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <div class="Borrowings">
                 <h2>Student's Book Borrowings:</h2>
+                <input type="text" id="searchBoxBorrowings" placeholder="Search for available books..." onkeyup="searchTable('searchBoxBorrowings', 'Borrowings-Table')">
+
                 <div>
                     <table id="Borrowings-Table" class="internal-table" data-sort-order="asc">
                         <thead>
@@ -132,6 +157,12 @@
                             <!-- Borrowed bookItems will be populated here -->
                         </tbody>
                     </table>
+
+                    <table id="hidden_Borrowings-Table" style="display:none;">
+                        <tbody id="hidden_StudentBorrowings">
+                        </tbody>
+                    </table>
+
                     <button onclick="concludeBorrowings(); ">Conclude the borrowings?</button>
                     <!--loadStudentBooksModal() ^^^ powyzej dodatkowo-->
                 </div>
@@ -495,6 +526,51 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                 }
             }
         }
+
+
+
+        window.searchTable = function (searchBox, table_id) {
+            const input = document.getElementById(searchBox).value.toLowerCase();
+            const visibleTable = document.getElementById(table_id).getElementsByTagName('tbody')[0];
+            const hiddenTable = document.getElementById('hidden_' + table_id);
+
+            // Get both tables' rows
+            const visibleRows = Array.from(visibleTable.getElementsByTagName('tr'));
+            const hiddenRows = Array.from(hiddenTable.getElementsByTagName('tr'));
+
+            // Move rows back from hidden to visible table if they now match
+            hiddenRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it matches, move back to the visible table
+                if (rowText.indexOf(input) > -1) {
+                    visibleTable.appendChild(row);
+                }
+            });
+
+            // Move non-matching rows from visible table to the hidden table
+            visibleRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it doesn't match, move to the hidden table
+                if (rowText.indexOf(input) === -1) {
+                    hiddenTable.appendChild(row);
+                }
+            });
+        }
+
 
 
 

@@ -527,3 +527,12 @@ tr:nth-child(even) {
 .pointy {
     cursor: n-resize;
 }
+
+
+input[type="text"] {
+    background: slategrey;
+}
+
+    input[type="text"]::placeholder {
+        color: darkgray;
+    }

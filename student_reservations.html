@@ -15,6 +15,9 @@
 
             <div class="borrowed-books">
                 <h2 id="h_personal">Your bookItems:</h2>
+                <input type="text" id="searchBoxBorrowings" placeholder="Search your reservations..." onkeyup="searchBooks('searchBoxBorrowings', 'reservationsBorrowingsTable')">
+                <br><br>
+
                 <table id="reservationsBorrowingsTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
@@ -29,43 +32,20 @@
                         </tr>
                     </thead>
                     <tbody id="reservationsBorrowingsContents">
-                        <!--
-                        <tr data-id="1000">
-                            <td>1000</td>
-                            <td>123456789</td>
-                            <td>J.K. Rowling</td>
-                            <td>Harry Potter and the Sorcerer's Stone</td>
-                            <td>Fantasy</td>
-                            <td>In possession</td>
-                            <td>-</td>
-                        </tr>
-                        <tr data-id="2000">
-                            <td>2000</td>
-                            <td>123456783</td>
-                            <td>George Orwell</td>
-                            <td>1984</td>
-                            <td>Dystopian</td>
-                            <td>Reserved</td>
-                            <td>
-                                <label><input type="checkbox">Cancel Reservation</label>
-                            </td>
-                        </tr>
-                        <tr data-id="3000">
-                            <td>3000</td>
-                            <td>234567890</td>
-                            <td>J.R.R. Tolkien</td>
-                            <td>Hobbit</td>
-                            <td>Fantasy</td>
-                            <td>In possession</td>
-                            <td>-</td>
-                        </tr>
-                        -->
+                    </tbody>
+                </table>
+
+                <table id="hidden_reservationsBorrowingsTable" style="display:none;">
+                    <tbody id="hidden_reservationsBorrowingsContents">
                     </tbody>
                 </table>
             </div>
 
             <div class="available-books">
                 <h2 id="h_available">Available Books</h2>
+                <input type="text" id="searchBoxBooks" placeholder="Search for books..." onkeyup="searchBooks('searchBoxBooks', 'availableBooksTable')">
+                <br><br>
+
                 <table id="availableBooksTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
@@ -79,41 +59,11 @@
                         </tr>
                     </thead>
                     <tbody id="availableBooksContents">
-                        <!--
-                            <tr data-id="1000">
-                                <td>1000</td>
-                                <td>123456789</td>
-                                <td>J.K. Rowling</td>
-                                <td>Harry Potter and the Sorcerer's Stone</td>
-                                <td>Fantasy</td>
-                                <td>Available</td>
-                                <td>
-                                    <label><input type="checkbox">Reserve</label>
-                                </td>
-                            </tr>
-                            <tr data-id="2000">
-                                <td>2000</td>
-                                <td>123456783</td>
-                                <td>George Orwell</td>
-                                <td>1984</td>
-                                <td>Dystopian</td>
-                                <td>No free copies available</td>
-                                <td>
-                                    <label><input type="checkbox">Reserve</label>
-                                </td>
-                            </tr>
-                            <tr data-id="3000">
-                                <td>3000</td>
-                                <td>234567890</td>
-                                <td>J.R.R. Tolkien</td>
-                                <td>Hobbit</td>
-                                <td>Fantasy</td>
-                                <td>Unavailable</td>
-                                <td>
-                                    <label><input type="checkbox" disabled>Reserve</label>
-                                </td>
-                            </tr>
-                            -->
+                    </tbody>
+                </table>
+
+                <table id="hidden_availableBooksTable" style="display:none;">
+                    <tbody id="hidden_availableBooksContents">
                     </tbody>
                 </table>
             </div>
@@ -216,27 +166,27 @@
 
             API.getMany("Books", {}, [0, 0]).then(response => {
 
-                    let inside = '';
-                    response.data.items.forEach(book => {
-                        inside += `
-                            <tr id="book_${book.id}">
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>?author</td>
-                                <td>?category</td>
-                                <td>?lang</td>
-                                <td>?status</td>
-                                <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
-                            </tr>
-                        `;
-                    });
-                    document.getElementById("availableBooksContents").innerHTML = inside;
-                    document.getElementById("h_available").innerHTML += " (" + response.data.totalAmount + " titles)";
-
-                }).catch(err => {
-                    console.error("Books fetch failed:", err);
-                    document.write("Books couldn't load.");
+                let inside = '';
+                response.data.items.forEach(book => {
+                    inside += `
+                        <tr id="book_${book.id}">
+                            <td>${book.id}</td>
+                            <td>${book.title}</td>
+                            <td>?author</td>
+                            <td>?category</td>
+                            <td>?lang</td>
+                            <td>?status</td>
+                            <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
+                        </tr>
+                    `;
                 });
+                document.getElementById("availableBooksContents").innerHTML = inside;
+                document.getElementById("h_available").innerHTML = "Available Books (" + response.data.totalAmount + " titles)";
+
+            }).catch(err => {
+                console.error("Books fetch failed:", err);
+                document.write("Books couldn't load.");
+            });
         }
 
 
@@ -350,6 +300,50 @@
         function formatDate(date) {
             return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
+
+
+        window.searchBooks = function (searchBox, table_id) {
+            const input = document.getElementById(searchBox).value.toLowerCase();
+            const visibleTable = document.getElementById(table_id).getElementsByTagName('tbody')[0];
+            const hiddenTable = document.getElementById('hidden_' + table_id);
+
+            // Get both tables' rows
+            const visibleRows = Array.from(visibleTable.getElementsByTagName('tr'));
+            const hiddenRows = Array.from(hiddenTable.getElementsByTagName('tr'));
+
+            // Move rows back from hidden to visible table if they now match
+            hiddenRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it matches, move back to the visible table
+                if (rowText.indexOf(input) > -1) {
+                    visibleTable.appendChild(row);
+                }
+            });
+
+            // Move non-matching rows from visible table to the hidden table
+            visibleRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+
+                // Collect all relevant text in the row
+                for (let j = 0; j < cells.length - 1; j++) {
+                    rowText += cells[j].innerText.toLowerCase() + ' ';
+                }
+
+                // If it doesn't match, move to the hidden table
+                if (rowText.indexOf(input) === -1) {
+                    hiddenTable.appendChild(row);
+                }
+            });
+        }
+
 
     </script>
 
