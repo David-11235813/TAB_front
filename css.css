@@ -533,6 +533,6 @@ input[type="text"]:not(#uname) {
     background: slategrey;
 }
 
-    input[type="text"]::placeholder:not(#uname) {
+    input[type="text"]::placeholder {
         color: darkgray;
     }
