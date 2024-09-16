@@ -18,12 +18,12 @@
                     <tr>
                         <th width="3%" ><label class="pointy" onclick="sort_by_column(0)">id</label></th>
                         <th width="5%" ><label class="pointy" onclick="sort_by_column(1)">ean</label></th>
-                        <th width="10%"><label class="pointy" onclick="sort_by_column(2)">ISBN</label></th>
+                        <th width="11%"><label class="pointy" onclick="sort_by_column(2)">ISBN</label></th>
                         <th width="25%"><label class="pointy" onclick="sort_by_column(3)">Title</label></th>
                         <th width="5%" ><label class="pointy" onclick="sort_by_column(4)">Lang id</label></th>
                         <th width="5%" ><label class="pointy" onclick="sort_by_column(5)">Location id</label></th>
                         <th width="20%"><label class="pointy" onclick="sort_by_column(6)">Remarks</label></th>
-                        <th width="8%" ><label class="pointy" onclick="sort_by_column(7)">Borrowed?</label></th>
+                        <th width="7%" ><label class="pointy" onclick="sort_by_column(7)">Borrowed?</label></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -116,11 +116,10 @@
         }
 
 
-        //let selected_book_row_id = "";
+
         let selected_bookItem_row_id = "";
 
-
-        //TODO KAMIL: change BookItem rows inserting/removing onclick
+        //done
         window.selectBook = selectBook;
         function selectBook(row_id) {
 
@@ -134,24 +133,6 @@
                 removeExpandedRows(row_id + '_')
                 return;
             }
-
-            ////NOT NEEDED: unselecting the previous rows
-            ////clicked 'unselect'
-            //if (selected_book_row_id === row_id) {
-            //    document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
-            //    document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
-            //    document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
-            //    selected_book_row_id = "";
-            //    return;
-            //}
-            //
-            //if (selected_book_row_id != "") {
-            //    document.getElementById(selected_book_row_id).setAttribute("style", ""); //row
-            //    document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
-            //    document.getElementById(selected_book_row_id + "_button").innerHTML = "select";
-            //}
-            //
-            //selected_book_row_id = row_id;
 
             document.getElementById(row_id).setAttribute("style", "background: darkgreen;");
             document.getElementById(row_id + "_button").setAttribute("class", "smallRedButton");
@@ -170,151 +151,41 @@
                     var inside = '';
                     response.data.items.forEach(bItem => {
                         inside += `
-            <tr id="${row_id}_${bItem.ean}" style="background: gray;">
-                <td>${bItem.book_id}</td>
-                <td>${bItem.ean}</td>
-                <td>${bItem.ISBN}</td>
-                <td>${bItem.book_title}</td>
-                <td>${bItem.language_id}</td>
-                <td>${bItem.location_id}</td>
-                <td>${bItem.remarks}</td>
-                <td>${bItem.isBorrowed}</td>
-                <td>
-                    <button class="smallButton" id="${row_id}_${bItem.ean}_button" onclick="selectBookItem('${row_id}_${bItem.ean}')">select</button>
-                </td>
-            </tr>
-        `;
+                            <tr id="${row_id}_${bItem.ean}" style="background: gray;">
+                                <td>${bItem.book_id}</td>
+                                <td>${bItem.ean}</td>
+                                <td>${bItem.ISBN}</td>
+                                <td>${bItem.book_title}</td>
+                                <td>${bItem.language_id}</td>
+                                <td>${bItem.location_id}</td>
+                                <td>${bItem.remarks}</td>
+                                <td>${bItem.isBorrowed}</td>
+                                <td>
+                                    <button class="smallButton" id="${row_id}_${bItem.ean}_button" onclick="selectBookItem('${row_id}_${bItem.ean}')">select</button>
+                                </td>
+                            </tr>
+                        `;
                     });
-                    document.getElementById("bookItemsContents").innerHTML = inside + document.getElementById("bookItemsContents").innerHTML;
+                    //document.getElementById("bookItemsContents").innerHTML = inside + document.getElementById("bookItemsContents").innerHTML;
+
+                    addExpandedRowsCode(row_id, inside);
 
                 }).catch(err => {
                     console.error("BookItems fetch failed:", err);
                     document.write("BookItems couldn't load.");
                 });
 
-
-            //kamil:
-            /*
-            const selectedRow = document.getElementById(row_id);
-            const ile = 3;
-
-            const rowData = Array.from(selectedRow.cells).map(cell => cell.innerText);
-
-            const tbody = document.getElementById('bookItemsContents');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-
-            for (let i = 0; i < ile; i++) {
-                let newRow = document.createElement('tr');
-                for (let j = 0; j < rowData.length; j++) {
-                    let newCell = document.createElement('td');
-                    newRow.appendChild(newCell);
-                }
-                tbody.appendChild(newRow);
-            }
-
-            for (let i = rows.length - 1; i >= 0; i--) {
-                const targetRow = rows[i + ile];
-                if (targetRow) {
-                    targetRow.innerHTML = rows[i].innerHTML;
-                }
-            }
-
-            for (let i = 1; i <= ile; i++) {
-                const cloneRow = selectedRow.cloneNode(true);
-                tbody.insertBefore(cloneRow, selectedRow.nextSibling);
-            }*/
         }
 
+        //done
+        function addExpandedRowsCode(row_id, code) {
+            let tdElement = document.getElementById(row_id);
 
-
-
-
-
-        //TODO incorporate vvv
-
-        window.selectBook2 = selectBook2;
-        function selectBook2(row_id) {
-
-            // Check if the row is already selected (clicked 'unselect')
-            if (document.getElementById(row_id + "_button").innerHTML === "unselect") {
-                document.getElementById(row_id).setAttribute("style", ""); // Clear row highlight
-                document.getElementById(row_id + "_button").setAttribute("class", "smallButton"); // Reset button class
-                document.getElementById(row_id + "_button").innerHTML = "select"; // Change text to 'select'
-                return;
-            }
-
-            // Highlight selected row and change button appearance
-            document.getElementById(row_id).setAttribute("style", "background: darkgreen;");
-            document.getElementById(row_id + "_button").setAttribute("class", "smallRedButton");
-            document.getElementById(row_id + "_button").innerHTML = "unselect";
-
-            // Assuming row_id contains a numeric part, use it to fetch the book details
-            var book_id = Number(row_id.replace(/^\D+/g, ''));
-            // Fetch data related to this book (from an API, for example)
-            API.getMany("BookItems", { bookId: book_id }, [0, 0])
-                .then(response => {
-                    var inside = '';
-                    response.data.items.forEach(bItem => {
-                        inside += `
-                <tr id="bItem${bItem.ean}" style="background: gray;">
-                    <td>${bItem.bookid}</td>
-                    <td>${bItem.ean}</td>
-                    <td>${bItem.ISBN}</td>
-                    <td>${bItem.book_title}</td>
-                    <td>${bItem.language_id}</td>
-                    <td>${bItem.location_id}</td>
-                    <td>${bItem.remarks}</td>
-                    <td>${bItem.isBorrowed}</td>
-                    <td>
-                        <button class="smallButton" id="bItem${bItem.ean}button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
-                    </td>
-                </tr>
-                `;
-                    });
-                    document.getElementById("bookItemsContents").innerHTML = inside + document.getElementById("bookItemsContents").innerHTML;
-                })
-                .catch(err => {
-                    console.error("BookItems fetch failed:", err);
-                    document.write("BookItems couldn't load.");
-                });
-
-            // Add the extra rows (expanding three times, for example)
-            addExpandedRows(row_id);
-        }
-
-        function addExpandedRows(row_id) {
-            const selectedRow = document.getElementById(row_id);
-            const tbody = document.getElementById('bookItemsContents');
-            const ile = 3; // Number of expanded rows to add
-
-            for (let i = 1; i <= ile; i++) {
-                // Clone the selected row
-                let newRow = selectedRow.cloneNode(true);
-
-                // Create a new unique ID for the cloned row
-                let new_id = row_id + String.fromCharCode(64 + i); // Converts 1,2,3 to A,B,C
-
-                // Update the ID of the new row and its button
-                newRow.id = new_id; // Assign new ID to the row
-                newRow.querySelector("${ row_id }_button").id = new_id + "_button"; // Update button ID
-                newRow.querySelector("${ new_id }_button").innerHTML = "select"; // Reset button label to "select"
-
-                // Modify the contents of the new row (e.g., to add suffix to cell values)
-                Array.from(newRow.cells).forEach(cell => {
-                    if (cell.tagName === "TD" || cell.tagName === "TH") {
-                        cell.innerText += String.fromCharCode(64 + i); // Add 'A', 'B', 'C' suffix
-                    }
-                });
-
-                // Insert the new row after the selected row
-                tbody.insertBefore(newRow, selectedRow.nextSibling);
+            if (tdElement) {
+                // Insert the provided code directly after the closing </td> tag
+                tdElement.insertAdjacentHTML('afterend', code);
             }
         }
-
-        //TODO incorporate ^^^
-
-
-
 
         //done
         function removeExpandedRows(prefix) {
@@ -415,47 +286,7 @@
             table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
         }
 
-
-
-        //WIP - BUG_9
-        window.addNewBookItem = addNewBookItem;
-        function addNewBookItem() {
-
-            alert("function doesn't work due to problems with isbn serialization, sorry!");
-            return;
-
-            ////checks data integrity
-            //let n = document.getElementById("slot1").innerHTML;
-            //let s = document.getElementById("slot2").innerHTML;
-            //let b = document.getElementById("slot3").innerHTML;
-            //let c = document.getElementById("slot4").innerHTML;
-            //let e = document.getElementById("slot5").innerHTML;
-            //
-            //if (n === '' || s === '' || b === '' || c === '' || e === '') {
-            //    alert("Must fill all slots first!");
-            //    return;
-            //}
-
-            //create
-            API.createOne("BookItem", {
-                isbn: {value: "99999999999", __type: "BigInt"},
-                remarks: String("remarks"),
-                bookId: Number(1),
-                locationId: Number(1),
-                languageId: Number(1)
-            }).then(response => { populate_book_items(); }).catch(err => {
-                console.error("BookItem " + id + " creation failed", err);
-                document.write("BookItem creation failed");
-            });
-        }
-
-        window.modifySelectedBookItem = modifySelectedBookItem;
-        function modifySelectedBookItem() {
-            alert("function doesn't work due to problems with isbn serialization, sorry!");
-            return;
-        }
-
-        //KAMIL
+        //done
         window.searchBooks = function () {
             const input = document.getElementById('searchBox').value.toLowerCase();
             const visibleTable = document.getElementById('bookItemsTable').getElementsByTagName('tbody')[0];
@@ -500,6 +331,51 @@
 
 
 
+        //WIP - BUG_9
+        window.addNewBookItem = addNewBookItem;
+        function addNewBookItem() {
+
+            alert("function doesn't work due to problems with isbn serialization, sorry!");
+            return;
+
+            ////checks data integrity
+            //let n = document.getElementById("slot1").innerHTML;
+            //let s = document.getElementById("slot2").innerHTML;
+            //let b = document.getElementById("slot3").innerHTML;
+            //let c = document.getElementById("slot4").innerHTML;
+            //let e = document.getElementById("slot5").innerHTML;
+            //
+            //if (n === '' || s === '' || b === '' || c === '' || e === '') {
+            //    alert("Must fill all slots first!");
+            //    return;
+            //}
+
+            //create
+            API.createOne("BookItem", {
+                isbn: {value: "99999999999", __type: "BigInt"},
+                remarks: String("remarks"),
+                bookId: Number(1),
+                locationId: Number(1),
+                languageId: Number(1)
+            }).then(response => { populate_book_items(); }).catch(err => {
+                console.error("BookItem " + id + " creation failed", err);
+                document.write("BookItem creation failed");
+            });
+        }
+
+        window.modifySelectedBookItem = modifySelectedBookItem;
+        function modifySelectedBookItem() {
+            alert("function doesn't work due to problems with isbn serialization, sorry!");
+            return;
+        }
+
+        window.removeSelectedBookItem = removeSelectedBookItem;
+        function removeSelectedBookItem() {
+
+            alert("function doesn't work due to BookItems having connections to other references, sorry!");
+
+            //API.deleteOne("BookItem", 38).then(response => { populate_students(); });
+        }
 
         ////COPY
         //window.modifySelectedStudent = modifySelectedStudent;
@@ -546,16 +422,6 @@
         //    });
         //
         //}
-
-
-
-        window.removeSelectedBookItem = removeSelectedBookItem;
-        function removeSelectedBookItem() {
-
-            alert("function doesn't work due to BookItems having connections to other references, sorry!");
-
-            //API.deleteOne("BookItem", 38).then(response => { populate_students(); });
-        }
 
 
     </script>
