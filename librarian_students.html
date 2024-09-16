@@ -86,7 +86,7 @@
                                 <th width="10%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 2)">reserve id</label></th>
                                 <th width="22%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 3)">reserved since</label></th>
                                 <th width="20%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 4)">Show available</label></th>
-                                <th width="5%">Unreserve</th>
+                                <th width="5%"><button class="smallButton" style="font-size: 13px; background-color: darkslateblue; " onclick="cancelStudentReservations()">Unreserve:</button></th>
                             </tr>
                         </thead>
                         <tbody id="StudentReservations">
@@ -368,6 +368,35 @@
                 document.write("Reservations couldn't load.");
             });
         }
+
+
+        //done (check again!) - BUG_1
+        window.cancelStudentReservations = cancelStudentReservations;
+        function cancelStudentReservations() {
+            var cancelCheckboxes = document.getElementsByName('cancelReservation_checkbox');
+            var cancelCheckboxesChecked = [];
+
+            for (var checkboxCancel of cancelCheckboxes) {
+                if (checkboxCancel.checked)
+                    cancelCheckboxesChecked.push(checkboxCancel); //construct array of checked
+            }
+
+            if (!(cancelCheckboxesChecked.length > 0)) return;
+
+            //cancel chosen reservations
+            for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
+
+                API.cancelReservation(Number(checkboxCancel.value)).then(response => { //?
+                    //document.body.append("rezerwacja usunieta || ");
+                }).catch(err => {
+                    console.error("Reservation cancel with id " + checkboxCancel.value + " failed:", err);
+                    document.write("Reservation cancel with id " + checkboxCancel.value + " failed:");
+                });
+            }
+
+            loadStudentBooksModal();
+        }
+
 
         //done - BUG_5
         document.displayLendableBookItems = displayLendableBookItems;
