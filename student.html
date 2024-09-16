@@ -15,7 +15,7 @@
 
     <div>
         <button onclick='window.location.href = "student_reservations.html"' style="float:right"> Student reservations </button>
-        <button onclick='window.location.href = "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=152&ct=1717167620&rver=7.0.6738.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fcobrandid%3dab0455a0-8d03-46b9-b18b-df2f57b9e44c%26nlp%3d1%26deeplink%3dowa%252f%26RpsCsrfState%3d80fa27e5-41c8-2a9e-eed4-fdc543a072af&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=ab0455a0-8d03-46b9-b18b-df2f57b9e44c"' style="float:right"> Email the librarian</button>
+        <button onclick="emailLibrarian()" style="float:right"> Direct contact with The Exalted Guardian of the Archives</button>
         <button onclick='window.location.href = "reports_overview.html"' style="float:right"> Check reports </button>
     </div>
     <button onclick="logout_func()" id="backBtn"> Log out</button>
@@ -29,6 +29,7 @@
         // Initialize API
         const API = new FrontEndAPI('https://127.0.0.1:3000');
 
+        window.logout_func = logout_func;
         //logout (work in progress)
         function logout_func() {
 
@@ -47,7 +48,18 @@
 
         }
 
-        window.logout_func = logout_func;
+        window.emailLibrarian = emailLibrarian;
+        function emailLibrarian() {
+            var email = "admin@admin.pl";
+            var subject = "Saegar Library student email"; // Subject of the email
+            var body = "Hello, I'm one of the students with account in Saegar Library.\n\n\n"; // Body of the email
+
+            var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailtoLink;
+        }
+
+
     </script>
 
 </body>
