@@ -129,6 +129,9 @@
                 document.getElementById(row_id).setAttribute("style", ""); //row
                 document.getElementById(row_id + "_button").setAttribute("class", "smallButton"); //button
                 document.getElementById(row_id + "_button").innerHTML = "select";
+                if (selected_bookItem_row_id.startsWith(row_id + '_'))
+                    selected_bookItem_row_id = "";
+                removeExpandedRows(row_id + '_')
                 return;
             }
 
@@ -159,6 +162,7 @@
 
             var book_id = Number(row_id.replace(/^\D+/g, ''));
 
+
             //temporary bad code: adds all selections at the start
             API.getMany("BookItems", { bookId: book_id }, [0, 0])
                 .then(response => {
@@ -166,7 +170,7 @@
                     var inside = '';
                     response.data.items.forEach(bItem => {
                         inside += `
-            <tr id="bItem_${bItem.ean}" style="background: gray;">
+            <tr id="${row_id}_${bItem.ean}" style="background: gray;">
                 <td>${bItem.book_id}</td>
                 <td>${bItem.ean}</td>
                 <td>${bItem.ISBN}</td>
@@ -176,7 +180,7 @@
                 <td>${bItem.remarks}</td>
                 <td>${bItem.isBorrowed}</td>
                 <td>
-                    <button class="smallButton" id="bItem_${bItem.ean}_button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
+                    <button class="smallButton" id="${row_id}_${bItem.ean}_button" onclick="selectBookItem('${row_id}_${bItem.ean}')">select</button>
                 </td>
             </tr>
         `;
@@ -220,6 +224,110 @@
                 tbody.insertBefore(cloneRow, selectedRow.nextSibling);
             }*/
         }
+
+
+
+
+
+
+        //TODO incorporate vvv
+
+        window.selectBook2 = selectBook2;
+        function selectBook2(row_id) {
+
+            // Check if the row is already selected (clicked 'unselect')
+            if (document.getElementById(row_id + "_button").innerHTML === "unselect") {
+                document.getElementById(row_id).setAttribute("style", ""); // Clear row highlight
+                document.getElementById(row_id + "_button").setAttribute("class", "smallButton"); // Reset button class
+                document.getElementById(row_id + "_button").innerHTML = "select"; // Change text to 'select'
+                return;
+            }
+
+            // Highlight selected row and change button appearance
+            document.getElementById(row_id).setAttribute("style", "background: darkgreen;");
+            document.getElementById(row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(row_id + "_button").innerHTML = "unselect";
+
+            // Assuming row_id contains a numeric part, use it to fetch the book details
+            var book_id = Number(row_id.replace(/^\D+/g, ''));
+            // Fetch data related to this book (from an API, for example)
+            API.getMany("BookItems", { bookId: book_id }, [0, 0])
+                .then(response => {
+                    var inside = '';
+                    response.data.items.forEach(bItem => {
+                        inside += `
+                <tr id="bItem${bItem.ean}" style="background: gray;">
+                    <td>${bItem.bookid}</td>
+                    <td>${bItem.ean}</td>
+                    <td>${bItem.ISBN}</td>
+                    <td>${bItem.book_title}</td>
+                    <td>${bItem.language_id}</td>
+                    <td>${bItem.location_id}</td>
+                    <td>${bItem.remarks}</td>
+                    <td>${bItem.isBorrowed}</td>
+                    <td>
+                        <button class="smallButton" id="bItem${bItem.ean}button" onclick="selectBookItem('bItem_${bItem.ean}')">select</button>
+                    </td>
+                </tr>
+                `;
+                    });
+                    document.getElementById("bookItemsContents").innerHTML = inside + document.getElementById("bookItemsContents").innerHTML;
+                })
+                .catch(err => {
+                    console.error("BookItems fetch failed:", err);
+                    document.write("BookItems couldn't load.");
+                });
+
+            // Add the extra rows (expanding three times, for example)
+            addExpandedRows(row_id);
+        }
+
+        function addExpandedRows(row_id) {
+            const selectedRow = document.getElementById(row_id);
+            const tbody = document.getElementById('bookItemsContents');
+            const ile = 3; // Number of expanded rows to add
+
+            for (let i = 1; i <= ile; i++) {
+                // Clone the selected row
+                let newRow = selectedRow.cloneNode(true);
+
+                // Create a new unique ID for the cloned row
+                let new_id = row_id + String.fromCharCode(64 + i); // Converts 1,2,3 to A,B,C
+
+                // Update the ID of the new row and its button
+                newRow.id = new_id; // Assign new ID to the row
+                newRow.querySelector("${ row_id }_button").id = new_id + "_button"; // Update button ID
+                newRow.querySelector("${ new_id }_button").innerHTML = "select"; // Reset button label to "select"
+
+                // Modify the contents of the new row (e.g., to add suffix to cell values)
+                Array.from(newRow.cells).forEach(cell => {
+                    if (cell.tagName === "TD" || cell.tagName === "TH") {
+                        cell.innerText += String.fromCharCode(64 + i); // Add 'A', 'B', 'C' suffix
+                    }
+                });
+
+                // Insert the new row after the selected row
+                tbody.insertBefore(newRow, selectedRow.nextSibling);
+            }
+        }
+
+        //TODO incorporate ^^^
+
+
+
+
+        //done
+        function removeExpandedRows(prefix) {
+            const rows = document.querySelectorAll('#bookItemsContents tr');
+
+            // Loop through the rows and remove any row whose id starts with the given prefix
+            rows.forEach(row => {
+                if (row.id.startsWith(prefix)) {
+                    row.remove();  // Remove the row if it matches the prefix
+                }
+            });
+        }
+
 
 
         //done
