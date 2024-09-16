@@ -420,7 +420,9 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                         `;
 } //BUG_5 HANDLING
                 });
+                if (inside === '') inside = "<tr id='empty'></tr><td>[none]</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>";
                 document.getElementById("AvailableBooks").innerHTML = inside;
+                document.getElementById("h_available").innerHTML = "Available BookItems: " + response.data.totalAmount; //BUG_5 here!
 
             }).catch(err => {
                 console.error("BookItems fetch failed:", err);
