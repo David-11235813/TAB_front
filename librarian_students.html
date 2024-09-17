@@ -404,7 +404,8 @@
         function displayLendableBookItems(book_id) {
 
             //unselect the previous row
-            if (selected_book_row_id != "") {
+            if (selected_book_row_id != "" && document.getElementById(selected_book_row_id + "_button")) {
+
                 document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
                 document.getElementById(selected_book_row_id + "_button").innerHTML = "select"; //button
                 
