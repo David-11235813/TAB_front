@@ -102,59 +102,54 @@
 
             let inside = '';
 
-            //add student's borrowings & reservations data here
+            //add student's borrowings & reservations data
             API.getCurrentUser().then(student => {
-
                 //add borrowings onto page
-                API.getMany("Borrowings", { studentId: student.id }, [0, 0]).then(response => {
-                    //response = all borrowings of student
-                    response.data.items.forEach(borrowing => {
-                        inside += `
-                        <tr id="mybook_{book_id_TODO}_${borrowing.bookItemEan}">
-                            <td>?id</td>
-                            <td>?title</td>
-                            <td>?author</td>
-                            <td>?category</td>
-                            <td>?languages</td>
-                            <td>${borrowing.bookItemEan}</td>
-                            <td>In possession since: ${formatDate(borrowing.borrowingDate)}</td>
-                            <td>-</td>
-                        </tr>
-                        `;
-                    });
+                API.getMany("Borrowings", { studentId: student.id, returned: false }, [0, 0]).then(borrowings => {
+                    //add reservations onto page
+                    API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(reservations => {
 
-                    document.getElementById("h_personal").innerHTML += (" " + response.data.totalAmount + " borrowed;");
-                    document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
-
-                }).catch(err => {
-                    console.error("Borrowings fetch failed:", err);
-                    document.write("Borrowings couldn't load.");
-                });
-
-                //add reservations onto page
-                API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(response => {
-                    //response = all reservations of student
-                    response.data.items.forEach(reservation => {
-                        inside += `
-                            <tr id="mybook_${reservation.bookId}">
-                                <td>${reservation.bookId}</td>
+                        //borrowings = all borrowings of student
+                        borrowings.data.items.forEach(borrowing => {
+                            inside += `
+                            <tr id="mybook_{book_id_TODO}_${borrowing.bookItemEan}">
+                                <td>?id</td>
                                 <td>?title</td>
                                 <td>?author</td>
                                 <td>?category</td>
                                 <td>?languages</td>
-                                <td>-</td>
-                                <td>Reserved since: ${formatDate(reservation.date)}</td>
-                                <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                                <td>${borrowing.bookItemEan}</td>
+                                <td>In possession since: ${formatDate(borrowing.borrowingDate)}</td>
+                                <td>-${borrowing.returnDate}</td>
                             </tr>
                             `;
+                        });
+
+                        //reservations = all reservations of student
+                        reservations.data.items.forEach(reservation => {
+                            inside += `
+                                <tr id="mybook_${reservation.bookId}">
+                                    <td>${reservation.bookId}</td>
+                                    <td>?title</td>
+                                    <td>?author</td>
+                                    <td>?category</td>
+                                    <td>?languages</td>
+                                    <td>-</td>
+                                    <td>Reserved since: ${formatDate(reservation.date)}</td>
+                                    <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                                </tr>
+                                `;
+                        });
+                        document.getElementById("h_personal").innerHTML = "Your bookItems: " + borrowings.data.totalAmount + " borrowings, " + reservations.data.totalAmount + " reservations.";
+                        document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                    }).catch(err => {
+                        console.error("Reservations fetch failed:", err);
+                        document.write("Reservations couldn't load.");
                     });
-                    document.getElementById("h_personal").innerHTML += (" " + response.data.totalAmount + " reserved;");
-                    document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
                 }).catch(err => {
-                    console.error("Reservations fetch failed:", err);
-                    document.write("Reservations couldn't load.");
+                    console.error("Borrowings fetch failed:", err);
+                    document.write("Borrowings couldn't load.");
                 });
-            
             });
         }
 
@@ -187,12 +182,6 @@
                 console.error("Books fetch failed:", err);
                 document.write("Books couldn't load.");
             });
-        }
-
-
-        //TODO - implement sorting
-        function sortByColumn(column) {
-
         }
 
 
@@ -301,7 +290,7 @@
             return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
 
-
+        //done
         window.searchBooks = function (searchBox, table_id) {
             const input = document.getElementById(searchBox).value.toLowerCase();
             const visibleTable = document.getElementById(table_id).getElementsByTagName('tbody')[0];
