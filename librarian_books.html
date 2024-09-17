@@ -17,14 +17,16 @@
                 <thead>
                     <tr>
                         <th width="3%" ><label class="pointy" onclick="sort_by_column(0)">id</label></th>
-                        <th width="5%" ><label class="pointy" onclick="sort_by_column(1)">ean</label></th>
+                        <th width="4%" ><label class="pointy" onclick="sort_by_column(1)">ean</label></th>
                         <th width="11%"><label class="pointy" onclick="sort_by_column(2)">ISBN</label></th>
-                        <th width="25%"><label class="pointy" onclick="sort_by_column(3)">Title</label></th>
-                        <th width="5%" ><label class="pointy" onclick="sort_by_column(4)">Lang id</label></th>
-                        <th width="5%" ><label class="pointy" onclick="sort_by_column(5)">Location id</label></th>
-                        <th width="20%"><label class="pointy" onclick="sort_by_column(6)">Remarks</label></th>
-                        <th width="7%" ><label class="pointy" onclick="sort_by_column(7)">Borrowed?</label></th>
-                        <th></th>
+                        <th width="10%"><label class="pointy" onclick="sort_by_column(3)">Authors</label></th>
+                        <th width="10%"><label class="pointy" onclick="sort_by_column(4)">Genres</label></th>
+                        <th            ><label class="pointy" onclick="sort_by_column(5)">Title</label></th>
+                        <th width="3%" ><label class="pointy" onclick="sort_by_column(6)">Lang</label></th>
+                        <th width="3%" ><label class="pointy" onclick="sort_by_column(7)">Loca</label></th>
+                        <th width="20%"><label class="pointy" onclick="sort_by_column(8)">Remarks</label></th>
+                        <th width="6%" ><label class="pointy" onclick="sort_by_column(9)">Borrowed</label></th>
+                        <th width="7%" ></th>
                     </tr>
                 </thead>
                 <tbody id="bookItemsContents">
@@ -77,42 +79,52 @@
         window.onload = populate_books_onload;
         window.populate_books_onload = populate_books_onload;
         function populate_books_onload() {
-            API.getMany("Books", {}, [0, 0])
-                .then(response => {
 
-                    response.data.items.forEach(book => {
-                        var howmany = 0;
-                        API.getMany("BookItems", { bookId: book.id }, [0, 0])
-                            .then(response => {
-                                var inside = '';
-                                howmany = response.data.totalAmount;
-                                inside = `
-                                    <tr id="book_${book.id}">
-                                        <td>${book.id}</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>${book.title}</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>${howmany} positions</td>
-                                        <td>-</td>
-                                        <td>
-                                            <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
-                                        </td>
-                                    </tr>
-                                `;
-                                document.getElementById("bookItemsContents").innerHTML += inside;
-                            }).catch(err => {
-                                console.error("BookItems fetch failed:", err);
-                                document.write("BookItems couldn't load.");
-                            });
+            //titles
+            API.getMany("Books", {}, [0, 0]).then(books => {
+
+                books.data.items.forEach(book => {
+
+                    //for each title, count positions and paste title info
+                    var howmany_all = 0;
+                    API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(response_all => {
+
+                        var inside = '';
+                        howmany_all = response_all.data.totalAmount;
+                        inside = `
+                            <tr id="book_${book.id}">
+                                <td>${book.id}</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>?authors</td>
+                                <td>?genres</td>
+                                <td>${book.title}</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>${howmany_all} positions</td>
+                                <td id="book_${book.id}_borrowed">-</td>
+                                <td>
+                                    <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
+                                </td>
+                            </tr>
+                        `;
+                        document.getElementById("bookItemsContents").innerHTML += inside;
+
+                        API.getMany("BookItems", { bookId: book.id, isBorrowed: true }, [0, 0]).then(response_borrowed => {
+                            document.getElementById("book_" + book.id + "_borrowed").innerHTML = response_borrowed.data.totalAmount;
+                        });
+
+                    }).catch(err => {
+                        console.error("BookItems fetch failed:", err);
+                        document.write("BookItems couldn't load.");
                     });
-                    document.getElementById("h").innerHTML = "Manage Books (" + response.data.totalAmount + " items registered)";
-
-                }).catch(err => {
-                    console.error("Books fetch failed:", err);
-                    document.write("Books couldn't load.");
                 });
+                document.getElementById("h").innerHTML = "Manage Books (" + books.data.totalAmount + " items registered)";
+
+            }).catch(err => {
+                console.error("Books fetch failed:", err);
+                document.write("Books couldn't load.");
+            });
         }
 
 
@@ -155,6 +167,8 @@
                                 <td>${bItem.book_id}</td>
                                 <td>${bItem.ean}</td>
                                 <td>${bItem.ISBN}</td>
+                                <td>?authors</td>
+                                <td>?genres</td>
                                 <td>${bItem.book_title}</td>
                                 <td>${bItem.language_id}</td>
                                 <td>${bItem.location_id}</td>
@@ -244,8 +258,11 @@
             let cellsAlt = row.querySelectorAll('td');
 
             //paste data from row into editable slots
-            for (let i = 1; i <= 8; i++) {
-                document.getElementById("slot" + i).innerHTML = cells[i - 1].textContent;
+            for (let i = 0; i <= 2; i++) {
+                document.getElementById("slot" + (i + 1)).innerHTML = cells[i].textContent;
+            }
+            for (let i = 5; i <= 9; i++) {
+                document.getElementById("slot" + (i - 1)).innerHTML = cells[i].textContent;
             }
         }
 

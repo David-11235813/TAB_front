@@ -22,9 +22,8 @@
                         <th width="25%"><label class="pointy" onclick="sort_by_column('studentsTable', 3)">Birth Date</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 4)">Class ID:</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 5)">email</label></th>
-                        <!--
-                <th width="5%">borrowed | reserved</th>
-                -->
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 6)">borrowed</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 7)">reserved</label></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -144,11 +143,11 @@
                                 <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 2)">book_ean</label></th>
                                 <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 3)">ISBN</label></th>
                                 <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 4)">Title</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 5)">borrowing_id</label></th>
-                                <th width="11%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 6)">borrowing_date</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 7)">librarian_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 8)">location_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 9)">language_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 5)">id_bor</label></th>
+                                <th width="11%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 6)">date_bor</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 7)">librarian</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 8)">loc_id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 9)">lang_id</label></th>
                                 <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 10)">remarks</label></th>
                                 <th>fee?</th>
                             </tr>
@@ -178,45 +177,43 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
-        //TODO - additional student data
+        //done
         window.onload = populate_students;
         window.populate_students = populate_students;
         function populate_students() {
-            //add details about reserved and borrowed books
 
             document.getElementById("studentsContents").innerHTML = '';
             document.getElementById("h").innerHTML = '';
 
-            let inside = '';
+            API.getMany("Students", {}, [0, 0]).then(students => {
+                document.getElementById("h").innerHTML = "Manage Students (" + students.data.totalAmount + " registered)";
 
-            API.getMany("Students", {}, [0, 0]).then(response => {
+                students.data.items.forEach(student => {
+                    let inside = `
+                    <tr id="student_${student.id}">
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.surname}</td>
+                        <td>${student.birthDate}</td>
+                        <td>${student.classId}</td>
+                        <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
+                        <td id="student_${student.id}_bor">?</td>
+                        <td id="student_${student.id}_res">?</td>
+                        <td>
+                            <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
+                        </td>
+                    </tr>
+                    `;
+                    document.getElementById("studentsContents").innerHTML += inside;
 
-                //let borNr = 0;
-                //let resNr=0;
-                response.data.items.forEach(student => {
-                    //API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(reservations => {
-                    //    resNr = reservations.data.totalAmount;
-                    //    API.getMany("Borrowings", { studentId: student.id}, [0, 0]).then(borrowings => {
-                    //        borNr = reservations.data.totalAmount;
-                            inside += `
-                            <tr id="student_${student.id}">
-                                <td>${student.id}</td>
-                                <td>${student.name}</td>
-                                <td>${student.surname}</td>
-                                <td>${student.birthDate}</td>
-                                <td>${student.classId}</td>
-                                <td><label onclick='email_hyperlink("${student.email}")' style="cursor: pointer; text-decoration: underline">${student.email}</label></td>
-                                <td>
-                                    <button class="smallButton" id="student_${student.id}_button" onclick="selectStudent('student_${student.id}')">select</button>
-                                </td>
-                            </tr>
-                            `;
-                    //<td>${borNr}|${resNr}</td>
-                    //    });
-                    //});
+                    //adding info abt borrowed and reserved books
+                    API.getMany("Borrowings", { studentId: student.id, returned: false }, [0, 0]).then(borrowings => {
+                        document.getElementById("student_" + student.id + "_bor").innerHTML = borrowings.data.totalAmount;
+                    });
+                    API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(reservations => {
+                        document.getElementById("student_" + student.id + "_res").innerHTML = reservations.data.totalAmount;
+                    });
                 });
-                document.getElementById("studentsContents").innerHTML = inside;
-                document.getElementById("h").innerHTML = "Manage Students (" + response.data.totalAmount + " registered)";
 
             }).catch(err => {
                 console.error("Students fetch failed:", err);
@@ -273,6 +270,7 @@
             document.getElementById('StudentReservations').innerHTML = '';
             document.getElementById('AvailableBooks').innerHTML = '';
             document.getElementById('StudentBorrowings').innerHTML = '';
+            document.getElementById("h_available").innerHTML = "Available BookItems";
 
             document.getElementById('studentModal').style.display = 'block';
 
@@ -320,7 +318,7 @@
                             //get-one bookItem data
                             API.getOne("BookItem", Number(borrowing.bookItemEan)).then(bookItem => {
 
-                                //defining min fee
+                                //defining min & max fee
                                 const timeBorrowed_ms = currentDate_ms - borrowing.borrowingDate;
                                 let min_fee = 0;
                                 fees_response.data.items.forEach(item => {
@@ -328,16 +326,16 @@
                                         min_fee = item.fee;
                                     }
                                 });
-                                let max_fee = 2 * min_fee;
+                                let max_fee = 10 * min_fee - 1;
 
-                                //html
+
                                 let bor = `
                                 <tr id="borrowing_${borrowing.id}">
                                     <td><input type="checkbox" name="concludeBorrowing_checkbox" value="${borrowing.bookItemEan}"></td>
                                     <td>${bookItem.data.bookId}</td>
                                     <td>${borrowing.bookItemEan}</td>
                                     <td>${bookItem.data.isbn}</td>
-                                    <td>bookItem.title(bug)</td>
+                                    <td>${bookItem.data.book.title}</td>
                                     <td>${borrowing.id}</td>
                                     <td>${formatDate(borrowing.borrowingDate)}</td>
                                     <td>${borrowing.librarianId}</td>
@@ -348,6 +346,7 @@
                                 </tr>
                                 `;
                                 document.getElementById("StudentBorrowings").innerHTML += bor;
+
                             }).catch(err => {
                                 console.error("BookItem fetch failed:", err);
                                 document.write("BookItem couldn't load.");
@@ -414,6 +413,7 @@
             //clicked 'unselect' - no need to select anything
             if (selected_book_row_id === book_id) {
                 selected_book_row_id = "";
+                document.getElementById("h_available").innerHTML = "Available BookItems";
                 document.getElementById("AvailableBooks").innerHTML = "";
                 return;
             }

@@ -21,14 +21,14 @@
                 <table id="reservationsBorrowingsTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
+                            <th width="5%" ><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
                             <th width="25%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 1)">Title</label></th>
-                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Author</label></th>
-                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 3)">Category</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Authors</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 3)">Genres</label></th>
                             <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 4)">Languages</label></th>
                             <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 5)">ean</label></th>
                             <th width="13%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 6)">Status</label></th>
-                            <th>Cancel?</th>
+                            <th>Cancel</th>
                         </tr>
                     </thead>
                     <tbody id="reservationsBorrowingsContents">
@@ -49,12 +49,12 @@
                 <table id="availableBooksTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
+                            <th width="5%" ><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
                             <th width="25%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 1)">Title</label></th>
-                            <th width="15%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Author</label></th>
-                            <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Category</label></th>
+                            <th width="15%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Authors</label></th>
+                            <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Genres</label></th>
                             <th width="10%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 4)">Languages</label></th>
-                            <th width="13%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Status</label></th>
+                            <th width="13%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Avail/Total</label></th>
                             <th>Reserve?</th>
                         </tr>
                     </thead>
@@ -94,13 +94,12 @@
             }
         }
 
-        //done
+
+        //TODO - BUG_11 -> bookItem.data.bookId; add librarian mail
         function populate_your_ReservationsBorrowings() {
 
             document.getElementById("h_personal").innerHTML = '';
             document.getElementById("reservationsBorrowingsContents").innerHTML = '';
-
-            let inside = '';
 
             //add student's borrowings & reservations data
             API.getCurrentUser().then(student => {
@@ -109,39 +108,44 @@
                     //add reservations onto page
                     API.getMany("Reservations", { studentId: student.id, status: "active" }, [0, 0]).then(reservations => {
 
-                        //borrowings = all borrowings of student
+                        document.getElementById("h_personal").innerHTML = "Your bookItems: " + borrowings.data.totalAmount + " borrowings, " + reservations.data.totalAmount + " reservations.";
+
                         borrowings.data.items.forEach(borrowing => {
-                            inside += `
-                            <tr id="mybook_{book_id_TODO}_${borrowing.bookItemEan}">
-                                <td>?id</td>
-                                <td>?title</td>
-                                <td>?author</td>
-                                <td>?category</td>
-                                <td>?languages</td>
-                                <td>${borrowing.bookItemEan}</td>
-                                <td>In possession since: ${formatDate(borrowing.borrowingDate)}</td>
-                                <td>-${borrowing.returnDate}</td>
-                            </tr>
-                            `;
+                            //todo: book id & title -> BUG_11 !!!
+                            API.getOne("BookItem", { id: borrowing.bookItemEan }).then(bookItem => {
+
+                                let inside = `
+                                <tr id="mybook_{bookItem.data.bookId}_${borrowing.bookItemEan}">
+                                    <td>book</td>
+                                    <td>bookItem.data.book.title</td>
+                                    <td>?author</td>
+                                    <td>?genres</td>
+                                    <td>?languages</td>
+                                    <td>${borrowing.bookItemEan}</td>
+                                    <td>Lent by <label  title="${borrowing.librarian.surname} ${borrowing.librarian.name}" onclick='email_hyperlink("${borrowing.librarian.email}", "${borrowing.id}")' style="cursor: pointer; text-decoration: underline">librarian</label> on: ${formatDate(borrowing.borrowingDate)}</td>
+                                    <td>-</td>
+                                </tr>
+                                `;
+                                document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                            });
+
                         });
 
-                        //reservations = all reservations of student
                         reservations.data.items.forEach(reservation => {
-                            inside += `
+                            let inside = `
                                 <tr id="mybook_${reservation.bookId}">
                                     <td>${reservation.bookId}</td>
                                     <td>?title</td>
                                     <td>?author</td>
-                                    <td>?category</td>
+                                    <td>?genres</td>
                                     <td>?languages</td>
                                     <td>-</td>
                                     <td>Reserved since: ${formatDate(reservation.date)}</td>
                                     <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
                                 </tr>
                                 `;
+                            document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
                         });
-                        document.getElementById("h_personal").innerHTML = "Your bookItems: " + borrowings.data.totalAmount + " borrowings, " + reservations.data.totalAmount + " reservations.";
-                        document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
                     }).catch(err => {
                         console.error("Reservations fetch failed:", err);
                         document.write("Reservations couldn't load.");
@@ -153,36 +157,88 @@
             });
         }
 
-        //TODO - print the ignored values & add info about available positions (getOne bookItem (id))
+
+        //TODO - BUG_10 -> getmany genres & authors
         function populate_available_Books() {
 
-            document.getElementById("availableBooksContents").innerHTML = '';
             document.getElementById("h_available").innerHTML = '';
+            document.getElementById("availableBooksContents").innerHTML = '';
 
-            API.getMany("Books", {}, [0, 0]).then(response => {
+            //API.getMany("Languages", {}, [0, 0]).then(all_langs => {
+                API.getMany("Books", {}, [0, 0]).then(books => {
 
-                let inside = '';
-                response.data.items.forEach(book => {
-                    inside += `
-                        <tr id="book_${book.id}">
-                            <td>${book.id}</td>
-                            <td>${book.title}</td>
-                            <td>?author</td>
-                            <td>?category</td>
-                            <td>?lang</td>
-                            <td>?status</td>
-                            <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
-                        </tr>
-                    `;
+                    document.getElementById("h_available").innerHTML = "Available Books (" + books.data.totalAmount + " titles)";
+
+                    //for each title
+                    books.data.items.forEach(book => {
+
+                        //count available/all
+                        API.getMany("BookItems", { bookId: book.id, isBorrowed: false }, [0, 0]).then(avail => {
+                            API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(all_title => {
+
+                                let avail_count = avail.data.totalAmount;
+                                let all_count = all_title.data.totalAmount;
+
+                                let style = "";
+                                if (avail_count === 0) style = "style='background: maroon;'";
+                                else if (avail_count === 1) style = "style='background: peru;'";
+
+
+                                //let map_lang = {};
+                                //
+                                ////languages
+                                //all_title.data.items.forEach(function (item) {
+                                //    map_lang[item.language_id] = (map_lang[item.language_id] || 0) + 1;
+                                //});
+                                //let lang_ids = Object.keys(map_lang); //ids
+                                //
+                                //let lang_codes = lang_ids.map(id => {
+                                //    let match = all_langs.data.find(item => item.id === id);
+                                //    return match ? match.code : null; // Return null if no match found
+                                //})
+
+
+                                let inside = `
+                                        <tr ${style} id="book_${book.id}">
+                                            <td>${book.id}</td>
+                                            <td>${book.title}</td>
+                                            <td>?author</td>
+                                            <td>?genres</td>
+                                            <td>{all_langs}</td>
+                                            <td>${avail_count}/${all_count}</td>
+                                            <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
+                                        </tr>
+                                    `;
+                                document.getElementById("availableBooksContents").innerHTML += inside;
+
+
+                            });
+                        });
+
+                    });
+
+                }).catch(err => {
+                    console.error("Books fetch failed:", err);
+                    document.write("Books couldn't load.");
                 });
-                document.getElementById("availableBooksContents").innerHTML = inside;
-                document.getElementById("h_available").innerHTML = "Available Books (" + response.data.totalAmount + " titles)";
-
-            }).catch(err => {
-                console.error("Books fetch failed:", err);
-                document.write("Books couldn't load.");
-            });
+            //}).catch(err => {
+            //    console.error("Languages fetch failed:", err);
+            //    document.write("Languages couldn't load.");
+            //});
         }
+
+
+
+        window.email_hyperlink = email_hyperlink;
+        function email_hyperlink(email, borrowing) {
+            var subject = "Saegar Library student email"; // Subject of the email
+            var body = "Hello, I'm one of the students registered in Saegar Library. I'm writing in regards to borrowing " + borrowing + "\n\n\n"; // Body of the email
+
+            var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailtoLink;
+        }
+
 
 
         //done
