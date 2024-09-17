@@ -178,6 +178,7 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
+        //TODO - additional student data
         window.onload = populate_students;
         window.populate_students = populate_students;
         function populate_students() {
@@ -237,7 +238,6 @@
 
 
         let selected_row_id = "";
-
         //done
         window.selectStudent = selectStudent;
         function selectStudent(row_id) {
@@ -266,7 +266,7 @@
         }
 
 
-        //TODO - BORROWINGS!, better display; BUG_2 (get-many Borrowings), BUG_3 (get-many Reservations studentId)
+        //TODO - BORROWINGS!, better display: Jakub, pole classId przy borrowing; (BUG_2 & BUG_3 fixed)
         window.loadStudentBooksModal = loadStudentBooksModal;
         function loadStudentBooksModal() {
 
@@ -283,7 +283,7 @@
             let inside = '';
 
             API.getMany("Reservations", { studentId: Number(cells[0].textContent), status: "active" }, [0, 0]).then(reservations => {
-                API.getMany("Borrowings", { studentId: Number(cells[0].textContent), returnDate: null }, [0, 0]).then(borrowings => {
+                API.getMany("Borrowings", { studentId: Number(cells[0].textContent), returned: false }, [0, 0]).then(borrowings => {
 
                     //general info
                     document.getElementById("studentData").innerHTML =
@@ -302,7 +302,7 @@
                                 <td>?title</td>
                                 <td>${reservation.id}</td>
                                 <td>${formatDate(reservation.date)}</td>
-                                <td><button class="smallButton" onclick="displayLendableBookItems('${reservation.bookId}')">Show</button></td>
+                                <td><button class="smallButton" id="${reservation.bookId}_button" onclick="displayLendableBookItems('${reservation.bookId}')">Show</button></td>
                                 <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
                             </tr>
                             `;
@@ -394,18 +394,39 @@
                 });
             }
 
-            loadStudentBooksModal();
+            loadStudentBooksModal(); //reload
         }
 
 
-        //done - BUG_5
+        let selected_book_row_id = "";
+        //done (BUG_5 fixed)
         document.displayLendableBookItems = displayLendableBookItems;
         function displayLendableBookItems(book_id) {
+
+            //unselect the previous row
+            if (selected_book_row_id != "") {
+                document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
+                document.getElementById(selected_book_row_id + "_button").innerHTML = "select"; //button
+                
+            }
+
+            //clicked 'unselect' - no need to select anything
+            if (selected_book_row_id === book_id) {
+                selected_book_row_id = "";
+                document.getElementById("AvailableBooks").innerHTML = "";
+                return;
+            }
+
+            selected_book_row_id = book_id;
+
+            //highlight selected row and change button appearence
+            document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallRedButton");
+            document.getElementById(selected_book_row_id + "_button").innerHTML = "unselect";
+
 
             API.getMany("BookItems", { bookId: Number(book_id), "isBorrowed": false }, [0, 0]).then(response => {
                 let inside = '';
                 response.data.items.forEach(bookItem => {
-if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                     inside += `
                             <tr id="bookItem_${bookItem.ean}">
                                 <td>${bookItem.ean}</td>
@@ -418,11 +439,10 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                                 <td><button class="smallButton" onclick="lendBookItem('${bookItem.ean}')">lend</button></td>
                             </tr>
                         `;
-} //BUG_5 HANDLING
                 });
                 if (inside === '') inside = "<tr id='empty'></tr><td>[none]</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>";
                 document.getElementById("AvailableBooks").innerHTML = inside;
-                document.getElementById("h_available").innerHTML = "Available BookItems: " + response.data.totalAmount; //BUG_5 here!
+                document.getElementById("h_available").innerHTML = "Available BookItems: " + response.data.totalAmount;
 
             }).catch(err => {
                 console.error("BookItems fetch failed:", err);
@@ -431,7 +451,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
 
         }
 
-        //WIP - BUG_6
+        //done (BUG_6 fixed)
         document.lendBookItem = lendBookItem;
         function lendBookItem(ean) {
             API.getCurrentUser().then(self => {
@@ -453,7 +473,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
             })
         }
 
-        //done - BUG_8
+        //done (BUG_8 fixed)
         document.concludeBorrowings = concludeBorrowings;
         function concludeBorrowings() {
 
@@ -478,6 +498,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
                     document.write("Return of book id " + checkboxConclude.value + " failed:");
                 });
             }
+            loadStudentBooksModal();
         }
 
 
@@ -559,7 +580,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
         }
 
 
-
+        //done
         window.searchTable = function (searchBox, table_id) {
             const input = document.getElementById(searchBox).value.toLowerCase();
             const visibleTable = document.getElementById(table_id).getElementsByTagName('tbody')[0];
@@ -606,7 +627,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
 
 
 
-        //done
+        //TODO better
         window.addNewStudent = addNewStudent;
         function addNewStudent() {
 
@@ -636,7 +657,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
             });
         }
 
-        //done
+        //TODO better
         window.modifySelectedStudent = modifySelectedStudent;
         function modifySelectedStudent() {
 
@@ -682,7 +703,7 @@ if (bookItem.isBorrowed === false) { //BUG_5 HANDLING
 
         }
 
-        //doesn't work & won't
+        //TODO; doesn't work & won't
         window.removeSelectedStudent = removeSelectedStudent;
         function removeSelectedStudent() {
 
