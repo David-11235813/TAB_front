@@ -120,7 +120,7 @@
 
                         borrowings.data.items.forEach(borrowing => {
                             //todo: book id & title -> BUG_11 !!!
-                            API.getOne("BookItem", { id: borrowing.bookItemEan }).then(bookItem => {
+                            API.getOne("BookItem", borrowing.bookItemEan ).then(bookItem => {
 
                                 let inside = `
                                 <tr id="mybook_{bookItem.data.bookId}_${borrowing.bookItemEan}">
@@ -175,67 +175,49 @@
             document.getElementById("h_available").innerHTML = '';
             document.getElementById("availableBooksContents").innerHTML = '';
 
-            //API.getMany("Languages", {}, [0, 0]).then(all_langs => {
-                API.getMany("Books", {}, [0, 0]).then(books => {
+            API.getMany("Books", {}, [0, 0]).then(books => {
 
-                    document.getElementById("h_available").innerHTML = "Available Books (" + books.data.totalAmount + " titles)";
+                document.getElementById("h_available").innerHTML = "Available Books (" + books.data.totalAmount + " titles)";
 
-                    //for each title
-                    books.data.items.forEach(book => {
+                //for each title
+                books.data.items.forEach(book => {
 
-                        //count available/all
-                        API.getMany("BookItems", { bookId: book.id, isBorrowed: false }, [0, 0]).then(avail => {
-                            API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(all_title => {
+                    //count available/all
+                    API.getMany("BookItems", { bookId: book.id, isBorrowed: false }, [0, 0]).then(avail => {
+                        API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(all_title => {
 
-                                let avail_count = avail.data.totalAmount;
-                                let all_count = all_title.data.totalAmount;
+                            let avail_count = avail.data.totalAmount;
+                            let all_count = all_title.data.totalAmount;
 
-                                let style = "";
-                                if (avail_count === 0) style = "style='background: maroon;'";
-                                else if (avail_count === 1) style = "style='background: peru;'";
-
-
-                                //let map_lang = {};
-                                //
-                                ////languages
-                                //all_title.data.items.forEach(function (item) {
-                                //    map_lang[item.language_id] = (map_lang[item.language_id] || 0) + 1;
-                                //});
-                                //let lang_ids = Object.keys(map_lang); //ids
-                                //
-                                //let lang_codes = lang_ids.map(id => {
-                                //    let match = all_langs.data.find(item => item.id === id);
-                                //    return match ? match.code : null; // Return null if no match found
-                                //})
+                            let style = "";
+                            if (avail_count === 0) style = "style='background: maroon;'";
+                            else if (avail_count === 1) style = "style='background: peru;'";
 
 
-                                let inside = `
-                                        <tr ${style} id="book_${book.id}">
-                                            <td>${book.id}</td>
-                                            <td>${book.title}</td>
-                                            <td>?author</td>
-                                            <td>?genres</td>
-                                            <td>{all_langs}</td>
-                                            <td>${avail_count}/${all_count}</td>
-                                            <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
-                                        </tr>
-                                    `;
-                                document.getElementById("availableBooksContents").innerHTML += inside;
+                            let inside = `
+                                    <tr ${style} id="book_${book.id}">
+                                        <td>${book.id}</td>
+                                        <td>${book.title}</td>
+                                        <td id="book_${book.id}_authors">?author</td>
+                                        <td id="book_${book.id}_genres">?genres</td>
+                                        <td id="book_${book.id}_langs">{all_langs}</td>
+                                        <td>${avail_count}/${all_count}</td>
+                                        <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
+                                    </tr>
+                                `;
+                            document.getElementById("availableBooksContents").innerHTML += inside;
 
+                            //API.getMany("Authors", { bookId: book.id }[0, 0]).then(authors =>)
 
-                            });
                         });
-
                     });
 
-                }).catch(err => {
-                    console.error("Books fetch failed:", err);
-                    document.write("Books couldn't load.");
                 });
-            //}).catch(err => {
-            //    console.error("Languages fetch failed:", err);
-            //    document.write("Languages couldn't load.");
-            //});
+
+            }).catch(err => {
+                console.error("Books fetch failed:", err);
+                document.write("Books couldn't load.");
+            });
         }
 
 
