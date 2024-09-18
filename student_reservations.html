@@ -61,11 +61,11 @@
                         <tr>
                             <th width="5%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
                             <th width="25%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 1)">Title</label></th>
-                            <th width="15%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Authors</label></th>
+                            <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Authors</label></th>
                             <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Genres</label></th>
                             <th width="10%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 4)">Languages</label></th>
-                            <th width="13%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Avail/Total</label></th>
-                            <th>Reserve?</th>
+                            <th><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Avail/Total</label></th>
+                            <th>Reserve</th>
                         </tr>
                     </thead>
                     <tbody id="availableBooksContents">
@@ -185,29 +185,41 @@
                     //count available/all
                     API.getMany("BookItems", { bookId: book.id, isBorrowed: false }, [0, 0]).then(avail => {
                         API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(all_title => {
+                            API.getMany("Authors", { bookId: book.id }, [0, 0]).then(authors => {
+                                //API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
+                                    //API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
 
-                            let avail_count = avail.data.totalAmount;
-                            let all_count = all_title.data.totalAmount;
+                                let avail_count = avail.data.totalAmount;
+                                let all_count = all_title.data.totalAmount;
 
-                            let style = "";
-                            if (avail_count === 0) style = "style='background: maroon;'";
-                            else if (avail_count === 1) style = "style='background: peru;'";
+                                let style = "";
+                                if (avail_count === 0) style = "style='background: maroon;'";
+                                else if (avail_count === 1) style = "style='background: peru;'";
+
+                                let authors_names = "";
+                                authors.data.items.forEach(author => {
+                                    authors_names += author.surname + " " + author.name + ",<br>";
+                                });
+                                authors_names = authors_names.substring(0, authors_names.length - 5);
 
 
-                            let inside = `
+
+                                let inside = `
                                     <tr ${style} id="book_${book.id}">
                                         <td>${book.id}</td>
                                         <td>${book.title}</td>
-                                        <td id="book_${book.id}_authors">?author</td>
+                                        <td>${authors_names}</td>
                                         <td id="book_${book.id}_genres">?genres</td>
                                         <td id="book_${book.id}_langs">{all_langs}</td>
                                         <td>${avail_count}/${all_count}</td>
                                         <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
                                     </tr>
                                 `;
-                            document.getElementById("availableBooksContents").innerHTML += inside;
+                                document.getElementById("availableBooksContents").innerHTML += inside;
 
-                            //API.getMany("Authors", { bookId: book.id }[0, 0]).then(authors =>)
+                                    //});
+                                //});
+                            });
 
                         });
                     });
@@ -242,7 +254,7 @@
                 makeReservations();
 
                 //refresh after all is completed
-                setTimeout(() => { populate_books() }, 1000); 
+                setTimeout(() => { populate_books() }, 500); 
             } catch (err) {
                 console.error("Reservations change failed:", err);
                 document.write("Reservations change failed.");

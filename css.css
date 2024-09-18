@@ -387,12 +387,13 @@ li {
 
 .book-sections {
     justify-content: space-between;
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .borrowed-books {
     width: 50%;
-    height: 430px;
+    height: 420px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;
@@ -401,7 +402,7 @@ li {
 
 .available-books {
     width: 50%;
-    height: 430px;
+    height: 420px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;

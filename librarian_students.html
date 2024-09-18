@@ -89,12 +89,13 @@
                     <table id="Process-Book-Reservation-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
-                                <th width="15%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 0)">book_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 1)">title</label></th>
-                                <th width="10%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 2)">reserve id</label></th>
-                                <th width="22%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 3)">reserved since</label></th>
-                                <th width="20%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 4)">Show available</label></th>
-                                <th width="5%"><button class="smallButton" style="font-size: 13px; background-color: darkslateblue; " onclick="cancelStudentReservations()">Unreserve:</button></th>
+                                <th width="5%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 0)">id</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 1)">Title</label></th>
+                                <th width="20%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 2)">Authors</label></th>
+                                <th width="6%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 3)">id_res</label></th>
+                                <th width="22%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 4)">reserved since</label></th>
+                                <th width="10%"><label class="pointy" onclick="sort_by_column('Process-Book-Reservation-Table', 5)">Show available</label></th>
+                                <th width="4%"><button class="smallButton" style="font-size: 13px; background-color: darkslateblue; width: 60px;" onclick="cancelStudentReservations()">Cancel</button></th>
                             </tr>
                         </thead>
                         <tbody id="StudentReservations">
@@ -116,14 +117,12 @@
                     <table id="Available-Book-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
-                                <th width="5%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 0)">ean</label></th>
-                                <th width="5%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 1)">ISBN</label></th>
-                                <th width="15%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 2)">Authors</label></th>
-                                <th width="25%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 3)">Title</label></th>
-                                <th width="10%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 4)">Lang</label></th>
-                                <th width="20%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 5)">Loc</label></th>
-                                <th width="10%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 6)">remarks</label></th>
-                                <th></th>
+                                <th width="7%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 0)">ean</label></th>
+                                <th width="20%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 1)">ISBN</label></th>
+                                <th width="6%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 2)">Lang</label></th>
+                                <th width="5%"><label class="pointy" onclick="sort_by_column('Available-Book-Table', 3)">Loc</label></th>
+                                <th><label class="pointy" onclick="sort_by_column('Available-Book-Table', 4)">remarks</label></th>
+                                <th width="12%"></th>
                             </tr>
                         </thead>
                         <tbody id="AvailableBooks">
@@ -147,18 +146,18 @@
                     <table id="Borrowings-Table" class="internal-table" data-sort-order="asc">
                         <thead>
                             <tr>
-                                <th>conclude:</th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 1)">book_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 2)">book_ean</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 3)">ISBN</label></th>
+                                <th width="6%">conclude:</th>
+                                <th width="3%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 1)">id</label></th>
+                                <th width="4%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 2)">ean</label></th>
+                                <th width="10%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 3)">ISBN</label></th>
                                 <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 4)">Title</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 5)">id_bor</label></th>
+                                <th width="4%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 5)">id_bor</label></th>
                                 <th width="11%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 6)">date_bor</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 7)">librarian</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 8)">loc_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 9)">lang_id</label></th>
-                                <th><label class="pointy" onclick="sort_by_column('Borrowings-Table', 10)">remarks</label></th>
-                                <th>fee?</th>
+                                <th width="5%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 7)">librarian</label></th>
+                                <th width="4%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 8)">loc_id</label></th>
+                                <th width="4%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 9)">Lang</label></th>
+                                <th width="20%"><label class="pointy" onclick="sort_by_column('Borrowings-Table', 10)">remarks</label></th>
+                                <th width="6%">fee?</th>
                             </tr>
                         </thead>
                         <tbody id="StudentBorrowings">
@@ -171,7 +170,7 @@
                         </tbody>
                     </table>
 
-                    <button onclick="concludeBorrowings(); ">Conclude the borrowings?</button>
+                    <button style="width: 20%" onclick="concludeBorrowings(); ">Conclude the borrowings?</button>
                     <!--loadStudentBooksModal() ^^^ powyzej dodatkowo-->
                 </div>
             </div>
@@ -280,6 +279,7 @@
             document.getElementById('AvailableBooks').innerHTML = '';
             document.getElementById('StudentBorrowings').innerHTML = '';
             document.getElementById("h_available").innerHTML = "Available BookItems";
+            selected_book_row_id = "";
 
             document.getElementById('studentModal').style.display = 'block';
 
@@ -302,19 +302,30 @@
                     //reservations
                     reservations.data.items.forEach(reservation => {
 
-                        //API.getOne("Book", reservation.bookId).then(book => {
-                        let res = `
-                            <tr id="reservation_${reservation.id}">
-                                <td>${reservation.bookId}</td>
-                                <td>?title</td>
-                                <td>${reservation.id}</td>
-                                <td>${formatDate(reservation.date)}</td>
-                                <td><button class="smallButton" id="${reservation.bookId}_button" onclick="displayLendableBookItems('${reservation.bookId}')">Show</button></td>
-                                <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
-                            </tr>
-                            `;
-                        document.getElementById("StudentReservations").innerHTML += res;
-                        //});
+                        //fill out title and authors
+                        API.getOne("Book", reservation.bookId).then(book => {
+                            API.getMany("Authors", { bookId: reservation.bookId }, [0, 0]).then(authors => {
+
+                                let authors_names = "";
+                                authors.data.items.forEach(author => {
+                                    authors_names += author.surname + " " + author.name + ",<br>";
+                                });
+                                authors_names = authors_names.substring(0, authors_names.length - 5);
+
+                                let res = `
+                                    <tr id="reservation_${reservation.id}">
+                                        <td>${reservation.bookId}</td>
+                                        <td>${book.data.title}</td>
+                                        <td>${authors_names}</td>
+                                        <td>${reservation.id}</td>
+                                        <td>${formatDate(reservation.date)}</td>
+                                        <td><button class="smallButton" style="font-size: 14px; width: 65px;" id="${reservation.bookId}_button" onclick="displayLendableBookItems('${reservation.bookId}')">select</button></td>
+                                        <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                                    </tr>
+                                    `;
+                                document.getElementById("StudentReservations").innerHTML += res;
+                            });
+                        });
                     });
 
 
@@ -344,17 +355,22 @@
                                     <td>${bookItem.data.bookId}</td>
                                     <td>${borrowing.bookItemEan}</td>
                                     <td>${bookItem.data.isbn}</td>
-                                    <td>${bookItem.data.book.title}</td>
+                                    <td style="text-align: center;">${bookItem.data.book.title}</td>
                                     <td>${borrowing.id}</td>
                                     <td>${formatDate(borrowing.borrowingDate)}</td>
                                     <td>${borrowing.librarianId}</td>
                                     <td>${bookItem.data.locationId}</td>
-                                    <td>${bookItem.data.languageId}</td>
+                                    <td id="bookItem_${borrowing.bookItemEan}_lang"></td>
                                     <td>${bookItem.data.remarks}</td>
                                     <td><input type="number" id="fineAmount_${borrowing.bookItemEan}" style="width: 75px;" min=${min_fee} max=${max_fee} value=${min_fee} required onkeyup=enforceMinMax(this) /></td>
                                 </tr>
                                 `;
                                 document.getElementById("StudentBorrowings").innerHTML += bor;
+
+
+                                API.getOne("BookItem", borrowing.bookItemEan).then(item => {
+                                    document.getElementById("bookItem_" + borrowing.bookItemEan + "_lang").innerHTML = item.data.language.code;
+                                })
 
                             }).catch(err => {
                                 console.error("BookItem fetch failed:", err);
@@ -371,8 +387,8 @@
                     console.error("Borrowings fetch failed:", err);
                     document.write("Borrowings couldn't load.");
                 });
-            }).catch(err2 => {
-                console.error("Reservations fetch failed:", err2);
+            }).catch(err => {
+                console.error("Reservations fetch failed:", err);
                 document.write("Reservations couldn't load.");
             });
         }
@@ -411,12 +427,12 @@
         document.displayLendableBookItems = displayLendableBookItems;
         function displayLendableBookItems(book_id) {
 
+            document.getElementById("AvailableBooks").innerHTML = '';
+
             //unselect the previous row
             if (selected_book_row_id != "" && document.getElementById(selected_book_row_id + "_button")) {
-
                 document.getElementById(selected_book_row_id + "_button").setAttribute("class", "smallButton"); //button
                 document.getElementById(selected_book_row_id + "_button").innerHTML = "select"; //button
-                
             }
 
             //clicked 'unselect' - no need to select anything
@@ -434,25 +450,34 @@
             document.getElementById(selected_book_row_id + "_button").innerHTML = "unselect";
 
 
-            API.getMany("BookItems", { bookId: parseInt(book_id), "isBorrowed": false }, [0, 0]).then(response => {
-                let inside = '';
-                response.data.items.forEach(bookItem => {
-                    inside += `
-                            <tr id="bookItem_${bookItem.ean}">
-                                <td>${bookItem.ean}</td>
-                                <td>${bookItem.ISBN}</td>
-                                <td>?authors</td>
-                                <td>${bookItem.book_title}</td>
-                                <td>${bookItem.language_id}</td>
-                                <td>${bookItem.location_id}</td>
-                                <td>${bookItem.remarks}</td>
-                                <td><button class="smallButton" onclick="lendBookItem('${bookItem.ean}')">lend</button></td>
-                            </tr>
-                        `;
+            API.getMany("BookItems", { bookId: parseInt(book_id), "isBorrowed": false }, [0, 0]).then(bookItems => {
+
+                bookItems.data.items.forEach(bookItem => {
+
+                    let inside = `
+                        <tr id="bookItem_${bookItem.ean}">
+                            <td>${bookItem.ean}</td>
+                            <td>${bookItem.ISBN}</td>
+                            <td id="bookItem_${bookItem.ean}_lang"></td>
+                            <td>${bookItem.location_id}</td>
+                            <td>${bookItem.remarks}</td>
+                            <td><button class="smallButton" onclick="lendBookItem('${bookItem.ean}')">lend</button></td>
+                        </tr>
+                    `;
+                    document.getElementById("AvailableBooks").innerHTML += inside;
+
+                    //language info addition
+                    API.getOne("BookItem", bookItem.ean).then(item => {
+                        document.getElementById("bookItem_" + bookItem.ean + "_lang").innerHTML = item.data.language.code;
+                    })
                 });
-                if (inside === '') inside = "<tr id='empty'></tr><td>[none]</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>";
-                document.getElementById("AvailableBooks").innerHTML = inside;
-                document.getElementById("h_available").innerHTML = "Available BookItems: " + response.data.totalAmount;
+
+                //populate available
+                API.getOne("Book", parseInt(book_id)).then(book => {
+                    if (document.getElementById("AvailableBooks").innerHTML === '')
+                        inside = "<tr id='empty'></tr><td>[none]</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>";
+                    document.getElementById("h_available").innerHTML = 'Available BookItems "' + book.data.title + '": ' + bookItems.data.totalAmount;
+                })
 
             }).catch(err => {
                 console.error("BookItems fetch failed:", err);
