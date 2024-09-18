@@ -289,8 +289,8 @@
 
             let inside = '';
 
-            API.getMany("Reservations", { studentId: Number(cells[0].textContent), status: "active" }, [0, 0]).then(reservations => {
-                API.getMany("Borrowings", { studentId: Number(cells[0].textContent), returned: false }, [0, 0]).then(borrowings => {
+            API.getMany("Reservations", { studentId: parseInt(cells[0].textContent), status: "active" }, [0, 0]).then(reservations => {
+                API.getMany("Borrowings", { studentId: parseInt(cells[0].textContent), returned: false }, [0, 0]).then(borrowings => {
 
                     //general info
                     document.getElementById("studentData").innerHTML =
@@ -325,7 +325,7 @@
                         borrowings.data.items.forEach(borrowing => {
 
                             //get-one bookItem data
-                            API.getOne("BookItem", Number(borrowing.bookItemEan)).then(bookItem => {
+                            API.getOne("BookItem", parseInt(borrowing.bookItemEan)).then(bookItem => {
 
                                 //defining min & max fee
                                 const timeBorrowed_ms = currentDate_ms - borrowing.borrowingDate;
@@ -394,7 +394,7 @@
             //cancel chosen reservations
             for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
 
-                API.cancelReservation(Number(checkboxCancel.value)).then(response => { //?
+                API.cancelReservation(parseInt(checkboxCancel.value)).then(response => { //?
                     //document.body.append("rezerwacja usunieta || ");
                 }).catch(err => {
                     console.error("Reservation cancel with id " + checkboxCancel.value + " failed:", err);
@@ -434,7 +434,7 @@
             document.getElementById(selected_book_row_id + "_button").innerHTML = "unselect";
 
 
-            API.getMany("BookItems", { bookId: Number(book_id), "isBorrowed": false }, [0, 0]).then(response => {
+            API.getMany("BookItems", { bookId: parseInt(book_id), "isBorrowed": false }, [0, 0]).then(response => {
                 let inside = '';
                 response.data.items.forEach(bookItem => {
                     inside += `
@@ -472,7 +472,7 @@
                 let student_id = cells[0].textContent
 
                 if (confirm("Dear Librarian " + self.id + ",\nLend BookItem " + ean + " to student " + student_id + " ?")) {
-                    API.lendBook(Number(self.id), Number(student_id), Number(ean)).then(response => {
+                    API.lendBook(self.id, parseInt(student_id), parseInt(ean)).then(response => {
                         loadStudentBooksModal(); //reload
 
                     }).catch(err => {
@@ -501,7 +501,7 @@
             for (var checkboxConclude of concludeCheckboxesChecked) { //go through all checked and return bookItems
                 let fee = document.getElementById("fineAmount_" + checkboxConclude.value).value;
                 //ean, fee
-                API.returnBookItem(Number(checkboxConclude.value), Number(fee)).then(response => { //?
+                API.returnBookItem(parseInt(checkboxConclude.value), parseInt(fee)).then(response => { //?
 
                 }).catch(err => {
                     console.error("Return of book id " + checkboxConclude.value + " failed:", err);
@@ -558,7 +558,7 @@
 
                 // If the content is numeric, sort as numbers
                 if (!isNaN(cellA) && !isNaN(cellB)) {
-                    return direction * (Number(cellA) - Number(cellB));
+                    return direction * (parseInt(cellA) - parseInt(cellB));
                 }
                 // Otherwise, sort as strings
                 return direction * cellA.localeCompare(cellB);
@@ -658,7 +658,7 @@
                 name: String(n),
                 surname: String(s),
                 birthDate: new Date(b),
-                classId: Number(c),
+                classId: parseInt(c),
                 email: String(e),
                 password: ""
             }).then(response => { populate_students(); }).catch(err => {
@@ -699,11 +699,11 @@
             }
 
             //updates
-            API.updateOne("Student", Number(id), {
+            API.updateOne("Student", parseInt(id), {
                 name: String(n),
                 surname: String(s),
                 birthDate: new Date(b),
-                classId: Number(c),
+                classId: parseInt(c),
                 email: String(e),
                 password: ""
             }).then(response => { populate_students(); }).catch(err => {

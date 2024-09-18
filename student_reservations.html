@@ -282,7 +282,7 @@
             //cancel chosen reservations
             for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
 
-                API.cancelReservation(Number(checkboxCancel.value)).then(response => { //?
+                API.cancelReservation(parseInt(checkboxCancel.value)).then(response => { //?
                     //document.body.append("rezerwacja usunieta || ");
                 }).catch(err => {
                     console.error("Reservation cancel with id " + checkboxCancel.value + " failed:", err);
@@ -308,7 +308,7 @@
 
                 for (var checkboxReserve of reserveCheckboxesChecked) { //go through all checked and make reservations
 
-                    API.reserveBook(student.id, Number(checkboxReserve.value)).then(response => { //?
+                    API.reserveBook(student.id, parseInt(checkboxReserve.value)).then(response => { //?
                         //document.body.append("rezerwacja udana || ");
                     }).catch(err => {
                         console.error("Reservation of book id " + checkboxReserve.value + " failed:", err);
@@ -337,7 +337,7 @@
 
                 // If the content is numeric, sort as numbers
                 if (!isNaN(cellA) && !isNaN(cellB)) {
-                    return direction * (Number(cellA) - Number(cellB));
+                    return direction * (parseInt(cellA) - parseInt(cellB));
                 }
                 // Otherwise, sort as strings
                 return direction * cellA.localeCompare(cellB);
