@@ -41,6 +41,7 @@ button {
     cursor: pointer;
     transition: background-color 0.5s;
     padding: 10px 20px;
+    width: 250px;
 }
 
 .smallButton {
@@ -84,6 +85,29 @@ button {
     cursor: pointer;
     transition: background-color 0.5s;
     padding: 0px;
+}
+
+
+#backBtn {
+    /*position: absolute;*/
+    bottom: 10px;
+    right: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    max-width: 200px;
+}
+
+#buttonContainer {
+    float: right;
+    width: 40%;
+}
+
+
+#buttonContainer button {
+    display: block;
+    width: 100%; /* Optional: makes the buttons take full width of the div */
+    float: right;
 }
 
 
@@ -294,7 +318,7 @@ ul {
 
 .books-list,
 .students-list {
-    margin: 20px auto;
+    margin: 10px auto;
     width: 95%;
     border: 1px solid #ccc;
     padding: 20px;
@@ -309,15 +333,6 @@ li {
     align-items: center;
 }
 
-#backBtn {
-    /*position: absolute;*/
-    bottom: 10px;
-    right: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    max-width: 10%;
-}
 
 
 
@@ -363,6 +378,13 @@ li {
 
 /*reservations*/
 
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .book-sections {
     justify-content: space-between;
     padding: 20px;
@@ -370,8 +392,7 @@ li {
 
 .borrowed-books {
     width: 50%;
-    height: 90%;
-    height: 340px;
+    height: 430px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;
@@ -380,8 +401,7 @@ li {
 
 .available-books {
     width: 50%;
-    height: 90%;
-    height: 340px;
+    height: 430px;
     border: 1px solid #ccc;
     padding: 5px;
     overflow-y: auto;

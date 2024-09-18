@@ -9,7 +9,18 @@
 
 <body>
     <div class="content">
-        <h1 id="h">Manage Students</h1>
+
+        <div class="headerSection">
+            <div style="width: 20%;">
+                <button onclick="window.location.href='librarian.html'" id="backBtn" style="max-width: 150px; float: left;">Back</button>
+            </div>
+            <div style="width: 60%; text-align: center;">
+                <h1 id="h" style="margin: 0;">Manage Students</h1>
+            </div>
+            <div style="width: 20%;"></div>
+        </div>
+
+        <br>
         <input type="text" id="searchBoxStudents" placeholder="Search for students..." onkeyup="searchTable('searchBoxStudents', 'studentsTable')">
 
         <div class="students-list">
@@ -34,7 +45,6 @@
 
             <table id="hidden_studentsTable" style="display:none;">
                 <tbody id="hidden_studentsContents">
-
                 </tbody>
             </table>
 
@@ -54,13 +64,12 @@
         </div>
 
         <div class="buttons">
-            <button onclick="addNewStudent()" class="bottomleft1">Add new Student (ignore selected)</button>
-            <button onclick="modifySelectedStudent()" class="bottomleft2">Modify selected Student account</button>
-            <button onclick="removeSelectedStudent()" class="bottomleft3" style="background-color: dimgray;">Remove selected Student account</button>
-            <button onclick="loadStudentBooksModal()" id="manageStudent" disabled>Manage selected Student</button>
+            <button onclick="addNewStudent()" style="width: 25%;">Add new Student (ignore selected)</button>
+            <button onclick="modifySelectedStudent()" style="width: 25%;">Modify selected Student account</button>
+            <button onclick="removeSelectedStudent()" style="width: 25%; background-color: dimgray;">Remove selected Student account</button>
+            <button onclick="loadStudentBooksModal()" style="width: 25%;" id="manageStudent" disabled>Manage selected Student</button>
         </div>
     </div>
-    <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
 
 
     <!-- Manage reservations/borrowings modal -->

@@ -9,7 +9,18 @@
 
 <body>
     <div class="content">
-        <h1 id="h">Manage Books</h1>
+
+        <div class="headerSection">
+            <div style="width: 20%;">
+                <button onclick="window.location.href='librarian.html'" id="backBtn" style="max-width: 150px; float: left;">Back</button>
+            </div>
+            <div style="width: 60%; text-align: center;">
+                <h1 id="h" style="margin: 0;">Manage Books</h1>
+            </div>
+            <div style="width: 20%;"></div>
+        </div>
+
+        <br>
         <input type="text" id="searchBox" placeholder="Search for books..." onkeyup="searchBooks()">
 
         <div class="books-list">
@@ -59,12 +70,11 @@
 
 
         <div class="buttons">
-            <button onclick="addNewBookItem()" class="bottomleft1" style="background-color: dimgray;">Add new BookItem (ignore selected)</button>
-            <button onclick="modifySelectedBookItem()" class="bottomleft2" style="background-color: dimgray;">Modify selected Book</button>
-            <button onclick="removeSelectedBookItem()" class="bottomleft3" style="background-color: dimgray;">Remove selected Book</button>
+            <button onclick="addNewBookItem()" style="background-color: dimgray; width: 30%;">Add new BookItem (ignore selected)</button>
+            <button onclick="modifySelectedBookItem()" style="background-color: dimgray; width: 30%;">Modify selected Book</button>
+            <button onclick="removeSelectedBookItem()" style="background-color: dimgray; width: 30%;">Remove selected Book</button>
         </div>
     </div>
-    <button onclick="window.location.href='librarian.html'" id="backBtn">Back</button>
 
 
 
@@ -112,6 +122,9 @@
 
                         API.getMany("BookItems", { bookId: book.id, isBorrowed: true }, [0, 0]).then(response_borrowed => {
                             document.getElementById("book_" + book.id + "_borrowed").innerHTML = response_borrowed.data.totalAmount;
+                        }).catch(err => {
+                            console.error("borrowed BookItems fetch failed:", err);
+                            document.write("borrowed BookItems couldn't load.");
                         });
 
                     }).catch(err => {

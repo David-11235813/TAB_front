@@ -9,7 +9,17 @@
 
 <body>
     <div class="content">
-        <h1>Reserve Books</h1>
+
+        <div class="headerSection">
+            <div style="width: 20%;">
+                <button onclick="window.location.href='student.html'" id="backBtn" style="max-width: 150px; float: left;">Back</button>
+            </div>
+            <div style="width: 60%; text-align: center;">
+                <h1 id="h" style="margin: 0;">Reserve Books</h1>
+            </div>
+            <div style="width: 20%;"></div>
+        </div>
+        <br>
 
         <div class="book-sections">
 
@@ -21,7 +31,7 @@
                 <table id="reservationsBorrowingsTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%" ><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
+                            <th width="5%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
                             <th width="25%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 1)">Title</label></th>
                             <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Authors</label></th>
                             <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 3)">Genres</label></th>
@@ -49,7 +59,7 @@
                 <table id="availableBooksTable" class="internal-table" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th width="5%" ><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
+                            <th width="5%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 0)">id</label></th>
                             <th width="25%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 1)">Title</label></th>
                             <th width="15%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Authors</label></th>
                             <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Genres</label></th>
@@ -67,12 +77,10 @@
                     </tbody>
                 </table>
             </div>
-
-            <button onclick="changeReservations(); populate_books()">Save</button>
+            <br>
+            <button onclick="changeReservations()">Save</button>
         </div>
-
     </div>
-    <button onclick="window.location.href='student.html'" id="backBtn">Back</button>
 
 
 
@@ -127,6 +135,9 @@
                                 </tr>
                                 `;
                                 document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                            }).catch(err => {
+                                console.error("BookItem fetch failed:", err);
+                                document.write("BookItem couldn't load.");
                             });
 
                         });
@@ -247,6 +258,9 @@
             try {
                 cancelReservations();
                 makeReservations();
+
+                //refresh after all is completed
+                setTimeout(() => { populate_books() }, 1000); 
             } catch (err) {
                 console.error("Reservations change failed:", err);
                 document.write("Reservations change failed.");

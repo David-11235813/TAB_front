@@ -13,16 +13,16 @@
         <p>Select one of the options below:</p>
     </div>
 
-    <div>
-        <button onclick='window.location.href = "librarian_books.html"' style="float:right"> Manage Books </button>
+    <div id="buttonContainer">
         <button onclick='window.location.href = "librarian_students.html"' style="float:right"> Manage Students </button>
+        <button onclick='window.location.href = "librarian_books.html"' style="float:right"> Manage Books </button>
         <button onclick=';' style="float:right"> Check report (todo) </button>
         <button onclick='window.location.href = "reports_managing.html"' style="float:right"> Manage reports </button>
-        <button onclick='logout_func()' id="backBtn"> Log out</button>
     </div>
-    
+    <button onclick='logout_func()' id="backBtn"> Log out</button>
 
-      
+
+
     <!-- Scripts -->
     <script type="module">
         import FrontEndAPI, { UserType } from './API.js';
