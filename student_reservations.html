@@ -32,10 +32,10 @@
                     <thead>
                         <tr>
                             <th width="5%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 0)">id</label></th>
-                            <th width="25%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 1)">Title</label></th>
-                            <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Authors</label></th>
+                            <th><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 1)">Title</label></th>
+                            <th width="20%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 2)">Authors</label></th>
                             <th width="15%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 3)">Genres</label></th>
-                            <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 4)">Languages</label></th>
+                            <th width="11%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 4)">Lang</label></th>
                             <th width="10%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 5)">ean</label></th>
                             <th width="13%"><label class="pointy" onclick="sort_by_column('reservationsBorrowingsTable', 6)">Status</label></th>
                             <th>Cancel</th>
@@ -63,7 +63,7 @@
                             <th width="25%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 1)">Title</label></th>
                             <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 2)">Authors</label></th>
                             <th width="20%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 3)">Genres</label></th>
-                            <th width="10%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 4)">Languages</label></th>
+                            <th width="11%"><label class="pointy" onclick="sort_by_column('availableBooksTable', 4)">Lang</label></th>
                             <th><label class="pointy" onclick="sort_by_column('availableBooksTable', 5)">Avail/Total</label></th>
                             <th>Reserve</th>
                         </tr>
@@ -118,23 +118,42 @@
 
                         document.getElementById("h_personal").innerHTML = "Your bookItems: " + borrowings.data.totalAmount + " borrowings, " + reservations.data.totalAmount + " reservations.";
 
+                        //borrowings
                         borrowings.data.items.forEach(borrowing => {
-                            //todo: book id & title -> BUG_11 !!!
-                            API.getOne("BookItem", borrowing.bookItemEan ).then(bookItem => {
+                            API.getOne("BookItem", borrowing.bookItemEan).then(bookItem => {
+                                API.getMany("Authors", { bookId: bookItem.data.bookId }, [0, 0]).then(authors => {
+                                    API.getMany("Genres", { bookId: bookItem.data.bookId }, [0, 0]).then(genres => {
 
-                                let inside = `
-                                <tr id="mybook_{bookItem.data.bookId}_${borrowing.bookItemEan}">
-                                    <td>book</td>
-                                    <td>bookItem.data.book.title</td>
-                                    <td>?author</td>
-                                    <td>?genres</td>
-                                    <td>?languages</td>
-                                    <td>${borrowing.bookItemEan}</td>
-                                    <td>Lent by <label  title="${borrowing.librarian.surname} ${borrowing.librarian.name}" onclick='email_hyperlink("${borrowing.librarian.email}", "${borrowing.id}")' style="cursor: pointer; text-decoration: underline">librarian</label> on: ${formatDate(borrowing.borrowingDate)}</td>
-                                    <td>-</td>
-                                </tr>
-                                `;
-                                document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                                        //done: authors
+                                        let authors_names = "";
+                                        authors.data.items.forEach(author => {
+                                            authors_names += author.surname + " " + author.name + ",<br>";
+                                        });
+                                        authors_names = authors_names.substring(0, authors_names.length - 5);
+
+                                        //done: genres
+                                        let gens = "";
+                                        genres.data.items.forEach(gen => {
+                                            gens += gen.name + ", ";
+                                        });
+                                        gens = gens.substring(0, gens.length - 2);
+
+                                        let inside = `
+                                        <tr id="mybook_{bookItem.data.bookId}_${borrowing.bookItemEan}">
+                                            <td>${bookItem.data.bookId}</td>
+                                            <td>${bookItem.data.book.title}</td>
+                                            <td>${authors_names}</td>
+                                            <td>${gens}</td>
+                                            <td>${bookItem.data.language.code}</td>
+                                            <td>${borrowing.bookItemEan}</td>
+                                            <td>Lent by <label  title="${borrowing.librarian.surname} ${borrowing.librarian.name}" onclick='email_hyperlink("${borrowing.librarian.email}", "${borrowing.id}")' style="cursor: pointer; text-decoration: underline">librarian</label> on: ${formatDate(borrowing.borrowingDate)}</td>
+                                            <td>-</td>
+                                        </tr>
+                                        `;
+                                        document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                                    
+                                    });
+                                });
                             }).catch(err => {
                                 console.error("BookItem fetch failed:", err);
                                 document.write("BookItem couldn't load.");
@@ -142,20 +161,52 @@
 
                         });
 
+                        //reservations
                         reservations.data.items.forEach(reservation => {
-                            let inside = `
-                                <tr id="mybook_${reservation.bookId}">
-                                    <td>${reservation.bookId}</td>
-                                    <td>?title</td>
-                                    <td>?author</td>
-                                    <td>?genres</td>
-                                    <td>?languages</td>
-                                    <td>-</td>
-                                    <td>Reserved since: ${formatDate(reservation.date)}</td>
-                                    <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
-                                </tr>
-                                `;
-                            document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                            API.getOne("Book", reservation.bookId).then(book => {
+                                API.getMany("Languages", { bookId: book.data.id }, [0, 0]).then(languages => {
+                                    API.getMany("Authors", { bookId: book.data.id }, [0, 0]).then(authors => {
+                                        API.getMany("Genres", { bookId: book.data.id }, [0, 0]).then(genres => {
+
+                                            //done: languages
+                                            let lang_codes = "";
+                                            languages.data.items.forEach(lang => {
+                                                lang_codes += lang.code + ", ";
+                                            })
+                                            lang_codes = lang_codes.substring(0, lang_codes.length - 2);
+
+                                            //done: genres
+                                            let gens = "";
+                                            genres.data.items.forEach(gen => {
+                                                gens += gen.name + ", ";
+                                            });
+                                            gens = gens.substring(0, gens.length - 2);
+                                            if (gens === "") gens = 'unknown';
+
+                                            //done: authors
+                                            let authors_names = "";
+                                            authors.data.items.forEach(author => {
+                                                authors_names += author.surname + " " + author.name + ",<br>";
+                                            });
+                                            authors_names = authors_names.substring(0, authors_names.length - 5);
+
+                                            let inside = `
+                                            <tr id="mybook_${book.data.id}">
+                                                <td>${book.data.id}</td>
+                                                <td>${book.data.title}</td>
+                                                <td>${authors_names}</td>
+                                                <td>${gens}</td>
+                                                <td>${lang_codes}</td>
+                                                <td>-</td>
+                                                <td>Reserved since: ${formatDate(reservation.date)}</td>
+                                                <td><input type="checkbox" name="cancelReservation_checkbox" value="${reservation.id}"></td>
+                                            </tr>
+                                            `;
+                                            document.getElementById("reservationsBorrowingsContents").innerHTML += inside;
+                                        });
+                                    });
+                                });
+                            });
                         });
                     }).catch(err => {
                         console.error("Reservations fetch failed:", err);
@@ -186,39 +237,56 @@
                     API.getMany("BookItems", { bookId: book.id, isBorrowed: false }, [0, 0]).then(avail => {
                         API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(all_title => {
                             API.getMany("Authors", { bookId: book.id }, [0, 0]).then(authors => {
-                                //API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
-                                    //API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
+                                API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
+                                    API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
 
-                                let avail_count = avail.data.totalAmount;
-                                let all_count = all_title.data.totalAmount;
+                                        let avail_count = avail.data.totalAmount;
+                                        let all_count = all_title.data.totalAmount;
 
-                                let style = "";
-                                if (avail_count === 0) style = "style='background: maroon;'";
-                                else if (avail_count === 1) style = "style='background: peru;'";
+                                        let style = "";
+                                        if (avail_count === 0) style = "style='background: maroon;'";
+                                        else if (avail_count === 1) style = "style='background: peru;'";
 
-                                let authors_names = "";
-                                authors.data.items.forEach(author => {
-                                    authors_names += author.surname + " " + author.name + ",<br>";
+                                        //done: authors
+                                        let authors_names = "";
+                                        authors.data.items.forEach(author => {
+                                            authors_names += author.surname + " " + author.name + ",<br>";
+                                        });
+                                        authors_names = authors_names.substring(0, authors_names.length - 5);
+
+                                        //done: genres
+                                        let gens = "";
+                                        genres.data.items.forEach(gen => {
+                                            gens += gen.name + ", ";
+                                        });
+                                        gens = gens.substring(0, gens.length - 2);
+                                        if (gens === "") gens = 'unknown';
+
+                                        //done: languages
+                                        let lang_codes = "";
+                                        languages.data.items.forEach(lang => {
+                                            lang_codes += lang.code + ", ";
+                                        })
+                                        lang_codes = lang_codes.substring(0, lang_codes.length - 2);
+
+
+                                        let inside = `
+                                            <tr ${style} id="book_${book.id}">
+                                                <td>${book.id}</td>
+                                                <td>${book.title}</td>
+                                                <td>${authors_names}</td>
+                                                <td>${gens}</td>
+                                                <td>${lang_codes}</td>
+                                                <td>${avail_count}/${all_count}</td>
+                                                <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
+                                            </tr>
+                                        `;
+                                        document.getElementById("availableBooksContents").innerHTML += inside;
+
+
+
+                                    });
                                 });
-                                authors_names = authors_names.substring(0, authors_names.length - 5);
-
-
-
-                                let inside = `
-                                    <tr ${style} id="book_${book.id}">
-                                        <td>${book.id}</td>
-                                        <td>${book.title}</td>
-                                        <td>${authors_names}</td>
-                                        <td id="book_${book.id}_genres">?genres</td>
-                                        <td id="book_${book.id}_langs">{all_langs}</td>
-                                        <td>${avail_count}/${all_count}</td>
-                                        <td><input type="checkbox" name="reserveBook_checkbox" value="${book.id}"></td>
-                                    </tr>
-                                `;
-                                document.getElementById("availableBooksContents").innerHTML += inside;
-
-                                    //});
-                                //});
                             });
 
                         });
