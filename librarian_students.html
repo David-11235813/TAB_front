@@ -31,7 +31,7 @@
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 1)">Name</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 2)">Surname</label></th>
                         <th width="25%"><label class="pointy" onclick="sort_by_column('studentsTable', 3)">Birth Date</label></th>
-                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 4)">Class ID:</label></th>
+                        <th><label class="pointy" onclick="sort_by_column('studentsTable', 4)">Class ID</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 5)">email</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 6)">borrowed</label></th>
                         <th><label class="pointy" onclick="sort_by_column('studentsTable', 7)">reserved</label></th>
@@ -274,7 +274,7 @@
         }
 
 
-        //TODO - BORROWINGS!, better display: Jakub, pole classId przy borrowing; (BUG_2 & BUG_3 fixed)
+        //done
         window.loadStudentBooksModal = loadStudentBooksModal;
         function loadStudentBooksModal() {
 
@@ -397,7 +397,7 @@
         }
 
 
-        //done (check again!) - BUG_1
+        //done
         window.cancelStudentReservations = cancelStudentReservations;
         function cancelStudentReservations() {
             var cancelCheckboxes = document.getElementsByName('cancelReservation_checkbox');
@@ -413,9 +413,7 @@
             //cancel chosen reservations
             for (var checkboxCancel of cancelCheckboxesChecked) { //go through all checked and make reservations
 
-                API.cancelReservation(parseInt(checkboxCancel.value)).then(response => { //?
-                    //document.body.append("rezerwacja usunieta || ");
-                }).catch(err => {
+                API.cancelReservation(parseInt(checkboxCancel.value)).catch(err => {
                     console.error("Reservation cancel with id " + checkboxCancel.value + " failed:", err);
                     document.write("Reservation cancel with id " + checkboxCancel.value + " failed:");
                 });
@@ -426,7 +424,7 @@
 
 
         let selected_book_row_id = "";
-        //done (BUG_5 fixed)
+        //done
         document.displayLendableBookItems = displayLendableBookItems;
         function displayLendableBookItems(book_id) {
 
@@ -489,7 +487,7 @@
 
         }
 
-        //done (BUG_6 fixed)
+        //done
         document.lendBookItem = lendBookItem;
         function lendBookItem(ean) {
             API.getCurrentUser().then(self => {
@@ -511,7 +509,7 @@
             })
         }
 
-        //done (BUG_8 fixed)
+        //done
         document.concludeBorrowings = concludeBorrowings;
         function concludeBorrowings() {
 
@@ -661,22 +659,18 @@
             });
         }
 
-
-
-
-
-        //TODO better
+        
+        //TODO
         window.addNewStudent = addNewStudent;
         function addNewStudent() {
 
-            //checks data integrity
             let n = document.getElementById("slot1").innerHTML;
             let s = document.getElementById("slot2").innerHTML;
-            let b = document.getElementById("slot3").innerHTML;
+            let bd = document.getElementById("slot3").innerHTML;
             let c = document.getElementById("slot4").innerHTML;
             let e = document.getElementById("slot5").innerHTML;
 
-            if (n === '' || s === '' || b === '' || c === '' || e === '') {
+            if (n === '' || s === '' || bd === '' || c === '' || e === '') {
                 alert("Must fill all slots first!");
                 return;
             }
@@ -685,17 +679,19 @@
             API.createOne("Student", {
                 name: String(n),
                 surname: String(s),
-                birthDate: new Date(b),
+                birthDate: new Date(bd),
                 classId: parseInt(c),
                 email: String(e),
                 password: ""
-            }).then(response => { populate_students(); }).catch(err => {
+            }).then(response => {
+                populate_students();
+            }).catch(err => {
                 console.error("Student " + id + " creation failed", err);
-                document.write("Student creation failed");
+                alert("Student creation failed");
             });
         }
 
-        //TODO better
+        //TODO
         window.modifySelectedStudent = modifySelectedStudent;
         function modifySelectedStudent() {
 
@@ -707,11 +703,11 @@
 
             let n = document.getElementById("slot1").innerHTML;
             let s = document.getElementById("slot2").innerHTML;
-            let b = document.getElementById("slot3").innerHTML;
+            let bd = document.getElementById("slot3").innerHTML;
             let c = document.getElementById("slot4").innerHTML;
             let e = document.getElementById("slot5").innerHTML;
 
-            if (n === '' || s === '' || b === '' || c === '' || e === '') {
+            if (n === '' || s === '' || bd === '' || c === '' || e === '') {
                 alert("Must fill all slots first!");
                 return;
             }
@@ -730,7 +726,7 @@
             API.updateOne("Student", parseInt(id), {
                 name: String(n),
                 surname: String(s),
-                birthDate: new Date(b),
+                birthDate: new Date(bd),
                 classId: parseInt(c),
                 email: String(e),
                 password: ""
@@ -741,13 +737,15 @@
 
         }
 
-        //TODO; doesn't work & won't
+
+
+        //won't work
         window.removeSelectedStudent = removeSelectedStudent;
         function removeSelectedStudent() {
 
             alert("function doesn't work due to students having connections to other references, sorry!");
 
-            //API.deleteOne("Student", 38).then(response => { populate_students(); });
+            //API.deleteOne("Student", 5).then(response => { populate_students(); });
         }
 
     </script>
