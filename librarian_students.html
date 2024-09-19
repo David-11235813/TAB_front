@@ -743,9 +743,12 @@
         window.removeSelectedStudent = removeSelectedStudent;
         function removeSelectedStudent() {
 
-            alert("function doesn't work due to students having connections to other references, sorry!");
+            if (selected_row_id === '') {
+                alert("You must first select the student to delete!");
+                return;
+            }
 
-            //API.deleteOne("Student", 5).then(response => { populate_students(); });
+            API.deleteOne("Student", parseInt(selected_row_id)).then(response => { populate_students(); });
         }
 
     </script>

@@ -408,8 +408,8 @@
         window.addNewBookItem = addNewBookItem;
         function addNewBookItem() {
 
-            alert("function doesn't work due to BookItems having connections to other references, sorry!");
-            return;
+            //alert("function doesn't work due to BookItems having connections to other references, sorry!");
+            //return;
 
             //checks data integrity
             let id = document.getElementById("slot1").innerHTML;
@@ -432,25 +432,67 @@
                 bookId: parseInt(id),
                 locationId: parseInt(loc),
                 languageId: parseInt(lan)
-            }).then(response => { populate_books_onload(); }).catch(err => {
-                console.error("BookItem " + id + " creation failed", err);
+            }).then(response => {
+                populate_books_onload();
+            }).catch(err => {
+                console.error("BookItem " + selected_bookItem_row_id + " creation failed", err);
                 alert("BookItem creation failed");
             });
         }
 
         window.modifySelectedBookItem = modifySelectedBookItem;
         function modifySelectedBookItem() {
-            alert("function doesn't work due to BookItems having connections to other references, sorry!");
-            return;
+            //alert("function doesn't work due to BookItems having connections to other references, sorry!");
+            //return;
+
+            if (selected_bookItem_row_id === '') {
+                alert("You must first select the bookItem to modify!");
+                return;
+            }
+
+            let id = document.getElementById("slot1").innerHTML;
+            let ean = document.getElementById("slot2").innerHTML;
+            let isbn = document.getElementById("slot3").innerHTML;
+            let a = document.getElementById("slot4").innerHTML;
+            let t = document.getElementById("slot5").innerHTML;
+            let lan = document.getElementById("slot6").innerHTML;
+            let loc = document.getElementById("slot7").innerHTML;
+
+            if (id === '' || ean === '' || isbn === '' || a === '' || t === '' || lan === '' || loc === '') {
+                alert("Must fill all slots first!");
+                return;
+            }
+
+            //create
+            API.updateOne("BookItem", parseInt(selected_bookItem_row_id), {
+                isbn: { value: parseInt(isbn), __type: "BigInt" },
+                remarks: "remarks",
+                bookId: parseInt(id),
+                locationId: parseInt(loc),
+                languageId: parseInt(lan)
+            }).then(response => { populate_books_onload(); }).catch(err => {
+                console.error("BookItem " + id + " update failed", err);
+                alert("BookItem update failed");
+            });
         }
 
         window.removeSelectedBookItem = removeSelectedBookItem;
         function removeSelectedBookItem() {
 
-            alert("function doesn't work due to BookItems having connections to other references, sorry!");
-            return;
+            //alert("function doesn't work due to BookItems having connections to other references, sorry!");
+            //return;
 
-            //API.deleteOne("BookItem", 38).then(response => { populate_students(); });
+            if (selected_bookItem_row_id === '') {
+                alert("You must first select the bookItem to delete!");
+                return;
+            }
+
+            API.deleteOne("BookItem", parseInt(selected_bookItem_row_id)).then(response => {
+                populate_students();
+            }).catch(err => {
+                console.error("BookItem " + selected_bookItem_row_id + " deleting failed", err);
+                alert("BookItem deleting failed");
+            });
         }
 
 
