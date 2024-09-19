@@ -557,3 +557,13 @@ input[type="text"]:not(#uname) {
     input[type="text"]::placeholder {
         color: darkgray;
     }
+
+
+
+#reportTable {
+    margin: 10px auto;
+    width: 90%;
+    border: 1px solid #ccc;
+    padding: 20px;
+    overflow-y: auto;
+}

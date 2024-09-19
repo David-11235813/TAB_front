@@ -10,7 +10,30 @@
 <body>
     <div class="content">
         <h1>Report creation:</h1>
+        <div style="height: 90%; width: 100%" id="display">
+            <table id="reportTable">
+                <thead>
+                    <tr>
+                        <th>class_id</th>
+                        <th>Class</th>
+                        <th>this time's borrowings</th>
+                        <th>most popular genres this time</th>
+                        <th>howmany borrowings total</th>
+                        <th>total borrowings/students ratio</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
 
+                </tbody>
+            </table>
+        </div>
+
+        <div style="height: 10%; width: 100%" id="options">
+            <input type="date" id="dateStart">
+            <input type="date" id="dateEnd">
+            <button onclick="getDate()">Submit</button>
+            <p id="selectedDate"></p>
+        </div>
     </div>
     
 
@@ -21,7 +44,49 @@
 
         const API = new FrontEndAPI('https://127.0.0.1:3000');
 
-        //window.func = func;
+        window.onload = populate_borrowings_onload;
+        window.populate_borrowings_onload = populate_borrowings_onload;
+        function populate_borrowings_onload() {
+
+            API.getMany("Classes", {}, [0, 0]).then(classes => {
+                //API.getMany("Borrowings", {}, [0, 0]).then(borrowings => {
+                classes.data.items.forEach(classs => {
+                    let inside = `<tr>
+                        <td>${classs.id}</td>
+                        <td>${classs.name}</td>
+                        <td id="bor_${classs.id}"></td>
+                        <td id="topGenre_${classs.id}"></td>
+                        <td id="borTotal_${classs.id}"></td>
+                        <td id="borPerStudentTotal_${classs.id}"></td>
+                    </td>
+                    `;
+                    document.getElementById("tableBody").innerHTML += inside;
+
+                    classBorrowings(classs.id);
+                    //classTopGenre(classs.id);
+                    //classTopStudentBor(classs.id);
+                    //classBorrowingsTotal(classs.id);
+                    //classTotalBorowingPerStudent(classs.id);
+
+                })
+            });
+        }
+
+        //borrowings in given time period
+        function classBorrowings(classsId) {
+            let class_id = parseInt(classsId);
+            API.getMany("Borrowings", {}, [0, 0]).then(borrowings => {
+                let inside = "";
+
+
+
+
+                document.getElementById("bor_" + class_id).innerHTML = inside;
+            }).catch(err => {
+                console.error("Borrowings fetch failed:", err);
+                document.write("Borrowings couldn't load.");
+            });
+        }
 
 
     </script>

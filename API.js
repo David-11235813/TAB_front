@@ -154,4 +154,16 @@ export default class FrontEndAPI {
     requestReportGeneration = async reportId => {
         return this.apiCall(`/reports/request-creation`, { reportId })
     }
+
+
+
+    //wywo³uje siê tak: api.getMostPopularGenres([new Date(1997, 10, 3), new Date(2030, 10, 3)], 1)
+    async getMostPopularGenres(dateRange, classId) {
+        return this.apiCall("/reports/get-most-popular-genres", { dateRange, classId })
+    }
+
+    async getMostReadingStudent(dateRange, classId) {
+        return this.apiCall("/reports/get-most-reading-student", { dateRange, classId })
+    }
+
 }
