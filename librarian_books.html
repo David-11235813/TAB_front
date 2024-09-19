@@ -60,7 +60,6 @@
             <div id="slot5" contenteditable="true" style="max-width: 50px;"></div>
             <div id="slot6" contenteditable="true" style="max-width: 50px;"></div>
             <div id="slot7" contenteditable="true"></div>
-            <div id="slot8" contenteditable="true" style="max-width: 70px;"></div>
 
             <div style="all: unset; max-width:10px;">
                 <button class=smallEditButton onclick="pasteSlots()">paste</button>
@@ -85,7 +84,7 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
-        //almost done - ADD GENRES!
+        //done
         window.onload = populate_books_onload;
         window.populate_books_onload = populate_books_onload;
         function populate_books_onload() {
@@ -301,7 +300,7 @@
         //done
         window.clearSlots = clearSlots;
         function clearSlots() {
-            for (let i = 1; i <= 8; i++) {
+            for (let i = 1; i <= 7; i++) {
                 document.getElementById("slot" + i).innerHTML = "";
             }
         }
@@ -318,7 +317,7 @@
             for (let i = 0; i <= 2; i++) {
                 document.getElementById("slot" + (i + 1)).innerHTML = cells[i].textContent;
             }
-            for (let i = 5; i <= 9; i++) {
+            for (let i = 5; i <= 8; i++) {
                 document.getElementById("slot" + (i - 1)).innerHTML = cells[i].textContent;
             }
         }
@@ -405,41 +404,43 @@
 
 
 
-        //WIP - BUG_9
+        //done
         window.addNewBookItem = addNewBookItem;
         function addNewBookItem() {
 
-            alert("function doesn't work due to problems with isbn serialization, sorry!");
+            alert("function doesn't work due to BookItems having connections to other references, sorry!");
             return;
 
-            ////checks data integrity
-            //let n = document.getElementById("slot1").innerHTML;
-            //let s = document.getElementById("slot2").innerHTML;
-            //let b = document.getElementById("slot3").innerHTML;
-            //let c = document.getElementById("slot4").innerHTML;
-            //let e = document.getElementById("slot5").innerHTML;
-            //
-            //if (n === '' || s === '' || b === '' || c === '' || e === '') {
-            //    alert("Must fill all slots first!");
-            //    return;
-            //}
+            //checks data integrity
+            let id = document.getElementById("slot1").innerHTML;
+            let ean = document.getElementById("slot2").innerHTML;
+            let isbn = document.getElementById("slot3").innerHTML;
+            let a = document.getElementById("slot4").innerHTML;
+            let t = document.getElementById("slot5").innerHTML;
+            let lan = document.getElementById("slot6").innerHTML;
+            let loc = document.getElementById("slot7").innerHTML;
+            
+            if (id === '' || ean === '' || isbn === '' || a === '' || t === '' || lan === '' || loc === '') {
+                alert("Must fill all slots first!");
+                return;
+            }
 
             //create
             API.createOne("BookItem", {
-                isbn: {value: "99999999999", __type: "BigInt"},
-                remarks: String("remarks"),
-                bookId: Number(1),
-                locationId: Number(1),
-                languageId: Number(1)
-            }).then(response => { populate_book_items(); }).catch(err => {
+                isbn: {value: parseInt(isbn), __type: "BigInt"},
+                remarks: "remarks",
+                bookId: parseInt(id),
+                locationId: parseInt(loc),
+                languageId: parseInt(lan)
+            }).then(response => { populate_books_onload(); }).catch(err => {
                 console.error("BookItem " + id + " creation failed", err);
-                document.write("BookItem creation failed");
+                alert("BookItem creation failed");
             });
         }
 
         window.modifySelectedBookItem = modifySelectedBookItem;
         function modifySelectedBookItem() {
-            alert("function doesn't work due to problems with isbn serialization, sorry!");
+            alert("function doesn't work due to BookItems having connections to other references, sorry!");
             return;
         }
 
@@ -447,58 +448,12 @@
         function removeSelectedBookItem() {
 
             alert("function doesn't work due to BookItems having connections to other references, sorry!");
+            return;
 
             //API.deleteOne("BookItem", 38).then(response => { populate_students(); });
         }
 
-        ////COPY
-        //window.modifySelectedStudent = modifySelectedStudent;
-        //function modifySelectedStudent() {
-        //
-        //    //checks data integrity
-        //    if (selected_row_id === '') {
-        //        alert("You must first select the student to modify!");
-        //        return;
-        //    }
-        //
-        //    let n = document.getElementById("slot1").innerHTML;
-        //    let s = document.getElementById("slot2").innerHTML;
-        //    let b = document.getElementById("slot3").innerHTML;
-        //    let c = document.getElementById("slot4").innerHTML;
-        //    let e = document.getElementById("slot5").innerHTML;
-        //
-        //    if (n === '' || s === '' || b === '' || c === '' || e === '') {
-        //        alert("Must fill all slots first!");
-        //        return;
-        //    }
-        //
-        //    let row = document.getElementById(selected_row_id);
-        //    let cells = row.children;
-        //    let cellsAlt = row.querySelectorAll('td');
-        //    let id = cells[0].textContent;
-        //
-        //    if (cells[4].textContent != c) {
-        //        alert("Class must stay the same!");
-        //        return;
-        //    }
-        //
-        //    //updates
-        //    API.updateOne("Student", Number(id), {
-        //        name: String(n),
-        //        surname: String(s),
-        //        birthDate: new Date(b),
-        //        classId: Number(c),
-        //        email: String(e),
-        //        password: ""
-        //    }).then(response => { populate_students(); }).catch(err => {
-        //        console.error("Student " + id + " update failed", err);
-        //        document.write("Student update failed");
-        //    });
-        //
-        //}
-
 
     </script>
-
 </body>
 </html>
