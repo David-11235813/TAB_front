@@ -85,7 +85,7 @@
         var API = new FrontEndAPI('https://127.0.0.1:3000');
 
 
-        //almost done - ADD AUTHORS!
+        //almost done - ADD GENRES!
         window.onload = populate_books_onload;
         window.populate_books_onload = populate_books_onload;
         function populate_books_onload() {
@@ -98,42 +98,61 @@
                     //for each title, count positions and paste title info
                     var howmany_all = 0;
                     API.getMany("BookItems", { bookId: book.id }, [0, 0]).then(response_all => {
-                        API.getMany("Authors", { bookId: book.id }, [0, 0]).then(authors => { //todo
-                            //API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
-                            //API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
+                        API.getMany("Authors", { bookId: book.id }, [0, 0]).then(authors => {
+                            API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
+                                API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
 
-                            let authors_names = "";
-                            authors.data.items.forEach(author => {
-                                authors_names += author.surname + " " + author.name + ",<br>";
-                            });
-                            authors_names = authors_names.substring(0, authors_names.length - 5);
+                                    //done: authors
+                                    let authors_names = "";
+                                    authors.data.items.forEach(author => {
+                                        authors_names += author.surname + " " + author.name + ",<br>";
+                                    });
+                                    authors_names = authors_names.substring(0, authors_names.length - 5);
 
-                            var inside = '';
-                            howmany_all = response_all.data.totalAmount;
-                            inside = `
-                                <tr id="book_${book.id}">
-                                    <td>${book.id}</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>${authors_names}</td>
-                                    <td>?genres</td>
-                                    <td>${book.title}</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>${howmany_all} positions</td>
-                                    <td id="book_${book.id}_borrowed">-</td>
-                                    <td>
-                                        <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
-                                    </td>
-                                </tr>
-                            `;
-                            document.getElementById("bookItemsContents").innerHTML += inside;
+                                    //done: genres
+                                    let gens = "";
+                                    genres.data.items.forEach(gen => {
+                                        gens += gen.name + ", ";
+                                    });
+                                    gens = gens.substring(0, gens.length - 2);
+                                    if (gens === "") gens = 'unknown';
 
-                            API.getMany("BookItems", { bookId: book.id, isBorrowed: true }, [0, 0]).then(response_borrowed => {
-                                document.getElementById("book_" + book.id + "_borrowed").innerHTML = response_borrowed.data.totalAmount;
-                            }).catch(err => {
-                                console.error("borrowed BookItems fetch failed:", err);
-                                document.write("borrowed BookItems couldn't load.");
+                                    //done: languages
+                                    let lang_codes = "";
+                                    languages.data.items.forEach(lang => {
+                                        lang_codes += lang.code + ",<br>";
+                                    })
+                                    lang_codes = lang_codes.substring(0, lang_codes.length - 5);
+
+
+                                    var inside = '';
+                                    howmany_all = response_all.data.totalAmount;
+                                    inside = `
+                                        <tr id="book_${book.id}">
+                                            <td>${book.id}</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>${authors_names}</td>
+                                            <td>${gens}</td>
+                                            <td>${book.title}</td>
+                                            <td>${lang_codes}</td>
+                                            <td>-</td>
+                                            <td>${howmany_all} positions</td>
+                                            <td id="book_${book.id}_borrowed">-</td>
+                                            <td>
+                                                <button class="smallButton" id="book_${book.id}_button" onclick="selectBook('book_${book.id}')">select</button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                    document.getElementById("bookItemsContents").innerHTML += inside;
+
+                                    API.getMany("BookItems", { bookId: book.id, isBorrowed: true }, [0, 0]).then(response_borrowed => {
+                                        document.getElementById("book_" + book.id + "_borrowed").innerHTML = response_borrowed.data.totalAmount;
+                                    }).catch(err => {
+                                        console.error("borrowed BookItems fetch failed:", err);
+                                        document.write("borrowed BookItems couldn't load.");
+                                    });
+                                });
                             });
                         });
                     }).catch(err => {
@@ -180,40 +199,47 @@
 
             API.getMany("BookItems", { bookId: book_id }, [0, 0]).then(bookItems => {
                 API.getMany("Authors", { bookId: book_id }, [0, 0]).then(authors => {
-                    //API.getMany("Languages", { bookId: book.id }, [0, 0]).then(languages => {
-                    //API.getMany("Genres", { bookId: book.id }, [0, 0]).then(genres => {
+                    API.getMany("Genres", { bookId: book_id }, [0, 0]).then(genres => {
 
-                    //add authors names
-                    let authors_names = "";
-                    authors.data.items.forEach(author => {
-                        authors_names += author.surname + " " + author.name + ",<br>";
+                        //done: authors
+                        let authors_names = "";
+                        authors.data.items.forEach(author => {
+                            authors_names += author.surname + " " + author.name + ",<br>";
+                        });
+                        authors_names = authors_names.substring(0, authors_names.length - 5);
+
+                        //done: genres
+                        let gens = "";
+                        genres.data.items.forEach(gen => {
+                            gens += gen.name + ", ";
+                        });
+                        gens = gens.substring(0, gens.length - 2);
+                        if (gens === "") gens = 'unknown';
+
+                        var inside = '';
+                        bookItems.data.items.forEach(bItem => {
+                            inside += `
+                                <tr id="${row_id}_${bItem.ean}" style="background: gray;">
+                                    <td>${bItem.book_id}</td>
+                                    <td>${bItem.ean}</td>
+                                    <td>${bItem.ISBN}</td>
+                                    <td>${authors_names}</td>
+                                    <td>${gens}</td>
+                                    <td>${bItem.book_title}</td>
+                                    <td>${bItem.language_id}</td>
+                                    <td>${bItem.location_id}</td>
+                                    <td>${bItem.remarks}</td>
+                                    <td>${bItem.isBorrowed}</td>
+                                    <td>
+                                        <button class="smallButton" id="${row_id}_${bItem.ean}_button" onclick="selectBookItem('${row_id}_${bItem.ean}')">select</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                        addExpandedRowsCode(row_id, inside);
+
                     });
-                    authors_names = authors_names.substring(0, authors_names.length - 5);
-
-                    var inside = '';
-                    bookItems.data.items.forEach(bItem => {
-                        inside += `
-                            <tr id="${row_id}_${bItem.ean}" style="background: gray;">
-                                <td>${bItem.book_id}</td>
-                                <td>${bItem.ean}</td>
-                                <td>${bItem.ISBN}</td>
-                                <td>${authors_names}</td>
-                                <td>?genres</td>
-                                <td>${bItem.book_title}</td>
-                                <td>${bItem.language_id}</td>
-                                <td>${bItem.location_id}</td>
-                                <td>${bItem.remarks}</td>
-                                <td>${bItem.isBorrowed}</td>
-                                <td>
-                                    <button class="smallButton" id="${row_id}_${bItem.ean}_button" onclick="selectBookItem('${row_id}_${bItem.ean}')">select</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-
-                    addExpandedRowsCode(row_id, inside);
-
-                    //});
                 });
             }).catch(err => {
                 console.error("BookItems fetch failed:", err);
